@@ -1,0 +1,61 @@
+# Author: Guilllermo Avendaño
+# Cretion Date: 11/17/2023
+# Rocky Linux 8 image
+FROM rockylinux:8
+
+# Parmeters
+# Rochade License Number
+ARG RO_LICENSE=""
+# Rochade License Company
+ARG RO_COMPANY="ASG Internal Use"
+
+# Java version (default 8, the other option is 11)
+ARG JAVA_VERSION=8
+
+# Install other tools
+RUN dnf -y install wget procps-ng net-tools numactl
+
+# Intall java by according version
+RUN dnf -y install java-1.8.0-openjdk; 
+    #dnf -y install java-11-openjdk; 
+
+# Clean up cache to reduce the image size
+RUN dnf clean all
+
+# Add "rocket" user with uid=3003
+RUN useradd -u 3003 -m rocket
+
+# Copy "rochade" directory to rocket's home directory
+COPY ./rochade /home/rocket/rochade/
+
+# Copy startup.sh script
+COPY ./startup.sh /home/rocket/startup.sh
+
+# Change ownership, and execution rights of directories and files copied
+RUN chown 3003:0 -R /home/rocket/rochade && chmod 775 /home/rocket/rochade/sbin/*.so* && chmod +x /home/rocket/rochade/h2bin/*.sh
+RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
+
+
+# Set "rocket" as default user 
+USER rocket
+
+# set JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/java
+
+#Adds java to PATH
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+ENV RO_COMPANY="$RO_COMPANY"
+ENV RO_LICENSE=$RO_LICENSE
+
+ENV PATH=/home/rocket/rochade/sbin:$PATH
+ENV LD_LIBRARY_PATH=/usr/lib64:/home/rocket/rochade/sbin:/home/rocket/rochade/sbin/lib64/openldap:/home/rocket/rochade/sbin/lib64/openssl
+
+# Set rocket's home as working directory
+WORKDIR /home/rocket
+
+# Expose the port 8888
+EXPOSE 8888 9092
+
+# Default command to execute when the image is started
+CMD ["sh", "-c", "./startup.sh"]

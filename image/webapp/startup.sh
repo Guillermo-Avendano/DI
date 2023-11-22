@@ -1,0 +1,56 @@
+#!/bin/bash
+
+replace_tag_in_file() {
+    local filename=$1
+    local search=$2
+    local replace=$3
+
+    if [[ $search != "" ]]; then
+        # Escape not allowed characters in sed tool
+        search=$(printf '%s\n' "$search" | sed -e 's/[]\/$*.^[]/\\&/g');
+        replace=$(printf '%s\n' "$replace" | sed -e 's/[]\/$*.^[]/\\&/g');
+        sed -i'' -e "s/$search/$replace/g" $filename
+    fi
+}
+
+RO_SOLR_CONF="/home/rocket/Index_Update_Service/conf"
+RO_SOLR_LOG="/home/rocket/Index_Update_Service/log"
+
+if [ -z "$(ls -A "$RO_SOLR_CONF")" ] && [ -z "$(ls -A "$RO_SOLR_CONF")" ]; then
+   cp /home/rocket/Index_Update_Service/conf_template/*.* /home/rocket/Index_Update_Service/conf
+fi
+
+TOMCAT_WEBAPPS=/home/rocket/apache-tomcat-9.0.81/webapps/rochade/WEB-INF/classes/
+
+RDM_SERVICES_FILE=$TOMCAT_WEBAPPS/rdmServices.properties
+replace_tag_in_file $RDM_SERVICES_FILE "#RO_HOST#" $RO_HOST
+replace_tag_in_file $RDM_SERVICES_FILE "#RO_PORT#" $RO_PORT
+replace_tag_in_file $RDM_SERVICES_FILE "#RO_USER#" $RO_USER
+replace_tag_in_file $RDM_SERVICES_FILE "#RO_PASS#" $RO_PASS
+
+STARTUP_FILE=$TOMCAT_WEBAPPS/startup.properties
+replace_tag_in_file $STARTUP_FILE "#RO_HOST#" $RO_HOST
+replace_tag_in_file $STARTUP_FILE "#RO_PORT#" $RO_PORT
+replace_tag_in_file $STARTUP_FILE "#RO_USER#" $RO_USER
+replace_tag_in_file $STARTUP_FILE "#RO_PASS#" $RO_PASS
+
+WF_FILE=$TOMCAT_WEBAPPS/wf.properties
+replace_tag_in_file $WF_FILE "#RO_HOST#" $RO_HOST
+replace_tag_in_file $WF_FILE "#RO_PORT#" $RO_PORT
+replace_tag_in_file $WF_FILE "#RO_USER#" $RO_USER
+replace_tag_in_file $WF_FILE "#RO_PASS#" $RO_PASS
+
+
+APPLICARION_IS_FILE=$TOMCAT_WEBAPPS/application_is.properties
+replace_tag_in_file $APPLICARION_IS_FILE "#RO_SOLR_HOST#" $RO_SOLR_HOST
+replace_tag_in_file $APPLICARION_IS_FILE "#RO_SOLR_PORT#" $RO_SOLR_PORT
+
+cd /home/rocket/Index_Update_Service/bin
+
+./IndexUpdateService.sh
+
+tail -f /home/rocket/Index_Update_Service/log/indexing.log
+
+
+
+

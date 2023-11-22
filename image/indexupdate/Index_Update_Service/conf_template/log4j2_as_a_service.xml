@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+########################################################################
+# This is the default configuration file used by Log4j2.
+# Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved.
+#
+# Version 10.01.001
+#
+# For the general syntax of XML based configuration files, see the
+# documentation of Log4j2 at https://logging.apache.org/log4j/2.x/manual/configuration.html
+#
+# You can use a different file (or even file format) by specifying a filename
+# with the Java's environment property named 'log4j.configurationFile'.  
+# For example, java -Dlog4j.configurationFile="file:///path\mylog4j2.xml"
+#
+########################################################################
+-->
+<Configuration status="WARN">
+	<Properties>
+		<Property name="logDir">../logs</Property>
+	</Properties>
+	<Appenders>
+		<RollingFile name="Roll-By-Time-Appender" fileName="${logDir}/indexing.log" filePattern="${logDir}/%d{yyyy-MM-dd}/indexing-%i.log.zip">
+			<PatternLayout>
+				<!-- see https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout -->
+				<pattern>%d{DEFAULT} %-5level IndexUpdateService[%threadName] - %logger - %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<!-- see https://logging.apache.org/log4j/2.x/manual/appenders.html -->
+			<DefaultRolloverStrategy min="1" max="99" fileIndex="max" compressionLevel="9">
+				<!--
+				Nested conditions: the inner condition is only evaluated on files
+				for which the outer conditions are true.
+				-->
+				<Delete basePath="${logDir}" maxDepth="2">
+					<IfFileName glob="*/indexing-*.log.zip">
+						<IfLastModified age="7d">
+							<IfAny>
+								<IfAccumulatedFileSize exceeds="1 GB" />
+								<IfAccumulatedFileCount exceeds="10" />
+							</IfAny>
+						</IfLastModified>
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+		<RollingFile name="TelemetryAppender" fileName="${logDir}/indexing.log" filePattern="${logDir}/%d{yyyy-MM-dd}/indexing-%i.log.zip">
+			<PatternLayout>
+				<!-- see https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout -->
+				<pattern>%d{DEFAULT} TELEMETRY IndexUpdateService[%threadName] - %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<!-- see https://logging.apache.org/log4j/2.x/manual/appenders.html -->
+			<DefaultRolloverStrategy min="1" max="99" fileIndex="max" compressionLevel="9">
+				<!--
+				Nested conditions: the inner condition is only evaluated on files
+				for which the outer conditions are true.
+				-->
+				<Delete basePath="${logDir}" maxDepth="2">
+					<IfFileName glob="*/indexing-*.log.zip">
+						<IfLastModified age="7d">
+							<IfAny>
+								<IfAccumulatedFileSize exceeds="1 GB" />
+								<IfAccumulatedFileCount exceeds="10" />
+							</IfAny>
+						</IfLastModified>
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>		
+	</Appenders>
+	<Loggers>
+		<Logger name="com.rochade.index.update" level="INFO">
+		</Logger>
+		
+		<Logger name="com.rochade.search" level="INFO">
+		</Logger>
+		
+		<Logger name="com.rochade.wa.common.solr.util.SolrHelper" level="DEBUG">
+		</Logger>
+		
+		<!-- Telemetry logging:
+		Set the logging level of the logger dedicated to telemetry.
+		To hide all the Telemetry data, keep the logging level to OFF.
+		For having some of the Telemetry data, set the logging level to either ERROR/WARN/INFO/DEBUG (less to more verbose). -->
+		<Logger name="com.rochade.wa.common.logging.Telemetry" level="OFF" additivity="false"> <!-- Additivity is false: Do not log into the default root appender -->
+			<AppenderRef ref="TelemetryAppender"/>
+		</Logger>
+		
+		<Logger name="de.rochade" level="WARN">
+		</Logger>
+		
+		<!-- set logging level to ERROR for the specific logger 'de.rochade.ap' used by Rochade core
+		in order to get rid of warnings like 'de.rochade.ap:154 - de.rochade.ds.InvalidTypeException: RBD_CLUSTER' -->
+		<Logger name="de.rochade.ap" level="ERROR">
+		</Logger>
+		
+		<!-- set logging level to ERROR for the specific logger 'de.rochade.ds' used by Rochade core
+		in order to get rid of info entries like 'de.rochade.ds:142 - Default package handler is used' -->
+		<Logger name="de.rochade.ds" level="ERROR">
+		</Logger>
+		
+		<Root level="INFO">
+			<AppenderRef ref="Roll-By-Time-Appender"/>
+		</Root>
+	</Loggers>
+</Configuration>

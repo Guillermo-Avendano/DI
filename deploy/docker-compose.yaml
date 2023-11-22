@@ -1,0 +1,54 @@
+version: "3.0"
+
+services: 
+  datainit:
+      image: busybox:latest
+      command: sh -c "chown -R 3003:0 /home/rocket/rochade/conf && chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs"
+      volumes:
+      - ./conf:/home/rocket/rochade/conf
+      - ./appl:/home/rocket/rochade/appl
+      - ./datbas:/home/rocket/rochade/datbas
+      - ./idxupd_conf:/home/rocket/Index_Update_Service/conf
+      - ./idxupd_logs:/home/rocket/Index_Update_Service/logs
+  di-server:
+    image: 'guillermoavendano/di-server:10.00.002'
+    container_name: di-server
+    hostname: di-server
+    environment:
+      RO_LICENSE: "0374417A-D6E22E0A/06220208-2010D1E4/01D0C41D-D0C429D0/C421D0C4-2DD0C43D/D8C4C108-C0280800/04081814-1D250C01"
+      RO_COMPANY: "ASG Internal Use"
+    ports:
+      - '8888:8888'
+      - '9092:9092'
+    volumes:
+    - ./datbas:/home/rocket/rochade/datbas
+    - ./conf:/home/rocket/rochade/conf
+    - ./appl:/home/rocket/rochade/appl
+    depends_on:
+      - datainit
+  di-solr:
+    image: solr:8.11.1
+    container_name: di-solr
+    hostname: di-solr
+    ports:
+     - "8983:8983"
+    volumes:
+      - solr_data:/var/solr
+  di-indexupd:
+    image: 'guillermoavendano/di-indexupd:10.00.002'
+    container_name: di-indexupd
+    #command: sh -c "sleep 9999999"
+    environment:
+       RO_SOLR_HOST: "di-solr"
+       RO_SOLR_PORT: "8983"
+       RO_HOST: "di-server"
+       RO_PORT: 8888
+       RO_USER: "ADMIN"
+       RO_PASS: "rochade"
+    volumes:
+    - ./idxupd_conf:/home/rocket/Index_Update_Service/conf
+    - ./idxupd_logs:/home/rocket/Index_Update_Service/logs
+    depends_on:
+      - datainit
+volumes:
+  solr_data:    

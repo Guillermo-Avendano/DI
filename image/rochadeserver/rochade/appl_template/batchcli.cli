@@ -1,0 +1,25 @@
+#$nop batchcli.cli
+#$nop config_version  1.01
+;----------------------------------------------------------------------
+; Copyright (c) 1983-2017 ASG GmbH & Co.KG, a wholly owned
+; subsidiary of ASG Technologies Group, Inc. All rights reserved.
+;----------------------------------------------------------------------
+#$option hist off
+#$if :basedir =   nil
+#$halt      NOBASEDIR
+#$make argsep \
+#$if :$sys = UNIX@ 5
+#$make argsep /
+#$if :$sys = MVS
+#$make argsep /
+#$if :$tempdir = NIL
+#$concat $tempdir :basedir :argsep @tmp
+#$profile get $ENVIRONMENT $PID mypid
+#$concat edfile :$tempdir :argsep @r :mypid @.txt
+#$makeg $ed :edfile
+;
+#$option APNAMES ON
+;  A generated name is shown in the output from analysis and query 
+; commands when the real name has special characters
+#$exit T
+

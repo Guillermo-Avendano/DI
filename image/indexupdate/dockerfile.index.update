@@ -1,0 +1,65 @@
+# Author: Guilllermo Avendaño
+# Cretion Date: 11/17/2023
+# Rocky Linux 8 image
+FROM rockylinux:8
+
+# Java version (default 8, the other option is 11)
+ARG JAVA_VERSION=8
+ARG RO_SOLR_HOST="solr-server"
+ARG RO_SOLR_PORT="8081"
+ARG RO_HOST="rochadeserver"
+ARG RO_PORT=8888
+ARG RO_USER=ADMIN
+ARG RO_PASS=rochade
+
+# Install other tools
+RUN dnf -y install wget
+
+# Intall java by according version
+RUN dnf -y install java-1.8.0-openjdk; 
+    #dnf -y install java-11-openjdk; 
+
+# Clean up cache to reduce the image size
+RUN dnf clean all
+
+# Add "rocket" user with uid=3003
+RUN useradd -u 3003 -m rocket
+
+COPY ./Index_Update_Service /home/rocket/Index_Update_Service/
+
+# Copy startup.sh script
+COPY ./startup.sh /home/rocket/startup.sh
+
+
+# Change ownership, and execution rights of directories and files copied
+RUN chown 3003:0 -R /home/rocket/Index_Update_Service && chmod 775 /home/rocket/Index_Update_Service/bin/*.sh
+RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
+
+# set rocket as default user
+USER rocket
+
+# set environment variables
+ENV RO_SOLR_HOST=${RO_SOLR_HOST}
+ENV RO_SOLR_PORT=${RO_SOLR_PORT}
+ENV RO_HOST=${RO_HOST}
+ENV RO_PORT=${RO_PORT}
+ENV RO_USER=${RO_USER}
+ENV RO_PASS=${RO_PASS}
+
+# set JAVA_HOME
+ENV JAVA_HOME /usr/lib/jvm/java
+
+#Adds java to PATH
+ENV PATH $JAVA_HOME/bin:$PATH
+
+# Set rocket's home as working directory
+WORKDIR /home/rocket
+
+ENV PATH=/home/rocket/Index_Update_Service/bin:$PATH
+ENV CLASSPATH=/home/rocket/Index_Update_Service/lib/*
+
+# Set rocket's home as working directory
+WORKDIR /home/rocket
+
+# Comando por defecto al iniciar el contenedor
+CMD ["sh", "-c", "./startup.sh"]

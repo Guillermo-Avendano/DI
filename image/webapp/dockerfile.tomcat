@@ -1,0 +1,42 @@
+
+FROM rockylinux:8
+
+# Install other tools
+RUN dnf -y install wget
+
+# Intall java by according version
+RUN dnf -y install java-1.8.0-openjdk; 
+    #dnf -y install java-11-openjdk; 
+
+# Add "rocket" user with uid=3003
+RUN useradd -u 3003 -m rocket
+
+# Download and Installs Apache Tomcat 9.0.81
+RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.81/bin/apache-tomcat-9.0.81.tar.gz -P /tmp \
+    && tar -xzvf /tmp/apache-tomcat-9.0.81.tar.gz -C /home/rocket \
+    && rm /tmp/apache-tomcat-9.0.81.tar.gz
+
+# Clean up cache to reduce the image size
+RUN dnf clean all
+
+#----------------
+# set rocket as default user
+USER rocket
+
+# set JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/java
+
+#Adds java to PATH
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Set CATALINA_HOME
+ENV CATALINA_HOME=/home/rocket/apache-tomcat-9.0.81
+
+# Set rocket's home as working directory
+WORKDIR /home/rocket
+
+# Expose 8080
+EXPOSE 8080
+
+# Inicia Apache Tomcat al ejecutar el contenedor
+CMD ["/home/rocket/apache-tomcat-9.0.81/bin/catalina.sh", "run"]
