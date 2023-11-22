@@ -3,16 +3,7 @@ version: "3.0"
 services: 
   datainit:
       image: busybox:latest
-      command: 
-         - /bin/sh 
-         - -c 
-         - chown -R 3003:0 /home/rocket/rochade/conf 
-         - chown -R 3003:0 /home/rocket/rochade/appl 
-         - chown -R 3003:0 /home/rocket/rochade/datbas 
-         - chown -R 3003:0 /home/rocket/Index_Update_Service/conf 
-         - chown -R 3003:0 /home/rocket/Index_Update_Service/logs"
-         - chown -R 3003:0 /home/rocket/conf"
-         - chown -R 3003:0 /home/rocket/tomcat/logs"
+      command: sh -c "chown -R 3003:0 /home/rocket/rochade/conf && chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs && chown -R 3003:0 /home/rocket/conf && chown -R 3003:0 /home/rocket/tomcat/logs"
       volumes:
       - ./conf:/home/rocket/rochade/conf
       - ./appl:/home/rocket/rochade/appl

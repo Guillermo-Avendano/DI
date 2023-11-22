@@ -22,6 +22,10 @@ if [ -z "$(ls -A "$RO_APPL")" ] && [ -z "$(ls -A "$RO_DATBAS")" ]; then
    cp /home/rocket/rochade/appl_template/*.* /home/rocket/rochade/appl
 fi
 
+SERVER_INI=/home/rocket/rochade/appl/server.ini 
+
+cp $SERVER_INI.template $SERVER_INI
+
 replace_tag_in_file /home/rocket/rochade/appl/server.ini "<DI_SERVER_LICENSE_NUMBER>" $DI_SERVER_LICENSE_NUMBER
 replace_tag_in_file /home/rocket/rochade/appl/server.ini "<DI_SERVER_LICENSE_COMPANY>" "$DI_SERVER_LICENSE_COMPANY"
 
