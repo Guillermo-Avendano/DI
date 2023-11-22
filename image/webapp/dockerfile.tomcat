@@ -13,30 +13,30 @@ RUN useradd -u 3003 -m rocket
 
 # Download and Installs Apache Tomcat 9.0.81
 RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.81/bin/apache-tomcat-9.0.81.tar.gz -P /tmp \
-    && tar -xzvf /tmp/apache-tomcat-9.0.81.tar.gz -C /home/rocket \
+    && tar -xzvf /tmp/apache-tomcat-9.0.81.tar.gz -C /home/rocket/tomcat --strip-components=1  \
     && rm /tmp/apache-tomcat-9.0.81.tar.gz
 
 # Clean up cache to reduce the image size
 RUN dnf clean all
 
-
-
 # Copy "rochade" directory to rocket's home directory
-COPY ./webapps /home/rocket/apache-tomcat-9.0.81/webapps/
+COPY ./webapps /home/rocket/tomcat/webapps/
 
 
-COPY ./bdi_classes /home/rocket/apache-tomcat-9.0.81/webapps/bdi/WEB-INF/classes/
-COPY ./rochade_classes /home/rocket/apache-tomcat-9.0.81/webapps/rochade/WEB-INF/classes/
-COPY ./GlobalSearch_classes /home/rocket/apache-tomcat-9.0.81/webapps/GlobalSearch/WEB-INF/classes/
-COPY ./BGWebServices_classes /home/rocket/apache-tomcat-9.0.81/webapps/BgWebServices/WEB-INF/classes/
-COPY ./RaaS_classes /home/rocket/apache-tomcat-9.0.81/webapps/RaaS/WEB-INF/classes/
-COPY ./RochadeServices_classes /home/rocket/apache-tomcat-9.0.81/webapps/RochadeServices/WEB-INF/classes/
+COPY ./bdi_classes /home/rocket/tomcat/webapps/bdi/WEB-INF/classes/
+COPY ./rochade_classes /home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
+COPY ./GlobalSearch_classes /home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/
+COPY ./BGWebServices_classes /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
+COPY ./RaaS_classes /home/rocket/tomcat/webapps/RaaS/WEB-INF/classes/
+COPY ./RochadeServices_classes /home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes/
+
+COPY ./postgresql-42.7.0.jar /home/rocket/tomcat/lib/postgresql-42.7.0.jar
 
 # Copy startup.sh script
 COPY ./startup.sh /home/rocket/startup.sh
 
 # Change ownership, and execution rights of directories and files copied
-RUN chown 3003:0 -R /home/rocket/apache-tomcat-9.0.81 && chmod +x /home/rocket/apache-tomcat-9.0.81/bin/*.sh
+RUN chown 3003:0 -R /home/rocket/tomcat && chmod +x /home/rocket/tomcat/bin/*.sh
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
 
 #----------------
@@ -50,7 +50,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Set CATALINA_HOME
-ENV CATALINA_HOME=/home/rocket/apache-tomcat-9.0.81
+ENV CATALINA_HOME=/home/rocket/tomcat
 
 # Set rocket's home as working directory
 WORKDIR /home/rocket
@@ -59,4 +59,4 @@ WORKDIR /home/rocket
 EXPOSE 8080
 
 # Inicia Apache Tomcat al ejecutar el contenedor
-CMD ["/home/rocket/apache-tomcat-9.0.81/bin/catalina.sh", "run"]
+CMD ["/home/rocket/tomcat/bin/catalina.sh", "run"]

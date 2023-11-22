@@ -66,6 +66,25 @@ services:
     - ./idxupd_logs:/home/rocket/Index_Update_Service/logs
     depends_on:
       - datainit
+
+
+  di-webapp:
+    image: 'guillermoavendano/di-webapp:10.00.002'
+    container_name: di-webapp
+    #command: sh -c "sleep 9999999"
+    environment:
+       DI_SOLR_HOST: "di-solr"
+       DI_SOLR_PORT: "8983"
+       DI_SERVER_HOST: "di-server"
+       DI_SERVER_PORT: 8888
+       DI_SERVER_USER: "ADMIN"
+       DI_SERVER_PASS: "rochade"
+    volumes:
+    - ./idxupd_conf:/home/rocket/Index_Update_Service/conf
+    - ./idxupd_logs:/home/rocket/Index_Update_Service/logs
+    depends_on:
+      - datainit
+      
 volumes:
   solr_data:
   db-data:

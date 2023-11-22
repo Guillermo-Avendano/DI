@@ -20,7 +20,7 @@ if [ -z "$(ls -A "$RO_SOLR_CONF")" ] && [ -z "$(ls -A "$RO_SOLR_CONF")" ]; then
    cp /home/rocket/Index_Update_Service/conf_template/*.* /home/rocket/Index_Update_Service/conf
 fi
 
-TOMCAT_WEBAPPS=/home/rocket/apache-tomcat-9.0.81/webapps/rochade/WEB-INF/classes/
+TOMCAT_WEBAPPS=/home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
 
 RDM_SERVICES_FILE=$TOMCAT_WEBAPPS/rdmServices.properties
 replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
