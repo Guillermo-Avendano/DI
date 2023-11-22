@@ -5,12 +5,12 @@
   <bean id="processEngineConfiguration" class="com.rochade.wa.workflow.camunda.ReconnectingStandaloneProcessEngineConfiguration">
 
 	<!-- Configuration of database connection -->
-    <property name="jdbcUrl" value="jdbc:h2:tcp://localhost/c:/camunda/databases/process-engine;TRACE_LEVEL_FILE=0;DB_CLOSE_ON_EXIT=FALSE" />
+    <property name="jdbcUrl" value="jdbc:postgresql://<DI_POSTGRES_HOST>:<DI_POSTGRES_PORT>/camunda" />
     
-    <property name="jdbcDriver" value="org.h2.Driver" />
-    <property name="jdbcUsername" value="sa" />
+    <property name="jdbcDriver" value="org.postgresql.Driver" />
+    <property name="jdbcUsername" value="<DI_POSTGRES_USER>" />
 <!--     <property name="jdbcPassword" value="" /> -->
-    <property name="jdbcPassword" value="sa" />
+    <property name="jdbcPassword" value="<DI_POSTGRES_PASS>" />
 
     <property name="databaseSchemaUpdate" value="true" />
 

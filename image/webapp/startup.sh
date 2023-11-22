@@ -13,55 +13,65 @@ replace_tag_in_file() {
     fi
 }
 
-RO_SOLR_CONF="/home/rocket/Index_Update_Service/conf"
+mkdir /home/rocket/graphviz
+zcat /home/rocket/graphviz-2.30.0-linuz64.tar.Z | tar -xvf -
+
+echo 'CATALINA_OPTS=”-Xms1024 -Xmx8192”' > /home/rocket/tomcat/bin/setenv.sh
+
+chmod u+x home/rocket/tomcat/bin/*.sh
+
+DI_TOMCAT_CONF="/home/rocket/conf"
 RO_SOLR_LOG="/home/rocket/Index_Update_Service/log"
 
-if [ -z "$(ls -A "$RO_SOLR_CONF")" ] && [ -z "$(ls -A "$RO_SOLR_CONF")" ]; then
-    cp ./bdi_classes /home/rocket/tomcat/webapps/bdi/WEB-INF/classes/
-    cp ./rochade_classes /home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
-    cp ./GlobalSearch_classes /home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/
-    cp ./BGWebServices_classes /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
-    cp ./RaaS_classes /home/rocket/tomcat/webapps/RaaS/WEB-INF/classes/
-    cp ./RochadeServices_classes /home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes/
-
-
-   cp /home/rocket/Index_Update_Service/conf_template/*.* /home/rocket/Index_Update_Service/conf
+if [ -z "$(ls -A "$DI_TOMCAT_CONF")" ] ; then
+    cp -r /home/rocket/templates/ /home/rocket/conf/
 fi
 
-TOMCAT_WEBAPPS=/home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
+cp /home/rocket/conf/bdi_classes/*.* /home/rocket/tomcat/webapps/bdi/WEB-INF/classes/
+cp /home/rocket/conf/rochade_classes/*.* /home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
+cp /home/rocket/conf/GlobalSearch_classes/*.* /home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/
+cp /home/rocket/conf/BGWebServices_classes/*.* /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
+cp /home/rocket/conf/RochadeServices_classes/*.* /home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes/
 
-RDM_SERVICES_FILE=$TOMCAT_WEBAPPS/rdmServices.properties
+
+rochade_WEB_INF_classes=/home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
+
+RDM_SERVICES_FILE=$rochade_WEB_INF_classes/rdmServices.properties
 replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
 replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_PORT>" $DI_SERVER_PORT
 replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_USER>" $DI_SERVER_USER
 replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_PASS>" $DI_SERVER_PASS
 
-STARTUP_FILE=$TOMCAT_WEBAPPS/startup.properties
+STARTUP_FILE=$rochade_WEB_INF_classes/startup.properties
 replace_tag_in_file $STARTUP_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
 replace_tag_in_file $STARTUP_FILE "<DI_SERVER_PORT>" $DI_SERVER_PORT
 replace_tag_in_file $STARTUP_FILE "<DI_SERVER_USER>" $DI_SERVER_USER
 replace_tag_in_file $STARTUP_FILE "<DI_SERVER_PASS>" $DI_SERVER_PASS
 
-WF_FILE=$TOMCAT_WEBAPPS/wf.properties
+WF_FILE=$rochade_WEB_INF_classes/wf.properties
 replace_tag_in_file $WF_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
 replace_tag_in_file $WF_FILE "<DI_SERVER_PORT>" $DI_SERVER_PORT
 replace_tag_in_file $WF_FILE "<DI_SERVER_USER>" $DI_SERVER_USER
 replace_tag_in_file $WF_FILE "<DI_SERVER_PASS>" $DI_SERVER_PASS
 
+CAMUNDA_CFG_FILE=$rochade_WEB_INF_classes/camunda.cfg.xml
+replace_tag_in_file $CAMUNDA_CFG_FILE "<DI_POSTGRES_HOST>" $DI_POSTGRES_HOST
+replace_tag_in_file $CAMUNDA_CFG_FILE "<DI_POSTGRES_PORT>" $DI_POSTGRES_PORT
+replace_tag_in_file $CAMUNDA_CFG_FILE "<DI_POSTGRES_USER>" $DI_POSTGRES_USER
+replace_tag_in_file $CAMUNDA_CFG_FILE "<DI_POSTGRES_PASS>" $DI_POSTGRES_PASS
+
+cp $CAMUNDA_CFG_FILE /home/rocket/tomcat/webapps/RaaS/WEB-INF/classes/camunda.cfg.xml
 
 APPLICARION_IS_FILE=$TOMCAT_WEBAPPS/application_is.properties
 replace_tag_in_file $APPLICARION_IS_FILE "<DI_SOLR_HOST>" $DI_SOLR_HOST
 replace_tag_in_file $APPLICARION_IS_FILE "<DI_SOLR_PORT>" $DI_SOLR_PORT
 
-cd /home/rocket/Index_Update_Service/bin
+cd /home/rocket/tomcat/bin
 
-./IndexUpdateService.sh
+./startup.sh
 
-INDEX_LOG_FILE="/home/rocket/Index_Update_Service/log/indexing.log"
-if test -f "$INDEX_LOG_FILE"; then
-    tail -f $INDEX_LOG_FILE
-    
-fi
+tail -f /home/rocket/tomcat/logs/catalina.out
+
 
 
 

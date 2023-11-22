@@ -1,6 +1,19 @@
 
 FROM rockylinux:8
 
+ARG DI_SERVER_HOST=di-server
+ARG DI_SERVER_PORT=8888
+ARG DI_SERVER_USER=ADMIN
+ARG DI_SERVER_PASS=rochade
+
+ARG DI_POSTGRES_HOST=di-workflow
+ARG DI_POSTGRES_PORT=2102
+ARG DI_POSTGRES_USER=workflow
+ARG DI_POSTGRES_PASS=postgres
+
+ARG DI_SOLR_HOST=di-solr
+ARG DI_SOLR_PORT=8983
+
 # Intall java by according version
 RUN dnf -y install java-1.8.0-openjdk; 
     #dnf -y install java-11-openjdk; 
@@ -22,26 +35,36 @@ RUN dnf clean all
 # Copy "rochade" directory to rocket's home directory
 COPY ./webapps /home/rocket/tomcat/webapps/
 
-
-COPY ./bdi_classes /home/rocket/tomcat/webapps/bdi/WEB-INF/classes/
-COPY ./rochade_classes /home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
-COPY ./GlobalSearch_classes /home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/
-COPY ./BgWebServices_classes /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
-COPY ./RaaS_classes /home/rocket/tomcat/webapps/RaaS/WEB-INF/classes/
-COPY ./RochadeServices_classes /home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes/
-
 COPY ./postgresql-42.7.0.jar /home/rocket/tomcat/lib/postgresql-42.7.0.jar
+COPY ./graphviz-2.38.0-linux64.tar.Z /home/rocket/graphviz-2.38.0-linux64.tar.Z
+
 
 # Copy startup.sh script
 COPY ./startup.sh /home/rocket/startup.sh
+COPY ./templates /home/rocket/templates/
+
 
 # Change ownership, and execution rights of directories and files copied
 RUN chown 3003:0 -R /home/rocket/tomcat && chmod +x /home/rocket/tomcat/bin/*.sh
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
+RUN chown 3003:0 /home/rocket/graphviz-2.38.0-linux64.tar.Z
 
 #----------------
 # set rocket as default user
 USER rocket
+
+ENV DI_SERVER_HOST=$DI_SERVER_HOST
+ENV DI_SERVER_PORT=$DI_SERVER_PORT
+ENV DI_SERVER_USER=$DI_SERVER_USER
+ENV DI_SERVER_PASS=$DI_SERVER_PASS
+
+ENV DI_POSTGRES_HOST=$DI_POSTGRES_HOST
+ENV DI_POSTGRES_PORT=$DI_POSTGRES_PORT
+ENV DI_POSTGRES_USER=$DI_POSTGRES_USER
+ENV DI_POSTGRES_PASS=$DI_POSTGRES_PASS
+
+ENV DI_SOLR_HOST=$DI_SOLR_HOST
+ENV DI_SOLR_PORT=$DI_SOLR_PORT
 
 # set JAVA_HOME
 ENV JAVA_HOME=/usr/lib/jvm/java
@@ -59,4 +82,4 @@ WORKDIR /home/rocket
 EXPOSE 8080
 
 # Inicia Apache Tomcat al ejecutar el contenedor
-CMD ["/home/rocket/tomcat/bin/catalina.sh", "run"]
+CMD ["/home/rocket/startup.sh", "run"]
