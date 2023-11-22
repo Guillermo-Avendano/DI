@@ -9,15 +9,10 @@ ARG DI_SERVER_LICENSE_NUMBER=""
 # Rochade License Company
 ARG DI_SERVER_LICENSE_COMPANY="ASG Internal Use"
 
-# Java version (default 8, the other option is 11)
-ARG JAVA_VERSION=8
 
 # Install other tools
 RUN dnf -y install wget procps-ng net-tools numactl
 
-# Intall java by according version
-RUN dnf -y install java-1.8.0-openjdk; 
-    #dnf -y install java-11-openjdk; 
 
 # Clean up cache to reduce the image size
 RUN dnf clean all
@@ -35,15 +30,8 @@ COPY ./startup.sh /home/rocket/startup.sh
 RUN chown 3003:0 -R /home/rocket/rochade && chmod 775 /home/rocket/rochade/sbin/*.so* && chmod +x /home/rocket/rochade/h2bin/*.sh
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
 
-
 # Set "rocket" as default user 
 USER rocket
-
-# set JAVA_HOME
-ENV JAVA_HOME=/usr/lib/jvm/java
-
-#Adds java to PATH
-ENV PATH=$JAVA_HOME/bin:$PATH
 
 ENV DI_SERVER_LICENSE_COMPANY="$DI_SERVER_LICENSE_COMPANY"
 ENV DI_SERVER_LICENSE_NUMBER=$DI_SERVER_LICENSE_NUMBER
