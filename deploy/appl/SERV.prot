@@ -5,7 +5,7 @@
 
 *************************  Server event log  ************************
 
-11/22/2023 20:36:12 Server startup initiated
+11/22/2023 20:47:32 Server startup initiated
 
 EXECUTABLE ............. : /home/rocket/rochade/sbin/rosrvctv
 INI FILE ............... : /home/rocket/rochade/appl/server.ini
@@ -14,18 +14,18 @@ VERSION ................ : GA Release 10.00.002 (64 bit) 09Jun2022:710
 BUILD NUMBER ........... : 1497
 OPERATING SYSTEM ....... : Unix Linux di-server 5.14.0-284.30.1.el9_2.x86_64 #1 SMP PREEMPT_DYNAMIC Sat Sep 16 09:55:41 UTC 2023 x86_64
 
-11/22/2023 20:36:12 E9325 NUMA: Could not determine current node.
-11/22/2023 20:36:12 NUMA: NUMA_MODE is DEFAULT, using current node 0.
-11/22/2023 20:36:12 NUMA: Running on node(s): 0
-11/22/2023 20:36:12 NUMA: Running on CPU(s): 0,1,2,3,4,5
-11/22/2023 20:36:12 NUMA: Node distances:
-11/22/2023 20:36:12 NUMA: Node   0
-11/22/2023 20:36:12 NUMA:    0  10
+11/22/2023 20:47:32 E9325 NUMA: Could not determine current node.
+11/22/2023 20:47:32 NUMA: NUMA_MODE is DEFAULT, using current node 0.
+11/22/2023 20:47:32 NUMA: Running on node(s): 0
+11/22/2023 20:47:32 NUMA: Running on CPU(s): 0,1,2,3,4,5
+11/22/2023 20:47:32 NUMA: Node distances:
+11/22/2023 20:47:32 NUMA: Node   0
+11/22/2023 20:47:32 NUMA:    0  10
 Trusted relationship authentication has not been configured (No TRUSTED_SITES parameter in server start section).
 I8102 The user logon times will only be registered for internal authentications by passwords.
 W8192 The old MD5 hash algorithm is not disabled.
-PID .................... : 46
-11/22/2023 20:36:12 Reading audit log file /home/rocket/rochade/appl/rochlog.AUDIT.txt to prepare read access index.
+PID .................... : 47
+11/22/2023 20:47:32 Reading audit log file /home/rocket/rochade/appl/rochlog.AUDIT.txt to prepare read access index.
 SERVER PARAMETERS :
    SERVER .............. : SERV
    ADB ................. : none
@@ -60,7 +60,7 @@ SERVER PARAMETERS :
 
 SERVER DATASPACE :
 
-11/22/2023 20:36:12 I9162 KERBEROS authentication disabled: no startup section entry KERBEROS found.
+11/22/2023 20:47:32 I9162 KERBEROS authentication disabled: no startup section entry KERBEROS found.
 
 
 SERVER COMMUNICATION :
@@ -87,14 +87,14 @@ RPC SERVICES :
 
 *********************  Server starts activities  ********************
 
-11/22/2023 20:36:12 Server startup finished
-11/22/2023 20:36:12 TCP/IP: Info, Communication startup:
-11/22/2023 20:36:12               Inifile: /home/rocket/rochade/appl/server.ini
-11/22/2023 20:36:12               Section: RO_CONNECT_SRV
-11/22/2023 20:36:12               Port: 8888
-11/22/2023 20:36:12               Buffersize: 2880
-11/22/2023 20:36:12               NAGLE: OFF
-11/22/2023 20:36:12               HOSTRES: OFF
-11/22/2023 20:36:12 TCP/IP: Info, Setup listen for host=localhost, ip=0.0.0.0, port=8888
-11/22/2023 20:36:12 TCP/IP: Info, New session opened, port=8888, destination host=127.0.0.1(UNKNOWN)
-11/22/2023 20:36:12 Scheduler started
+11/22/2023 20:47:32 Server startup finished
+11/22/2023 20:47:33 TCP/IP: Info, Communication startup:
+11/22/2023 20:47:33               Inifile: /home/rocket/rochade/appl/server.ini
+11/22/2023 20:47:33               Section: RO_CONNECT_SRV
+11/22/2023 20:47:33               Port: 8888
+11/22/2023 20:47:33               Buffersize: 2880
+11/22/2023 20:47:33               NAGLE: OFF
+11/22/2023 20:47:33               HOSTRES: OFF
+11/22/2023 20:47:33 TCP/IP: Info, Setup listen for host=localhost, ip=0.0.0.0, port=8888
+11/22/2023 20:47:33 TCP/IP: Info, New session opened, port=8888, destination host=127.0.0.1(UNKNOWN)
+11/22/2023 20:47:33 Scheduler started

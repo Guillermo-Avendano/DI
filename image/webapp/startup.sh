@@ -26,7 +26,7 @@ DI_TOMCAT_CONF="/home/rocket/conf"
 RO_SOLR_LOG="/home/rocket/Index_Update_Service/log"
 
 if [ -z "$(ls -A "$DI_TOMCAT_CONF")" ] ; then
-    cp -r /home/rocket/templates /home/rocket/conf/
+    cp -r /home/rocket/templates/* /home/rocket/conf
 fi
 
 cp /home/rocket/conf/bdi_classes/*.* /home/rocket/tomcat/webapps/bdi/WEB-INF/classes/
