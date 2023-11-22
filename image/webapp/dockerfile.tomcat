@@ -19,6 +19,26 @@ RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.81/bin/apache-tomcat-
 # Clean up cache to reduce the image size
 RUN dnf clean all
 
+
+
+# Copy "rochade" directory to rocket's home directory
+COPY ./webapps /home/rocket/apache-tomcat-9.0.81/webapps/
+
+
+COPY ./bdi_classes /home/rocket/apache-tomcat-9.0.81/webapps/bdi/WEB-INF/classes/
+COPY ./rochade_classes /home/rocket/apache-tomcat-9.0.81/webapps/rochade/WEB-INF/classes/
+COPY ./GlobalSearch_classes /home/rocket/apache-tomcat-9.0.81/webapps/GlobalSearch/WEB-INF/classes/
+COPY ./BGWebServices_classes /home/rocket/apache-tomcat-9.0.81/webapps/BgWebServices/WEB-INF/classes/
+COPY ./RaaS_classes /home/rocket/apache-tomcat-9.0.81/webapps/RaaS/WEB-INF/classes/
+COPY ./RochadeServices_classes /home/rocket/apache-tomcat-9.0.81/webapps/RochadeServices/WEB-INF/classes/
+
+# Copy startup.sh script
+COPY ./startup.sh /home/rocket/startup.sh
+
+# Change ownership, and execution rights of directories and files copied
+RUN chown 3003:0 -R /home/rocket/apache-tomcat-9.0.81 && chmod +x /home/rocket/apache-tomcat-9.0.81/bin/*.sh
+RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
+
 #----------------
 # set rocket as default user
 USER rocket
