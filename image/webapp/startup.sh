@@ -14,9 +14,11 @@ replace_tag_in_file() {
 }
 
 mkdir /home/rocket/graphviz
-zcat /home/rocket/graphviz-2.30.0-linuz64.tar.Z | tar -xvf -
+cd /home/rocket/graphviz
 
-echo 'CATALINA_OPTS=”-Xms1024 -Xmx8192”' > /home/rocket/tomcat/bin/setenv.sh
+zcat /home/rocket/graphviz-2.38.0-linux64.tar.Z| tar -xvf -
+
+echo CATALINA_OPTS=\”-Xms1024 -Xmx8192\” > /home/rocket/tomcat/bin/setenv.sh
 
 chmod u+x home/rocket/tomcat/bin/*.sh
 

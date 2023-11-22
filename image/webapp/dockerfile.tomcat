@@ -45,6 +45,7 @@ COPY ./templates /home/rocket/templates/
 
 
 # Change ownership, and execution rights of directories and files copied
+RUN chown 3003:0 -R /home/rocket/templates 
 RUN chown 3003:0 -R /home/rocket/tomcat && chmod +x /home/rocket/tomcat/bin/*.sh
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
 RUN chown 3003:0 /home/rocket/graphviz-2.38.0-linux64.tar.Z
