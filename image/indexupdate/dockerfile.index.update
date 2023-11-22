@@ -12,9 +12,6 @@ ARG DI_SERVER_PORT=8888
 ARG DI_SERVER_USER=ADMIN
 ARG DI_SERVER_PASS=rochade
 
-# Install other tools
-RUN dnf -y install wget
-
 # Intall java by according version
 RUN dnf -y install java-1.8.0-openjdk; 
     #dnf -y install java-11-openjdk; 

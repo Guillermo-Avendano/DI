@@ -27,7 +27,7 @@ COPY ./rochade /home/rocket/rochade/
 COPY ./startup.sh /home/rocket/startup.sh
 
 # Change ownership, and execution rights of directories and files copied
-RUN chown 3003:0 -R /home/rocket/rochade && chmod 775 /home/rocket/rochade/sbin/*.so* && chmod +x /home/rocket/rochade/h2bin/*.sh
+RUN chown 3003:0 -R /home/rocket/rochade && chmod 775 /home/rocket/rochade/sbin/*.so* 
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
 
 # Set "rocket" as default user 
