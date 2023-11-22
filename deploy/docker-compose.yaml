@@ -68,4 +68,5 @@ services:
     depends_on:
       - datainit
 volumes:
-  solr_data:    
+  solr_data:
+  db-data:
