@@ -10,6 +10,23 @@ services:
       - ./datbas:/home/rocket/rochade/datbas
       - ./idxupd_conf:/home/rocket/Index_Update_Service/conf
       - ./idxupd_logs:/home/rocket/Index_Update_Service/logs
+  postgresdb:
+    image: postgres:14-alpine
+    container_name: di-worlflow
+    hostname: di-workflow
+    ports:
+    - "2102:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+      - ./create_workflow_db.sh:/docker-entrypoint-initdb.d/create_workflow_db.sh
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   di-server:
     image: 'guillermoavendano/di-server:10.00.002'
     container_name: di-server
