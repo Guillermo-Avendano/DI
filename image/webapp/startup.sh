@@ -17,6 +17,14 @@ RO_SOLR_CONF="/home/rocket/Index_Update_Service/conf"
 RO_SOLR_LOG="/home/rocket/Index_Update_Service/log"
 
 if [ -z "$(ls -A "$RO_SOLR_CONF")" ] && [ -z "$(ls -A "$RO_SOLR_CONF")" ]; then
+    cp ./bdi_classes /home/rocket/tomcat/webapps/bdi/WEB-INF/classes/
+    cp ./rochade_classes /home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
+    cp ./GlobalSearch_classes /home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/
+    cp ./BGWebServices_classes /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
+    cp ./RaaS_classes /home/rocket/tomcat/webapps/RaaS/WEB-INF/classes/
+    cp ./RochadeServices_classes /home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes/
+
+
    cp /home/rocket/Index_Update_Service/conf_template/*.* /home/rocket/Index_Update_Service/conf
 fi
 

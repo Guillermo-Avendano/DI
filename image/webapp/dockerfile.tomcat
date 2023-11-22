@@ -1,9 +1,6 @@
 
 FROM rockylinux:8
 
-# Install other tools
-RUN dnf -y install wget
-
 # Intall java by according version
 RUN dnf -y install java-1.8.0-openjdk; 
     #dnf -y install java-11-openjdk; 
@@ -11,10 +8,13 @@ RUN dnf -y install java-1.8.0-openjdk;
 # Add "rocket" user with uid=3003
 RUN useradd -u 3003 -m rocket
 
+COPY ./apache-tomcat-9.0.83.tar.gz /tmp/apache-tomcat-9.0.83.tar.gz
+
+RUN mkdir /home/rocket/tomcat
+
 # Download and Installs Apache Tomcat 9.0.81
-RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.81/bin/apache-tomcat-9.0.81.tar.gz -P /tmp \
-    && tar -xzvf /tmp/apache-tomcat-9.0.81.tar.gz -C /home/rocket/tomcat --strip-components=1  \
-    && rm /tmp/apache-tomcat-9.0.81.tar.gz
+RUN tar -xzvf /tmp/apache-tomcat-9.0.83.tar.gz -C /home/rocket/tomcat --strip-components=1  \
+    && rm /tmp/apache-tomcat-9.0.83.tar.gz
 
 # Clean up cache to reduce the image size
 RUN dnf clean all
@@ -26,7 +26,7 @@ COPY ./webapps /home/rocket/tomcat/webapps/
 COPY ./bdi_classes /home/rocket/tomcat/webapps/bdi/WEB-INF/classes/
 COPY ./rochade_classes /home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
 COPY ./GlobalSearch_classes /home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/
-COPY ./BGWebServices_classes /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
+COPY ./BgWebServices_classes /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
 COPY ./RaaS_classes /home/rocket/tomcat/webapps/RaaS/WEB-INF/classes/
 COPY ./RochadeServices_classes /home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes/
 
