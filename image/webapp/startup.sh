@@ -20,19 +20,19 @@ zcat /home/rocket/graphviz-2.38.0-linux64.tar.Z| tar -xvf -
 
 echo CATALINA_OPTS=\”-Xms1024 -Xmx8192\” > /home/rocket/tomcat/bin/setenv.sh
 
-chmod u+x home/rocket/tomcat/bin/*.sh
+chmod u+x /home/rocket/tomcat/bin/*.sh
 
 DI_TOMCAT_CONF="/home/rocket/conf"
 RO_SOLR_LOG="/home/rocket/Index_Update_Service/log"
 
 if [ -z "$(ls -A "$DI_TOMCAT_CONF")" ] ; then
-    cp -r /home/rocket/templates/ /home/rocket/conf/
+    cp -r /home/rocket/templates /home/rocket/conf/
 fi
 
 cp /home/rocket/conf/bdi_classes/*.* /home/rocket/tomcat/webapps/bdi/WEB-INF/classes/
 cp /home/rocket/conf/rochade_classes/*.* /home/rocket/tomcat/webapps/rochade/WEB-INF/classes/
 cp /home/rocket/conf/GlobalSearch_classes/*.* /home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/
-cp /home/rocket/conf/BGWebServices_classes/*.* /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
+cp /home/rocket/conf/BgWebServices_classes/*.* /home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/
 cp /home/rocket/conf/RochadeServices_classes/*.* /home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes/
 
 
