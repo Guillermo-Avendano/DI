@@ -1,0 +1,49 @@
+﻿#-------------------------------------------------------
+# Rochade Platform - Message file
+# This is an UTF-8 encoded file!
+#
+# Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved.
+#
+#-------------------------------------------------------
+AP_ADV_INV_VALUE=Value not valid for list/sequence/range attribute
+AP_AVD_WRONG_DT=Value not valid for data type definition of attribute
+AP_AVD_MULTILINE=Value with multiple lines not valid for the attribute
+AP_USR_NP_AP_USr=The user does not exist
+BSA_IDHDL_NOT_EXIST=Object does not exist
+BSA_USR_NO_ACCESS=Access is denied for the user
+BSA_QRY_NO_SEED=No seed identifier found for the query
+
+CMD_NOCONNECTION=No Connection to the Rochade Server
+CMD_TIMEOUT_ERR=A timeout occurred while connecting to the server
+CMD_ROAPI_NO_LICENSE=Unable to connect to the server due to missing License
+
+DS__ACCESS=The user does not have sufficient access rights
+DS_USER_PWD_EXPIRED=Password expired. Please set a new one.
+DS_USER_PWD_REJECTED=Password does not match the defined rules
+DS_USER_TRUST_REJECTED=Trusted relationship is not yet available
+DS_USER_TRUST_KEY_EXPIRED=Trusted key expired
+DS_USER_TRUST_SIGNERROR=
+DS__NOQRY=No query found
+DS_USER_ACC_LOCKED=User Account locked
+DS__INV_TYPE=Invalid type
+DS__INV_ATTR=Invalid attribute
+DS__INV_OP=Invalid operation
+DS_QRY_2CTX_SEEDS=Seed identifiers belonging to the same context are supported
+DS_MPATH_QRY_PARSE=Parsing of QueryMPath failed
+DS_MPATH_QRY_SAVE=Saving of QueryMPath failed
+DS_MPATH_QRY_MASKING=Failure in masking QueryMPath
+DS_MPATH_QRY_SEEDTYPE=Invalid seed identifiers for QueryMPath
+DS_QF_DS_WRG_DBSRV=Datastore does not belong to the same database/server
+DS__ID_LOCKED=Object is locked
+DS_IDHDL_EXIST=Object already exists
+DS_IDHDL_LINKED=Modifying an Object from a linked application is not supported
+
+DS_IDHDL_LANGPATH=Modifying multilingual Object data requires a language path with exactly one entry
+DS_DB_SYSTAB_LOAd=The Rochade system tables could not be loaded
+DS_DB_NO_DB=The request database does not exist
+DS_IDENT_SAME_DB=The condition that the identifier must exist in the same database is not met
+WHITE_SPACE_FAILURE=Name cannot contain white spaces in prefix or suffix
+WILD_CARD_FAILURE=Name cannot contain asterisk (*).
+NAME_START_FAILURE=Name cannot start with semicolon (;).
+EMPTY_NAME_FAILURE=Name cannot be empty.
+NAME_TOO_LONG=Name cannot contain more than 512 characters.

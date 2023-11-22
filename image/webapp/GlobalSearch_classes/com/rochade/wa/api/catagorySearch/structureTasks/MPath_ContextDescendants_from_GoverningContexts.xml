@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report 
+    name=""
+    version=""
+    timestamp="03/29/2018 17:56:37"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.asg.com/rochade/query/mpath.xsd">
+    <type id="_0" name="RWF__GOVERNED_CONTEXT" isstart="true" includeSubTypes="true">
+        <segment dir="to" type="_0">
+            <attribute include="_NAMESPACE_"/>
+            <attribute include="_UNCLASSIFIED_"/>
+        </segment>
+    </type>
+    <mask name="default" isdefault="true" depth="12">
+        <type idref="_0"/> <!-- RWF__GOVERNED_CONTEXT -->
+    </mask>
+</report>
+

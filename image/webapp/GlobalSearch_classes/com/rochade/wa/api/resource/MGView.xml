@@ -1,0 +1,227 @@
+<!-- used by Indexing_Utility_Tool to extract data from Rochade (and then indexing them) -->
+<RocService stylesheet="com.rochade.wa.api.ML.java" whatdefault="id" what="{$what}">
+ <!-- The parameter what is used to define what information is of interest. Each keyword specified in what represents a column in the output ResultSet. -->
+
+<connection
+         class="{$connectionType}"
+         physicalDefinitions    ="{$pD}"
+         applicationDefinitions = "{$aD}"
+         id="c1"/>          
+         
+  <categories>
+      <patterns>
+     
+      <pattern id="p1">
+        <SDCAC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.asg.com/rochade/query/Sdcac-1.0.xsd">
+          <CONDITION>
+          <OR>
+            <AND>    
+              <OR>                           
+                <rule forall="searchName">
+                  <param name="str" value="@param"  rule="com.rochade.wa.api.rule.UnfoldBooleanExpr" encode="sdcac"/>
+                  <param name="lang" value="@lang" rule="com.rochade.wa.api.rule.UnfoldBooleanExpr" mode="any"/>
+                  <XNAME text="XNAME {$lang} *  ~/ {$str}" />
+                </rule>   
+                  <rule forall="searchName2">
+                  <param name="str" value="@param"  rule="com.rochade.wa.api.rule.UnfoldBooleanExpr" encode="sdcac"/>
+                  <param name="lang" value="@lang" rule="com.rochade.wa.api.rule.UnfoldBooleanExpr" mode="any"/>
+                  <XNAME text="(NOT (XNAME {$lang} * ~/ {$str}) AND (XNAME {$lang} * ~/ @*{$str}@*))" />
+               </rule> 
+                <rule forall="TA">
+                    <param name="RefAttr" value="@refAttr" mode="@mode"/> <!-- example: RBG/CXT-REFERENCE -->
+                    <param name="RefType" value="@refType" mode="defaultMode"/> <!-- example: RBG/CONTEXT -->
+                    <!-- wildcard="false" do not escape -->
+                     <param name="lang" value="@searchLang"  wildcard="false" rule="com.rochade.wa.api.rule.UnfoldBooleanExpr" encode="sdcac" mode="langSuffix" allowEmpty="true" /> <!-- mode="@param2" -->
+                    <TA text="TA {$RefType}{$lang} ~/ {$RefAttr}"/> 
+                </rule>  
+                 <rule forall="TA2">
+                    <param name="RefAttr" value="@refAttr" mode="@mode"/> <!-- example: RBG/CXT-REFERENCE -->
+                    <param name="RefType" value="@refType" mode="defaultMode"/> <!-- example: RBG/CONTEXT -->
+                    <!-- wildcard="false" do not escape -->
+                     <param name="lang" value="@searchLang"  wildcard="false" rule="com.rochade.wa.api.rule.UnfoldBooleanExpr" encode="sdcac" mode="langSuffix" allowEmpty="true" /> <!-- mode="@param2" -->
+                    <TA text="NOT (TA {$RefType}{$lang} ~/ {$RefAttr}) AND TA {$RefType}{$lang} ~/ @*{$RefAttr}@*"/> 
+                </rule>  
+                
+                <rule forall="//category[@id='{$actCategory}']/NA">
+                <param name="RefAttr" value="@param1" mode="defaultMode"/> <!-- example: RBG/HAS-BUSINESS-TERM -->
+                <param name="RefType" value="@param2" mode="defaultMode"/> <!-- example: RBG/GLOSSARY -->
+                <param name="ItemNameOfType" value="@param3" rule="com.rochade.wa.api.rule.UnfoldBooleanExpr"/> <!-- example: Finance -->
+                <NA text="(NA {$RefAttr} &lt;- TYPE {$RefType}  NAME  ~/ @*{$ItemNameOfType}@* )"/> 
+              </rule> 
+              </OR>
+                        
+              <rule forall="//category[@id='{$actCategory}']/super">           
+                <param name="type" value="@param" mode="defaultMode"/> 
+                <SUPER text="SUPER = {$type}" /> <!--  AND ( INSTCFGCNT > 0 )  -->
+              </rule>
+              
+              <rule forall="//category[@id='{$actCategory}']/notSuper">
+                <param name="excludedTypes" value="@param" multiValued="true" mode="defaultMode"/>
+                <SUPER text="NOT(SUPER = {$excludedTypes})" />
+              </rule>
+              
+              <rule forall="//category[@id='{$actCategory}']/scopeType"> <!-- see MDM_RMD_DATA_CONCEPT in SolrInsert_REF.xml for an example of usage of scopeType -->
+              	<param name="namespaceAttributeName" value="@namespaceAttr" mode="defaultMode"/>
+                <param name="type" value="@type" mode="defaultMode"/>
+                <NA text="NA {$namespaceAttributeName} BELONGS_TO SUPER {$type}"/>
+              </rule>
+            </AND>
+            
+             <!-- enable multilange (ml)-->
+           
+            <rule forall="LA">
+                <param name="RefAttr" value="@param1" mode="defaultMode"/> <!-- example: RBG/CXT-REFERENCE -->
+                <param name="RefType" value="@param2" mode="defaultMode"/> <!-- example: RBG/CONTEXT -->
+                <param name="ItemNameOfType" value="@param3" rule="com.rochade.wa.api.rule.UnfoldBooleanExpr"/> <!-- example: Financial@ Plan@ Admin -->
+                <LA text="LA {$RefAttr} -&gt; TYPE {$RefType}  NAME ~/ {$ItemNameOfType}"/> 
+             </rule>
+           
+             <rule forall="LA2">
+                <param name="RefAttr" value="@param1" mode="defaultMode"/> <!-- example: RBG/CXT-REFERENCE -->
+                <param name="RefType" value="@param2" mode="defaultMode"/> <!-- example: RBG/CONTEXT -->
+                <param name="ItemNameOfType" value="@param3" rule="com.rochade.wa.api.rule.UnfoldBooleanExpr"/> <!-- example: Financial@ Plan@ Admin -->
+                <LA text="(NOT (LA {$RefAttr} -&gt; TYPE {$RefType}  NAME ~/ {$ItemNameOfType}) AND LA {$RefAttr} -&gt; TYPE {$RefType}  NAME ~/ @*{$ItemNameOfType}@* )"/> 
+             </rule>
+           </OR>   
+          </CONDITION>
+        </SDCAC>
+      </pattern>
+    </patterns>
+    
+    <!-- executes the service without checking restricted view condition -->
+     <!-- lists all item of a given type with  -->
+     <!--representation (projection) on id, name, DEFINITION, languages attributes -->
+   <category id="ListItemsOfType" name="ListItemsOfType" patternRef="p1" whatMin="id, name, type, scopeId, DEFINITION, languages">
+      <context id="c1" restrictedView="false"/>
+      <super param="{$Type}"/>
+      <notSuper param="{$ExceptTypes}"/>
+      <scopeType namespaceAttr="{$ScopeAttribute}" type="{$ScopeType}"/> <!-- see MDM_RMD_DATA_CONCEPT in SolrInsert_REF.xml for an example of usage of scopeType -->
+    </category>
+   
+    <category id="ListItemsOfType2" name="ListItemsOfType" patternRef="p1" whatMin="id, name, DEFINITION, languages, DWR_RDB_SQL_STATEMENTS">
+      <context id="c1" restrictedView="false"/>
+      <super param="{$Type}"/>
+      <notSuper param="{$ExceptTypes}"/>
+    </category>
+    
+     <category id="ListItemsOfType3" name="ListItemsOfType" patternRef="p1" whatMin="id">
+      <context id="c1" restrictedView="false"/>
+      <super param="{$Type}"/>
+      <notSuper param="{$ExceptTypes}"/>
+    </category>
+    <!-- what="*Text, level, id, scopeId,   no, absPath, attribute, DEFINITION, name, type, RBG/REFERENCES, DESCRIPTION, RBG/DESCRIPTION, RBG/STATUS, RBG/REFERENCES,RBG/SYNONYM-FOR,RBG/RELATES-TO,RBG/REFERS-TO,RBG/CALCULATED-FROM,RBG/SPECIALIZES,RBG/BELONGS-TO-CONTEXT" -->
+     <category id="ListTermDetails" name="List Business Terms with Details"
+         stylesheet="com/rochade/wa/api/resource/stylesheets/int_abspathV2.xsl, 
+         com/rochade/wa/api/resource/stylesheets/int_rsmGMDetailsV2.xsl, com.rochade.wa.api.ML.java, com/rochade/wa/api/resource/stylesheets/int_cleanML.xsl, com/rochade/wa/api/resource/stylesheets/int_to_csv.xsl">
+         <category id="ListTermDetails1"
+       whatMin="id, name, type, scopeId, DEFINITION,RBG/DESCRIPTION, RBG/DESIGNATION, RBG/REFERENCES, RBG/SYNONYM-FOR"
+       whatStylesheet="level, scopeAttribute, absPath, languages, attribute, RBG/REFERENCES">
+        <context id="c1" restrictedView="false"/>
+        <report
+      name=""
+      version=""
+      timestamp="06/18/2012 14:56:36"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="http://www.rochade.com/queries/mpath.xsd">
+          <!-- seeditem id="{$Glossary}">TYPE = RBG/GLOSSARY</seeditem-->
+          <!-- seeditem query="(XNAME * *  ~/ {$BT}) AND ( TYPE = RBG/BUSINESS-TERM )"></seeditem-->
+          <seeditem id="{$Term}"></seeditem>
+          <type id="_0" name="RBG/BUSINESS-TERM" isstart="true" includeSubTypes="true">
+            <segment dir="to" type="_1" name="*">
+              <attribute include="RBG/REFERENCES"/>
+            </segment>
+            <segment dir="to" type="_2" name="RBG/DESIGNATION">
+              <sdcacFilter></sdcacFilter>
+            </segment>
+            <!--  segment dir="from" type="_3" name="EIM_META_NOTE">
+            </segment-->
+          </type>
+          <type id="_1" name="*">
+          </type>
+          <type id="_2" name="RBG/DESIGNATION" includeSubTypes="true">
+          </type>
+        </report>
+      </category>
+    </category>
+<!-- http://localhost:8080/Info_Retrieval/MGView?category=ListTermDetailsJson&Term=4569&connectionType=com.rochade.wa.api.roc.NonPooledDataSource&pD=startup&aD=applications_rir -->  <!-- what="*Text, level, id, scopeId,   no, absPath, attribute, DEFINITION, name, type, RBG/REFERENCES, DESCRIPTION, RBG/DESCRIPTION, RBG/STATUS, RBG/REFERENCES,RBG/SYNONYM-FOR,RBG/RELATES-TO,RBG/REFERS-TO,RBG/CALCULATED-FROM,RBG/SPECIALIZES,RBG/BELONGS-TO-CONTEXT" -->
+     <category id="ListTermDetailsJson" name="List Business Terms with Details"
+         stylesheet="com/rochade/wa/api/resource/stylesheets/int_abspathV2.xsl, 
+         com/rochade/wa/api/resource/stylesheets/int_rsmGMDetailsV2.xsl, com.rochade.wa.api.ML.java, com/rochade/wa/api/resource/stylesheets/int_cleanML.xsl, com/rochade/wa/api/resource/stylesheets/int_to_json.xsl">
+         <category id="ListTermDetails1"
+       whatMin="id, name, type, scopeId, DEFINITION,RBG/DESCRIPTION, RBG/DESIGNATION, RBG/SYNONYM-FOR, RBG/DESIGNATED-AS"
+       whatStylesheet="level, scopeAttribute, absPath, languages, attribute">
+        <context id="c1" />
+        <report
+      name=""
+      version=""
+      timestamp="06/18/2012 14:56:36"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="http://www.rochade.com/queries/mpath.xsd">
+          <!-- seeditem id="{$Glossary}">TYPE = RBG/GLOSSARY</seeditem-->
+          <!-- seeditem query="(XNAME * *  ~/ {$BT}) AND ( TYPE = RBG/BUSINESS-TERM )"></seeditem-->
+          <seeditem id="{$Term}"></seeditem>
+          <type id="_0" name="RBG/BUSINESS-TERM" isstart="true" includeSubTypes="true">
+            <!-- ITASM#956605: "RBG/REFERENCES" are not indexed into Solr so it is useless and time/memory-consuming to retrieve them
+            <segment dir="to" type="_1" name="*">
+              <attribute include="RBG/REFERENCES"/>
+            </segment>
+            -->
+            <!--  segment dir="from" type="_3" name="EIM_META_NOTE">
+            </segment-->
+          </type>
+          <!-- ITASM#956605: "RBG/REFERENCES" are not indexed into Solr so it is useless and time/memory-consuming to retrieve them
+          <type id="_1" name="*">
+          </type>
+          -->
+          <!-- "RBG/DESIGNATION" for BusinessTerms is a Text attribute (it is for RBG/GLOSSARY items that there exists a Link attribute "RBG/HAS-DESIGNATION" linking "RBG/DESIGNATION" items)
+          <type id="_2" name="RBG/DESIGNATION" includeSubTypes="true">
+    	  </type> 
+          -->
+        </report>
+      </category>
+    </category> 
+    
+    <!-- MGView?category=ListTermDetailsJson&Term={$term.id}&_ProjectionLang=&;connectionType=SimpleConnection&pD=startupSolr2&aD=applicationsSolr_rir2&#038;sD=startupSolrInsert -->
+    <!-- what="*Text, level, id, scopeId,   no, absPath, attribute, DEFINITION, name, type, RBG/REFERENCES, DESCRIPTION, RBG/DESCRIPTION, RBG/STATUS, RBG/REFERENCES,RBG/SYNONYM-FOR,RBG/RELATES-TO,RBG/REFERS-TO,RBG/CALCULATED-FROM,RBG/SPECIALIZES,RBG/BELONGS-TO-CONTEXT" -->
+     <category id="ListTermDetailsSolrSchema" name="List Business Terms with Details"
+         stylesheet="com/rochade/wa/api/resource/stylesheets/int_abspathV2.xsl, 
+         com/rochade/wa/api/resource/stylesheets/int_rsmGMDetailsV2.xsl, com.rochade.wa.api.ML.java, com/rochade/wa/api/resource/stylesheets/int_cleanML.xsl, com/rochade/wa/api/resource/stylesheets/int_to_schema.xsl">
+         <category id="ListTermDetails1"
+       whatMin="level, id, scopeId, scopeAttribute, absPath, languages, name, type, attribute, DEFINITION,RBG/DESCRIPTION, RBG/DESIGNATION, RBG/REFERENCES, RBG/SYNONYM-FOR"
+whatStylesheet="level, scopeAttribute, absPath, languages, type, attribute, RBG/REFERENCES">
+        <context id="c1" />
+        <report
+      name=""
+      version=""
+      timestamp="06/18/2012 14:56:36"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="http://www.rochade.com/queries/mpath.xsd">
+          <!-- seeditem id="{$Glossary}">TYPE = RBG/GLOSSARY</seeditem-->
+          <!-- seeditem query="(XNAME * *  ~/ {$BT}) AND ( TYPE = RBG/BUSINESS-TERM )"></seeditem-->
+          <seeditem id="{$Term}"></seeditem>
+          <type id="_0" name="RBG/BUSINESS-TERM" isstart="true" includeSubTypes="true">
+            <segment dir="to" type="_1" name="*">
+              <attribute include="RBG/REFERENCES"/>
+            </segment>
+            <segment dir="to" type="_2" name="RBG/DESIGNATION">
+              <sdcacFilter></sdcacFilter>
+            </segment>
+            <!--  segment dir="from" type="_3" name="EIM_META_NOTE">
+            </segment-->
+          </type>
+          <type id="_1" name="*">
+          </type>
+          <type id="_2" name="RBG/DESIGNATION" includeSubTypes="true">
+          </type>
+        </report>
+      </category>
+    </category>  
+       
+  </categories>
+  <request>
+    <!-- <maxHits>${maxHits}</maxHits> -->
+    <task mand="true">${task}</task>
+    <category>${category}</category>
+    <searchString>${searchString}</searchString>
+  </request>
+</RocService>

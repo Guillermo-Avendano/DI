@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+########################################################################
+# This is the default configuration file used by Log4j2.
+# Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved.
+#
+# Version 10.01.001
+#
+# For the general syntax of XML based configuration files, see the
+# documentation of Log4j2 at https://logging.apache.org/log4j/2.x/manual/configuration.html
+#
+# You can use a different file (or even file format) by specifying a filename
+# with the Java's environment property named 'log4j.configurationFile'.  
+# For example, java -Dlog4j.configurationFile="file:///path\mylog4j2.xml"
+#
+########################################################################
+-->
+<Configuration status="WARN">
+	<Appenders>
+		<Console name="ConsoleAppender" target="SYSTEM_OUT">
+			<!-- see https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout -->
+			<PatternLayout pattern="%d{DEFAULT} %-5level InfoRetrieval - %logger - %msg%n"/>
+		</Console>
+	</Appenders>
+	<Loggers>
+		<!-- set a specific logging level for the loggers related to the Search Apps -->
+		<Logger name="com.rochade.wa" level="INFO">
+		</Logger>
+		<Logger name="com.rochade.waweb" level="INFO">
+		</Logger>
+		
+		<!-- set a specific logging level for the logger that is in charge
+		to log the Http requests and responses
+		(set to DEBUG if those need to be explicitly logged) -->
+		<Logger name="com.rochade.waweb.api.ServiceProvider" level="INFO">
+		</Logger>
+		
+		<Logger name="de.rochade" level="WARN">
+		</Logger>
+		
+		<!-- set logging level to ERROR for the specific logger 'de.rochade.ap' used by Rochade core
+		in order to get rid of warnings like 'de.rochade.ap:154 - de.rochade.ds.InvalidTypeException: RBD_CLUSTER' -->
+		<Logger name="de.rochade.ap" level="ERROR">
+		</Logger>
+		
+		<!-- set logging level to ERROR for the specific logger 'de.rochade.ds' used by Rochade core
+		in order to get rid of info entries like 'de.rochade.ds:142 - Default package handler is used' -->
+		<Logger name="de.rochade.ds" level="ERROR">
+		</Logger>
+		
+		<Root level="INFO">
+			<AppenderRef ref="ConsoleAppender"/>
+		</Root>
+	</Loggers>
+</Configuration>

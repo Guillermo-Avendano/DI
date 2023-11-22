@@ -55,7 +55,7 @@ ENV LD_LIBRARY_PATH=/usr/lib64:/home/rocket/rochade/sbin:/home/rocket/rochade/sb
 WORKDIR /home/rocket
 
 # Expose the port 8888
-EXPOSE 8888 9092
+EXPOSE 8888
 
 # Default command to execute when the image is started
 CMD ["sh", "-c", "./startup.sh"]

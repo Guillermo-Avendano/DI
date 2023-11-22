@@ -1,0 +1,9 @@
+                 ${AnsiColor.GREEN}  _____ ${AnsiColor.BRIGHT_BLACK} _____
+${AnsiColor.CYAN}            /\    ${AnsiColor.GREEN}/ ____|${AnsiColor.BRIGHT_BLACK}/ ____|
+${AnsiColor.CYAN}           /  \  ${AnsiColor.GREEN}| (___ ${AnsiColor.BRIGHT_BLACK}| |  __
+${AnsiColor.CYAN}          / /\ \  ${AnsiColor.GREEN}\___ \${AnsiColor.BRIGHT_BLACK}| | |_ |
+${AnsiColor.CYAN}         / ____ \ ${AnsiColor.GREEN}____) |${AnsiColor.BRIGHT_BLACK} |__| |
+${AnsiColor.CYAN}        /_/    \_\${AnsiColor.GREEN}_____/${AnsiColor.BRIGHT_BLACK} \_____|
+${AnsiColor.BRIGHT_CYAN}         technologies${AnsiStyle.NORMAL}
+
+

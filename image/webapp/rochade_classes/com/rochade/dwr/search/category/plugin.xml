@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+  <?eclipse version="3.0"?> 
+<!--  Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved.  --> 
+<plugin>
+   <requires>
+      <import plugin="com.rochade.vis"/>
+   </requires>
+   <extension point="com.rochade.vis.waQueries">
+      <querycontext name="CategoryQueryHomeSearch" resource="com/rochade/dwr/search/category/CategoryQueryDef.xml" messages="/com.rochade.dwr.search.category/CategoryQueryDef.messages">
+      	<query id="*" card="none" 
+	      		description="Default">
+	            <param name="viewmenu" value="" />
+	            <param name="tableshape" value="EIMB_DEFAULT_RESULTCOLUMNS"/>
+	      </query>
+	      <query id="__ALL" card="none" 
+	      		description="$Message.CategoryQuery.category.decription.__ALL">
+	            <param name="viewmenu" value="" />
+	            <param name="tableshape" value="EIMB_DEFAULT_RESULTCOLUMNS"/>
+	      </query>
+	      <query id="bg_01" card="none" 
+	      		description="A description for this Technical Glossary Category">
+	            <param name="viewmenu" value="" />
+	            <param name="tableshape" value="EIMB_DEFAULT_RESULTCOLUMNS" />
+	      </query>
+	      <query id="tg_01" card="none" 
+	      		description="A description for this Business Glossary Category">
+	            <param name="viewmenu" value="" />
+	            <param name="tableshape" value="EIMB_DEFAULT_RESULTCOLUMNS" />
+	      </query>
+	      <query id="dw_01" card="none" 
+	      		description="A description for this MDM Category">
+	            <param name="viewmenu" value="" />
+	            <param name="tableshape" value="EIMB_DEFAULT_RESULTCOLUMNS" />
+	      </query>
+	      <query id="org_01" card="none" 
+	      		description="A description for this MDM Category">
+	            <param name="viewmenu" value="" />
+	            <param name="tableshape" value="EIMB_DEFAULT_RESULTCOLUMNS" />
+	      </query>
+	      <query id="metanote_01" condition="metaNotesTypeExist" card="none" 
+	      		description="A description for this MetaNote Category">
+	            <param name="viewmenu" value="" />
+	            <param name="tableshape" value="EIMB_DEFAULT_RESULTCOLUMNS" />
+	      </query>
+          <property id="*">
+	            <param name="SearchNameParam" value="{$searchString}" />
+          </property>
+          
+          <property id="__ALL.searchin-all">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionSearchIn" />
+          </property>
+          <property id="__ALL.updtimeOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionDate" />
+          </property>
+                   
+          <property id="bg_01.searchin-bg">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionSearchIn" />
+          </property>
+          <property id="bg_01.updtimeOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionDate" />
+          </property>
+          <property id="bg_01.stageAttrOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionCombobox" />          
+          </property>          
+                    
+          <property id="tg_01.searchin-tg">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionSearchIn" />
+          </property>
+          <property id="tg_01.updtimeOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionDate" />
+          </property>
+          <property id="tg_01.stageAttrOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionCombobox" />          
+          </property>                      
+                    
+          <property id="dw_01.searchin-dwr">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionSearchIn" />
+          </property>
+          <property id="dw_01.updtimeOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionDate" />
+          </property>
+          <property id="dw_01.stageAttrOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionCombobox" />          
+          </property>   
+
+          <property id="org_01.searchin-dwr">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionSearchIn" />
+          </property>
+          <property id="org_01.updtimeOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionDate" />
+          </property>                    
+                    
+          <property id="metanote_01.searchin-metanote">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionSearchIn" />
+          </property>     
+          <property id="metanote_01.updtimeOption">
+	            <param name="displayclass" value="com.rochade.wa.ui.search.category.OptionDate" />
+          </property>          
+
+      </querycontext>
+    </extension>
+</plugin>

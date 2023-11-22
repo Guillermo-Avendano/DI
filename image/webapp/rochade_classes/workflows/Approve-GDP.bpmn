@@ -1,0 +1,924 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://activiti.org/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_8-lOQBQvEeWSD79Ghuhckw" exporter="camunda modeler" exporterVersion="2.7.0" targetNamespace="http://activiti.org/bpmn">
+  <bpmn2:collaboration id="_Collaboration_2">
+    <bpmn2:participant id="_Participant_2" name="GDP Approval Workflow" processRef="APPROVE-GDP">
+      <bpmn2:documentation>GDP Approval Workflow</bpmn2:documentation>
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property value="@KEY=Workflow.GDPWorkflow.definition" name="DEFINITION"/>
+          <camunda:property value="@KEY=Workflow.GDPWorkflow.label" name="RWF/LABEL"/>
+          <camunda:property value="APPROVE" name="RWF/PROCESS-TYPES"/>
+          <camunda:property value="GDP_PIA=active&#xA;GDP_PI_STRUCTURE=active&#xA;GDP_POLICY=active&#xA;GDP_CONTROL_RULE=active" name="RWF/ITEM-TYPES"/>
+          <camunda:property value="true" name="RWF/IS-DEFAULT"/>
+          <camunda:property value="3" name="VERSION"/>
+        </camunda:properties>
+      </bpmn2:extensionElements>
+    </bpmn2:participant>
+  </bpmn2:collaboration>
+  <bpmn2:process id="APPROVE-GDP" name="GDP Approval Workflow" isExecutable="true">
+    <bpmn2:laneSet id="LaneSet_1" name="Lane Set 1">
+      <bpmn2:lane id="Lane_Author" name="Author">
+        <bpmn2:flowNodeRef>ServiceTask_CreateTask</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>StartEvent_ItemSubmitted</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_CreateNotificationResumed</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_UpdateTaskReactivated</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ExclusiveGateway_CheckResumeAction</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_CreateNotificationSubmitted</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_UpdateStatusSubmitted</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+      <bpmn2:lane id="Lane_Author_Approvers_Admins" name="Author, Approvers, Admins">
+        <bpmn2:flowNodeRef>UserTask_ReactivateWorkflow</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>BoundaryEvent_ItemResubmitted</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_CompareItemVersions</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+      <bpmn2:lane id="Lane_Authors_Admins" name="Approvers, Admins">
+        <bpmn2:flowNodeRef>ServiceTask_PromoteItem</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_RejectItem</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_ReassignItem</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ExclusiveGateway_CheckAction</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>EndEvent_Approved</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>EndEvent_Rejected</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_CreateNotificationReassigned</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_CreateNotificationPromoted</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_CreateNotificationRejected</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_UpdateTaskReassigned</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_UpdateTaskPromoted</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_UpdateTaskRejected</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>SubProcess_ReviewCycle</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ServiceTask_TaskReminder</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>BoundaryEvent_TaskReminder</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>BoundaryEvent_TimeOut</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>ScriptTask_CalcStatus</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+    </bpmn2:laneSet>
+    <bpmn2:serviceTask id="ServiceTask_CreateTask" camunda:class="com.rochade.wa.workflow.camunda.CreateTaskInstanceDelegate" name="Create&#xD;&#xA;Task">
+      <bpmn2:extensionElements>
+        <camunda:field name="rwfNotificationType">
+          <camunda:expression>${templatePrefix}${status}</camunda:expression>
+        </camunda:field>
+        <camunda:field name="usersConf">
+          <camunda:expression><![CDATA[$author=$author
+@BG.WF.notify=$notified
+$PERMISSION='BG.WF.approve' ROLE='${reviewerRolesString}'=$approver]]></camunda:expression>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_CreateTask</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_NotifySubmitted</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:startEvent id="StartEvent_ItemSubmitted" name="Item &#xD;&#xA;Submitted">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy"><![CDATA[import com.rochade.wa.workflow.camunda.CamundaUtils
+execution.setVariable("BLACKLIST_USERS", "")
+if (Boolean.valueOf(execution.getVariable("excludeAuthorFromApproval")).booleanValue()) {
+    CamundaUtils.addBlackListUser(execution, user)
+    for (String user: CamundaUtils.getInWorkModifiers(CamundaUtils.parseItemIds(itemIds, false, null))) {
+	    CamundaUtils.addBlackListUser(execution, user)
+    }
+}
+execution.setVariable("reviewerRolesString", reviewerRoles.join('|'))
+execution.setVariable("wfStartTime", com.rochade.wa.workflow.ServiceUtils.getServerTime(webServicesUrl))
+if (execution.getVariable("taskTimeoutExpr") == null) 
+    execution.setVariable("taskTimeoutExpr", "P"+taskTimeoutDays+"D")
+if (execution.getVariable("taskTimeoutForReminderExpr") == null) 
+    execution.setVariable("taskTimeoutForReminderExpr", "P"+taskTimeoutForReminderDays+"D")
+]]></camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy"><![CDATA[long roundUp(float f) {
+    hasFraction=f != f.trunc()
+    return f.trunc() + (hasFraction ? 1 : 0)
+}
+cnt=reviewerRoles.size()
+//votesToComplete=roundUp(percentageToComplete.toLong()/100*cnt)
+//votesToReject=roundUp(percentageOfVotesToReject.toLong()/100*votesToComplete)
+//votesToReassign=roundUp(percentageOfVotesToReassign.toLong()/100*votesToComplete)
+votesToComplete=cnt
+votesToReject=1
+votesToReassign=1
+execution.setVariable("votesToComplete", votesToComplete);
+execution.setVariable("votesToReject", votesToReject);
+execution.setVariable("votesToReassign", votesToReassign);
+
+]]></camunda:script>
+        </camunda:executionListener>
+        <camunda:formData>
+          <camunda:formField id="commentMandatory" label="@KEY=Workflow.field.commentMandatory.label" type="boolean" defaultValue="true"/>
+          <camunda:formField id="excludeAuthorFromApproval" label="@KEY=Workflow.field.excludeAuthorFromApproval.label" type="boolean" defaultValue="false"/>
+          <camunda:formField id="taskTimeoutForReminderDays" label="@KEY=Workflow.field.taskTimeoutForReminderDays.label" type="long" defaultValue="3"/>
+          <camunda:formField id="taskTimeoutDays" label="@KEY=Workflow.field.taskTimeoutDays.label" type="long" defaultValue="7"/>
+          <camunda:formField id="taskTimeoutAction" label="@KEY=Workflow.field.taskTimeoutAction.label" type="string" defaultValue="REJECT">
+            <camunda:properties>
+              <camunda:property id="type" value="select"/>
+              <camunda:property id="option.1" value="APPROVE"/>
+              <camunda:property id="option.2" value="REJECT"/>
+              <camunda:property id="option.3" value="REASSIGN"/>
+              <camunda:property id="msgKeyPrefix" value="rwf_action_"/>
+              <camunda:property/>
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="reviewerRoles" label="@KEY=Workflow.field.reviewerRoles.multistep.label" type="string" defaultValue="PI_Controller&#xA;PI_Protection_Officer">
+            <camunda:properties>
+              <camunda:property id="type" value="select"/>
+              <camunda:property id="dynOptions" value="roles"/>
+              <camunda:property id="dynFilter" value="PERMISSION='BG.WF.approve'"/>
+              <camunda:property id="multipleAsGrid" value="true"/>
+              <camunda:property id="multipleAsGrid.label.count" value="@KEY=Workflow.field.reviewerRoles.multistep.label.count"/>
+              <camunda:property id="multipleAsGrid.label.value" value="@KEY=Workflow.field.reviewerRoles.multistep.label.value"/>
+              <camunda:property id="multipleAsGrid.label.totalCount" value="@KEY=Workflow.field.reviewerRoles.multistep.label.totalCount"/>
+              <camunda:property id="joinEqualRoles" value="true"/>
+              <camunda:property id="msgKeyPrefix" value="Workflow.roleSelection."/>
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="reviewerRolesHint" label="@KEY=Workflow.field.hint.label" type="string">
+            <camunda:properties>
+              <camunda:property id="type" value="label"/>
+              <camunda:property id="label" value="@KEY=Workflow.field.multistep.reviewerRolesHint"/>
+              <camunda:property id="contentType" value="text/html"/>
+              <camunda:property/>
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="notifyMask" label="@KEY=Workflow.field.notifyMask.label" type="string" defaultValue="{'notifyStakeholders':'$notified','notifyApprovers':'$approver','sendReminder':'$approver'}"/>
+        </camunda:formData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>SequenceFlow_CreateTask</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_CreateTask" name="" sourceRef="StartEvent_ItemSubmitted" targetRef="ServiceTask_CreateTask"/>
+    <bpmn2:serviceTask id="ServiceTask_CreateNotificationResumed" camunda:class="com.rochade.wa.workflow.camunda.CreateNotificationDelegate" camunda:async="true" name="Notify &#xD;&#xA;Stakeholders">
+      <bpmn2:extensionElements>
+        <camunda:field name="rwfNotificationType">
+          <camunda:expression>${templatePrefix}TASK_REACTIVATED</camunda:expression>
+        </camunda:field>
+        <camunda:field name="notifyAction">
+          <camunda:expression>notifyStakeholders</camunda:expression>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_ResumedCreateNotification</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_ResumedUpdateTask</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_ResumedUpdateTask" name="" sourceRef="ServiceTask_CreateNotificationResumed" targetRef="ServiceTask_UpdateTaskReactivated"/>
+    <bpmn2:serviceTask id="ServiceTask_UpdateTaskReactivated" camunda:class="com.rochade.wa.workflow.camunda.UpdateTaskInstanceDelegate" camunda:async="true" name="Update&#xD;&#xA;Task">
+      <bpmn2:incoming>SequenceFlow_ResumedUpdateTask</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_ResumedCompareItem</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_ResumedCompareItem" sourceRef="ServiceTask_UpdateTaskReactivated" targetRef="ServiceTask_UpdateStatusSubmitted"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_NotifySubmitted" name="" sourceRef="ServiceTask_CreateTask" targetRef="ServiceTask_CreateNotificationSubmitted"/>
+    <bpmn2:userTask id="UserTask_ReactivateWorkflow" camunda:candidateGroups="PERMISSION='BG.WF.approve | BG.WF.facilitate'" camunda:candidateUsers="${creator}" name="Resume&#xD;&#xA;Workflow">
+      <bpmn2:documentation>@KEY=Workflow.task.reactivateWorkflow.plsResume</bpmn2:documentation>
+      <bpmn2:extensionElements>
+        <camunda:executionListener class="com.rochade.wa.workflow.camunda.BackupDelegate" event="start">
+          <camunda:field expression="true" name="startBeforeActivity"/>
+        </camunda:executionListener>
+        <camunda:executionListener event="start" expression="${execution.setVariable('status', 'REASSIGNED')}"/>
+        <camunda:executionListener event="start" expression="${execution.setVariable('action', 'REACTIVATE')}"/>
+        <camunda:formData>
+          <camunda:formField id="action" label="@KEY=Workflow.field.action.label" type="string" defaultValue="REACTIVATE">
+            <camunda:properties>
+              <camunda:property id="type" value="select"/>
+              <camunda:property id="option.1" value="REACTIVATE"/>
+              <camunda:property id="option.2" value="REJECT"/>
+              <camunda:property id="option.2.visibleCondition" value="$PERMISSION='BG.WF.facilitate'"/>
+              <camunda:property id="msgKeyPrefix" value="rwf_action_"/>
+            </camunda:properties>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:executionListener event="start" expression="${execution.setVariable('BLACKLIST_USERS', '')}"/>
+        <camunda:executionListener event="start" expression="${execution.setVariable('restartProcessInstanceMessage', 'ItemResubmitted')}"/>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="groovy"><![CDATA[import com.rochade.wa.workflow.camunda.CamundaUtils
+if (Boolean.valueOf(execution.getVariable("excludeAuthorFromApproval")).booleanValue()) {
+    CamundaUtils.addBlackListUser(execution, creator)
+    for (String user: CamundaUtils.getInWorkModifiers(CamundaUtils.parseItemIds(itemIds, false, null))) {
+	    CamundaUtils.addBlackListUser(execution, user)
+    }
+}
+]]></camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener event="end" expression="${execution.setVariable('restartProcessInstanceMessage', '')}"/>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_RestartReassigned</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_Reactivated</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_Reactivated" name="" sourceRef="UserTask_ReactivateWorkflow" targetRef="ExclusiveGateway_CheckResumeAction"/>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_CheckResumeAction">
+      <bpmn2:incoming>SequenceFlow_Reactivated</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_ReactivatedBySubmit</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_RejectAfterReassign</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_ResumedCreateNotification</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_RejectAfterReassign" name="Rejected" sourceRef="ExclusiveGateway_CheckResumeAction" targetRef="ServiceTask_RejectItem">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${"REJECT".equals(action)}]]></bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_ResumedCreateNotification" name="Resumed" sourceRef="ExclusiveGateway_CheckResumeAction" targetRef="ServiceTask_CreateNotificationResumed">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${"REACTIVATE".equals(action)}]]></bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:boundaryEvent id="BoundaryEvent_ItemResubmitted" name="" attachedToRef="UserTask_ReactivateWorkflow">
+      <bpmn2:outgoing>SequenceFlow_ReactivatedBySubmit</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_6" messageRef="Message_1"/>
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_ReactivatedBySubmit" name="" sourceRef="BoundaryEvent_ItemResubmitted" targetRef="ExclusiveGateway_CheckResumeAction"/>
+    <bpmn2:serviceTask id="ServiceTask_PromoteItem" camunda:class="com.rochade.wa.workflow.camunda.PromoteItemDelegate" camunda:async="true" name="Promote&#xD;&#xA;Item">
+      <bpmn2:incoming>SequenceFlow_Approved</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_CreateNotificationPromoted</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_CreateNotificationPromoted" name="" sourceRef="ServiceTask_PromoteItem" targetRef="ServiceTask_CreateNotificationPromoted"/>
+    <bpmn2:serviceTask id="ServiceTask_RejectItem" camunda:class="com.rochade.wa.workflow.camunda.RejectItemDelegate" camunda:async="true" name="Reject&#xD;&#xA;Item">
+      <bpmn2:incoming>SequenceFlow_RejectAfterReassign</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_Rejected</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_CreateNotificationRejected</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_CreateNotificationRejected" name="" sourceRef="ServiceTask_RejectItem" targetRef="ServiceTask_CreateNotificationRejected"/>
+    <bpmn2:serviceTask id="ServiceTask_ReassignItem" camunda:class="com.rochade.wa.workflow.camunda.ReassignItemDelegate" camunda:async="true" name="Return&#xD;&#xA;Item">
+      <bpmn2:incoming>SequenceFlow_Reassigned</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_CreateNotificationReassigned</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_CreateNotificationReassigned" name="" sourceRef="ServiceTask_ReassignItem" targetRef="ServiceTask_CreateNotificationReassigned"/>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_CheckAction">
+      <bpmn2:incoming>SequenceFlow_StatusCalculated</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_DefaultAction</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_Approved</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_Reassigned</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_Rejected</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_Approved" name="Approved" sourceRef="ExclusiveGateway_CheckAction" targetRef="ServiceTask_PromoteItem">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${"APPROVE".equals(action)}]]></bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_Reassigned" name="Returned" sourceRef="ExclusiveGateway_CheckAction" targetRef="ServiceTask_ReassignItem">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${"REASSIGN".equals(action)}]]></bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_Rejected" name="Rejected" sourceRef="ExclusiveGateway_CheckAction" targetRef="ServiceTask_RejectItem">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${"REJECT".equals(action)}]]></bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="EndEvent_Approved" name="Approved">
+      <bpmn2:incoming>SequenceFlow_ReadyApproved</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_Rejected" name="Rejected">
+      <bpmn2:incoming>SequenceFlow_ReadyRejected</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:serviceTask id="ServiceTask_CreateNotificationReassigned" camunda:class="com.rochade.wa.workflow.camunda.CreateNotificationDelegate" camunda:async="true" name="Notify&#xD;&#xA;Stakeholders">
+      <bpmn2:extensionElements>
+        <camunda:field name="rwfNotificationType">
+          <camunda:expression>${templatePrefix}TASK_REASSIGNED</camunda:expression>
+        </camunda:field>
+        <camunda:field name="notifyAction">
+          <camunda:expression>notifyStakeholders</camunda:expression>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_CreateNotificationReassigned</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_UpdateTaskReassigned</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_UpdateTaskReassigned" name="" sourceRef="ServiceTask_CreateNotificationReassigned" targetRef="ServiceTask_UpdateTaskReassigned"/>
+    <bpmn2:serviceTask id="ServiceTask_CreateNotificationPromoted" camunda:class="com.rochade.wa.workflow.camunda.CreateNotificationDelegate" camunda:async="true" name="Notify&#xD;&#xA;Stakeholders">
+      <bpmn2:extensionElements>
+        <camunda:field name="rwfNotificationType">
+          <camunda:expression>${templatePrefix}TASK_APPROVED</camunda:expression>
+        </camunda:field>
+        <camunda:field name="notifyAction">
+          <camunda:expression>notifyStakeholders</camunda:expression>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_CreateNotificationPromoted</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_UpdateTaskPromoted</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_UpdateTaskPromoted" name="" sourceRef="ServiceTask_CreateNotificationPromoted" targetRef="ServiceTask_UpdateTaskPromoted"/>
+    <bpmn2:serviceTask id="ServiceTask_CreateNotificationRejected" camunda:class="com.rochade.wa.workflow.camunda.CreateNotificationDelegate" camunda:async="true" name="Notify&#xD;&#xA;Stakeholders">
+      <bpmn2:extensionElements>
+        <camunda:field name="rwfNotificationType">
+          <camunda:expression>${templatePrefix}TASK_REJECTED</camunda:expression>
+        </camunda:field>
+        <camunda:field name="notifyAction">
+          <camunda:expression>notifyStakeholders</camunda:expression>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_CreateNotificationRejected</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_UpdateTaskRejected</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_UpdateTaskRejected" name="" sourceRef="ServiceTask_CreateNotificationRejected" targetRef="ServiceTask_UpdateTaskRejected"/>
+    <bpmn2:serviceTask id="ServiceTask_UpdateTaskReassigned" camunda:class="com.rochade.wa.workflow.camunda.UpdateTaskInstanceDelegate" camunda:async="true" name="Update&#xD;&#xA;Task">
+      <bpmn2:incoming>SequenceFlow_UpdateTaskReassigned</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_RestartReassigned</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_RestartReassigned" name="" sourceRef="ServiceTask_UpdateTaskReassigned" targetRef="UserTask_ReactivateWorkflow"/>
+    <bpmn2:serviceTask id="ServiceTask_UpdateTaskPromoted" camunda:class="com.rochade.wa.workflow.camunda.UpdateTaskInstanceDelegate" camunda:async="true" name="Update&#xD;&#xA;Task">
+      <bpmn2:incoming>SequenceFlow_UpdateTaskPromoted</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_ReadyApproved</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_ReadyApproved" name="" sourceRef="ServiceTask_UpdateTaskPromoted" targetRef="EndEvent_Approved"/>
+    <bpmn2:serviceTask id="ServiceTask_UpdateTaskRejected" camunda:class="com.rochade.wa.workflow.camunda.UpdateTaskInstanceDelegate" camunda:async="true" name="Update&#xD;&#xA;Task">
+      <bpmn2:incoming>SequenceFlow_UpdateTaskRejected</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_ReadyRejected</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_ReadyRejected" name="" sourceRef="ServiceTask_UpdateTaskRejected" targetRef="EndEvent_Rejected"/>
+    <bpmn2:subProcess id="SubProcess_ReviewCycle" camunda:async="true">
+      <bpmn2:incoming>SequenceFlow_ItemCompared</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_Reviewed</bpmn2:outgoing>
+      <bpmn2:multiInstanceLoopCharacteristics camunda:collection="reviewerRoles" camunda:elementVariable="reviewerRole" isSequential="true">
+        <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression">${(rejectVotes >= votesToReject) || (reassignVotes >= votesToReassign)}</bpmn2:completionCondition>
+      </bpmn2:multiInstanceLoopCharacteristics>
+      <bpmn2:startEvent id="StartEvent_ApproveCycle">
+        <bpmn2:outgoing>SequenceFlow_NotifyApprovers</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_NotifyApprovers" name="" sourceRef="StartEvent_ApproveCycle" targetRef="ServiceTask_CreateNotificationReviewTask"/>
+      <bpmn2:serviceTask id="ServiceTask_CreateNotificationReviewTask" camunda:class="com.rochade.wa.workflow.camunda.CreateNotificationDelegate" camunda:async="true" name="Notify&#xD;&#xA;Approvers">
+        <bpmn2:extensionElements>
+          <camunda:field name="rwfNotificationType">
+            <camunda:expression>${templatePrefix}REVIEW_TASK_CREATED</camunda:expression>
+          </camunda:field>
+          <camunda:field name="user">
+            <camunda:expression>Workflow</camunda:expression>
+          </camunda:field>
+          <camunda:field name="comment">
+            <camunda:expression>@KEY=Workflow.task.reviewItem.notificationComment</camunda:expression>
+          </camunda:field>
+          <camunda:field name="usersConf">
+            <camunda:expression><![CDATA[$author=$author
+@BG.WF.notify=$notified
+@BG.WF.facilitate=$facilitator
+$PERMISSION='BG.WF.approve' ROLE='${reviewerRole}' BLACKLIST_USERS='${BLACKLIST_USERS}'=$approver]]></camunda:expression>
+          </camunda:field>
+          <camunda:field name="notifyAction">
+            <camunda:expression>notifyApprovers</camunda:expression>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>SequenceFlow_NotifyApprovers</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_NotificationReviewTaskCreated</bpmn2:outgoing>
+      </bpmn2:serviceTask>
+      <bpmn2:sequenceFlow id="SequenceFlow_NotificationReviewTaskCreated" name="" sourceRef="ServiceTask_CreateNotificationReviewTask" targetRef="UserTask_ReviewItem"/>
+      <bpmn2:userTask id="UserTask_ReviewItem" camunda:candidateGroups="PERMISSION='BG.WF.approve' ROLE='${reviewerRole}', PERMISSION='BG.WF.facilitate'" name="Approve&#xD;&#xA;Item">
+        <bpmn2:documentation>@KEY=Workflow.task.reviewItem.taskOfTasks_2|${loopCounter+1}|${nrOfInstances}</bpmn2:documentation>
+        <bpmn2:extensionElements>
+          <camunda:formData>
+            <camunda:formField id="action" label="@KEY=Workflow.field.action.label" type="string" defaultValue="APPROVE">
+              <camunda:properties>
+                <camunda:property id="type" value="select"/>
+                <camunda:property id="option.1" value="APPROVE"/>
+                <camunda:property id="option.2" value="REJECT"/>
+                <camunda:property id="option.2.visibleCondition" value="${votesToReject > 0}"/>
+                <camunda:property id="option.3" value="REASSIGN"/>
+                <camunda:property id="option.3.visibleCondition" value="${votesToReassign > 0}"/>
+                <camunda:property id="msgKeyPrefix" value="rwf_action_"/>
+                <camunda:property/>
+              </camunda:properties>
+            </camunda:formField>
+            <camunda:formField id="approveVotes" label="@KEY=Workflow.field.approveVotes.label" type="long" defaultValue="0">
+              <camunda:properties>
+                <camunda:property id="readonly" value="true"/>
+              </camunda:properties>
+            </camunda:formField>
+            <camunda:formField id="rejectVotes" label="@KEY=Workflow.field.rejectVotes.label_1|${votesToReject}" type="long" defaultValue="0">
+              <camunda:properties>
+                <camunda:property id="readonly" value="true"/>
+                <camunda:property id="visibleCondition" value="${votesToReject > 0}"/>
+              </camunda:properties>
+            </camunda:formField>
+            <camunda:formField id="reassignVotes" label="@KEY=Workflow.field.reassignVotes.label_1|${votesToReassign}" type="long" defaultValue="0">
+              <camunda:properties>
+                <camunda:property id="readonly" value="true"/>
+                <camunda:property id="visibleCondition" value="${votesToReassign > 0}"/>
+              </camunda:properties>
+            </camunda:formField>
+          </camunda:formData>
+          <camunda:taskListener event="complete">
+            <camunda:script scriptFormat="groovy"><![CDATA[switch (action) {
+	case "REASSIGN":
+		reassignVotes++;
+		task.setVariable("reassignVotes", reassignVotes);
+		break;
+	case "REJECT":
+		rejectVotes++;
+		task.setVariable("rejectVotes", rejectVotes);
+		break;
+	case "APPROVE":
+		approveVotes++;
+		task.setVariable("approveVotes", approveVotes);
+		break;
+}]]></camunda:script>
+          </camunda:taskListener>
+          <camunda:taskListener class="com.rochade.wa.workflow.camunda.AddBlackListUserDelegate" event="complete">
+            <camunda:field expression="${user}" name="user"/>
+          </camunda:taskListener>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>SequenceFlow_NotificationReviewTaskCreated</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_ReviewTaskCompleted</bpmn2:outgoing>
+      </bpmn2:userTask>
+      <bpmn2:sequenceFlow id="SequenceFlow_ReviewTaskCompleted" name="" sourceRef="UserTask_ReviewItem" targetRef="ServiceTask_CreateNotificationReviewed"/>
+      <bpmn2:endEvent id="EndEvent_ReviewCycle">
+        <bpmn2:incoming>SequenceFlow_EndReviewCycle</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:serviceTask id="ServiceTask_UpdateTaskReviewed" camunda:class="com.rochade.wa.workflow.camunda.AddTaskRecordDelegate" camunda:async="true" name="Update&#xD;&#xA;Task">
+        <bpmn2:extensionElements>
+          <camunda:field name="oldStatus">
+            <camunda:string>READY</camunda:string>
+          </camunda:field>
+          <camunda:field name="newStatus">
+            <camunda:string>READY</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>SequenceFlow_UpdateTaskReviewed</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_EndReviewCycle</bpmn2:outgoing>
+      </bpmn2:serviceTask>
+      <bpmn2:sequenceFlow id="SequenceFlow_EndReviewCycle" name="" sourceRef="ServiceTask_UpdateTaskReviewed" targetRef="EndEvent_ReviewCycle"/>
+      <bpmn2:serviceTask id="ServiceTask_CreateNotificationReviewed" camunda:class="com.rochade.wa.workflow.camunda.CreateNotificationDelegate" camunda:async="true" name="Notify&#xD;&#xA;Stakeholders">
+        <bpmn2:extensionElements>
+          <camunda:field name="rwfNotificationType">
+            <camunda:expression>${templatePrefix}REVIEW_TASK_COMPLETED</camunda:expression>
+          </camunda:field>
+          <camunda:field name="notifyAction">
+            <camunda:expression>notifyStakeholders</camunda:expression>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>SequenceFlow_ReviewTaskCompleted</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_UpdateTaskReviewed</bpmn2:outgoing>
+      </bpmn2:serviceTask>
+      <bpmn2:sequenceFlow id="SequenceFlow_UpdateTaskReviewed" name="" sourceRef="ServiceTask_CreateNotificationReviewed" targetRef="ServiceTask_UpdateTaskReviewed"/>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_Reviewed" name="" sourceRef="SubProcess_ReviewCycle" targetRef="ScriptTask_CalcStatus"/>
+    <bpmn2:serviceTask id="ServiceTask_TaskReminder" camunda:class="com.rochade.wa.workflow.camunda.CreateNotificationDelegate" camunda:async="true" name="Send&#xD;&#xA;Reminder">
+      <bpmn2:extensionElements>
+        <camunda:field expression="${templatePrefix}TASK_REMINDER" name="rwfNotificationType"/>
+        <camunda:field expression="Workflow" name="user"/>
+        <camunda:field expression="@KEY=Workflow.comment.taskReminderDays|${taskTimeoutForReminderDays}" name="comment"/>
+        <camunda:field expression="$author=$author&#xA;@BG.WF.notify=$notified&#xA;@BG.WF.facilitate=$facilitator&#xA;$PERMISSION='BG.WF.approve' ROLE='${reviewerRolesString}' BLACKLIST_USERS='${BLACKLIST_USERS}'=$approver" name="usersConf"/>
+        <camunda:field name="notifyAction">
+          <camunda:expression>sendReminder</camunda:expression>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_TaskReminder</bpmn2:incoming>
+    </bpmn2:serviceTask>
+    <bpmn2:boundaryEvent id="BoundaryEvent_TaskReminder" attachedToRef="SubProcess_ReviewCycle" cancelActivity="false">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start" expression="${execution.setVariable(&quot;user&quot;, &quot;Workflow&quot;)}"/>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>SequenceFlow_TaskReminder</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_TimerEventDefinition_2">
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">${taskTimeoutForReminderExpr}</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_TaskReminder" name="" sourceRef="BoundaryEvent_TaskReminder" targetRef="ServiceTask_TaskReminder"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_TimeOut" name="" attachedToRef="SubProcess_ReviewCycle">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy"><![CDATA[execution.setVariable("comment", "@KEY=Workflow.comment.defaultActionAfterTimeoutDays|"+taskTimeoutDays)
+execution.setVariable("action", taskTimeoutAction)
+execution.setVariable("user", "Workflow")
+]]></camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>SequenceFlow_DefaultAction</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_TimerEventDefinition_3">
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">${taskTimeoutExpr}</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_DefaultAction" name="Default&#xD;&#xA;Action" sourceRef="BoundaryEvent_TimeOut" targetRef="ExclusiveGateway_CheckAction"/>
+    <bpmn2:scriptTask id="ScriptTask_CalcStatus" camunda:async="true" name="Calc&#xD;&#xA;Status" scriptFormat="groovy">
+      <bpmn2:incoming>SequenceFlow_Reviewed</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_StatusCalculated</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[totalVotes=rejectVotes+reassignVotes+approveVotes
+if (votesToReject > 0 && rejectVotes >= votesToReject) {
+	action="REJECT"
+} else if (votesToReassign > 0 && reassignVotes >= votesToReassign) {
+	action="REASSIGN"		
+} else {
+	action="APPROVE"
+}
+execution.setVariable("action", action)
+execution.setVariable("comment", "@KEY=Workflow.comment.approvalFinished")
+execution.setVariable("user", "Workflow")
+]]></bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_StatusCalculated" name="" sourceRef="ScriptTask_CalcStatus" targetRef="ExclusiveGateway_CheckAction"/>
+    <bpmn2:serviceTask id="ServiceTask_CreateNotificationSubmitted" camunda:class="com.rochade.wa.workflow.camunda.CreateNotificationDelegate" camunda:async="true" name="Notify&#xD;&#xA;Stakeholders">
+      <bpmn2:extensionElements>
+        <camunda:field name="rwfNotificationType">
+          <camunda:expression>${templatePrefix}${status}_MAIL</camunda:expression>
+        </camunda:field>
+        <camunda:field name="usersConf">
+          <camunda:expression><![CDATA[$author=$author
+@BG.WF.notify=$notified
+@BG.WF.facilitate=$facilitator
+$PERMISSION='BG.WF.approve' ROLE='${reviewerRolesString}'=$approver]]></camunda:expression>
+        </camunda:field>
+        <camunda:field name="notifyAction">
+          <camunda:expression>notifyStakeholders</camunda:expression>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_NotifySubmitted</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_UpdateItemStatus</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_UpdateItemStatus" name="" sourceRef="ServiceTask_CreateNotificationSubmitted" targetRef="ServiceTask_UpdateStatusSubmitted"/>
+    <bpmn2:serviceTask id="ServiceTask_UpdateStatusSubmitted" camunda:class="com.rochade.wa.workflow.camunda.PerformStateActionDelegate" camunda:async="true" name="Update Item &#xD;&#xA;Status">
+      <bpmn2:extensionElements>
+        <camunda:field name="taskInstanceId">
+          <camunda:expression>-1</camunda:expression>
+        </camunda:field>
+        <camunda:field name="action">
+          <camunda:expression>SUBMIT</camunda:expression>
+        </camunda:field>
+        <camunda:executionListener event="end" expression="${execution.setVariable('status', 'SUBMITTED')}"/>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_ResumedCompareItem</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_UpdateItemStatus</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_CompareItemVersions</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_CompareItemVersions" name="" sourceRef="ServiceTask_UpdateStatusSubmitted" targetRef="ServiceTask_CompareItemVersions"/>
+    <bpmn2:serviceTask id="ServiceTask_CompareItemVersions" camunda:class="com.rochade.wa.workflow.camunda.CompareItemVersionsDelegate" camunda:async="true" name="Compare Item Versions">
+      <bpmn2:incoming>SequenceFlow_CompareItemVersions</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_ItemCompared</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_ItemCompared" name="" sourceRef="ServiceTask_CompareItemVersions" targetRef="SubProcess_ReviewCycle">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy"><![CDATA[execution.setVariable("approveVotes", 0)
+execution.setVariable("rejectVotes", 0)
+execution.setVariable("reassignVotes", 0)
+execution.setVariable("action", "APPROVE")]]></camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="com.rochade.wa.workflow.camunda.BackupDelegate" event="end"/>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+  </bpmn2:process>
+  <bpmn2:message id="Message_1" name="ItemResubmitted"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_2">
+      <bpmndi:BPMNShape id="_BPMNShape_Participant_5" bpmnElement="_Participant_2" isHorizontal="true">
+        <dc:Bounds height="793.0" width="1321.0" x="0.0" y="72.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Lane_13" bpmnElement="Lane_Author" isHorizontal="true">
+        <dc:Bounds height="145.0" width="1291.0" x="30.0" y="72.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Lane_14" bpmnElement="Lane_Author_Approvers_Admins" isHorizontal="true">
+        <dc:Bounds height="181.0" width="1291.0" x="30.0" y="216.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_17" bpmnElement="StartEvent_ItemSubmitted">
+        <dc:Bounds height="36.0" width="36.0" x="96.0" y="127.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="38.0" width="65.0" x="82.0" y="169.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_14" bpmnElement="ServiceTask_CompareItemVersions">
+        <dc:Bounds height="73.0" width="100.0" x="504.0" y="264.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_11" bpmnElement="UserTask_ReviewItem">
+        <dc:Bounds height="73.0" width="100.0" x="336.0" y="446.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_NotificationReviewTaskCreated" sourceElement="_BPMNShape_ServiceTask_71" targetElement="_BPMNShape_UserTask_11">
+        <di:waypoint xsi:type="dc:Point" x="280.0" y="482.0"/>
+        <di:waypoint xsi:type="dc:Point" x="336.0" y="482.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="300.0" y="482.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ExclusiveGateway_10" bpmnElement="ExclusiveGateway_CheckAction" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="612.0" y="648.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="637.0" y="703.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_Reviewed" sourceElement="_BPMNShape_SubProcess_7" targetElement="_BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="480.0" y="540.0"/>
+        <di:waypoint xsi:type="dc:Point" x="481.0" y="637.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="477.0" y="552.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_15" bpmnElement="ServiceTask_PromoteItem">
+        <dc:Bounds height="73.0" width="100.0" x="756.0" y="637.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_Approved" sourceElement="_BPMNShape_ExclusiveGateway_10" targetElement="_BPMNShape_ServiceTask_15">
+        <di:waypoint xsi:type="dc:Point" x="662.0" y="673.0"/>
+        <di:waypoint xsi:type="dc:Point" x="756.0" y="673.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="59.0" x="684.0" y="651.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_16" bpmnElement="ServiceTask_ReassignItem">
+        <dc:Bounds height="73.0" width="100.0" x="756.0" y="550.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_Reassigned" sourceElement="_BPMNShape_ExclusiveGateway_10" targetElement="_BPMNShape_ServiceTask_16">
+        <di:waypoint xsi:type="dc:Point" x="637.0" y="648.0"/>
+        <di:waypoint xsi:type="dc:Point" x="637.0" y="586.0"/>
+        <di:waypoint xsi:type="dc:Point" x="756.0" y="586.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="58.0" x="684.0" y="564.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_17" bpmnElement="ServiceTask_RejectItem">
+        <dc:Bounds height="73.0" width="100.0" x="756.0" y="721.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_Rejected" sourceElement="_BPMNShape_ExclusiveGateway_10" targetElement="_BPMNShape_ServiceTask_17">
+        <di:waypoint xsi:type="dc:Point" x="637.0" y="698.0"/>
+        <di:waypoint xsi:type="dc:Point" x="637.0" y="757.0"/>
+        <di:waypoint xsi:type="dc:Point" x="756.0" y="757.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="57.0" x="684.0" y="735.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_14" bpmnElement="EndEvent_Rejected">
+        <dc:Bounds height="36.0" width="36.0" x="1224.0" y="740.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="57.0" x="1214.0" y="781.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_ReadyRejected" sourceElement="_BPMNShape_ServiceTask_73" targetElement="_BPMNShape_EndEvent_14">
+        <di:waypoint xsi:type="dc:Point" x="1168.0" y="757.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1224.0" y="758.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1190.0" y="757.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_15" bpmnElement="EndEvent_Approved">
+        <dc:Bounds height="36.0" width="36.0" x="1224.0" y="656.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="59.0" x="1213.0" y="697.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_12" bpmnElement="SequenceFlow_ReadyApproved" sourceElement="_BPMNShape_ServiceTask_75" targetElement="_BPMNShape_EndEvent_15">
+        <di:waypoint xsi:type="dc:Point" x="1168.0" y="673.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1224.0" y="674.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1190.0" y="674.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_12" bpmnElement="UserTask_ReactivateWorkflow">
+        <dc:Bounds height="73.0" width="100.0" x="1068.0" y="264.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_14" bpmnElement="SequenceFlow_RestartReassigned" sourceElement="_BPMNShape_ServiceTask_77" targetElement="_BPMNShape_UserTask_12">
+        <di:waypoint xsi:type="dc:Point" x="1118.0" y="550.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1118.0" y="336.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1115.0" y="525.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ExclusiveGateway_11" bpmnElement="ExclusiveGateway_CheckResumeAction" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="1092.0" y="119.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="1117.0" y="174.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_Reactivated" sourceElement="_BPMNShape_UserTask_12" targetElement="_BPMNShape_ExclusiveGateway_11">
+        <di:waypoint xsi:type="dc:Point" x="1118.0" y="264.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1117.0" y="169.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1115.0" y="243.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_Lane_15" bpmnElement="Lane_Authors_Admins" isHorizontal="true">
+        <dc:Bounds height="469.0" width="1291.0" x="30.0" y="396.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="SequenceFlow_ResumedCompareItem" sourceElement="_BPMNShape_ServiceTask_79" targetElement="_BPMNShape_ServiceTask_70">
+        <di:waypoint xsi:type="dc:Point" x="720.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="604.0" y="144.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="706.0" y="144.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_13" bpmnElement="SequenceFlow_RejectAfterReassign" sourceElement="_BPMNShape_ExclusiveGateway_11" targetElement="_BPMNShape_ServiceTask_17">
+        <di:waypoint xsi:type="dc:Point" x="1142.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1289.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1289.0" y="834.0"/>
+        <di:waypoint xsi:type="dc:Point" x="806.0" y="834.0"/>
+        <di:waypoint xsi:type="dc:Point" x="806.0" y="793.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="57.0" x="1152.0" y="119.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_CalcStatus">
+        <dc:Bounds height="73.0" width="100.0" x="431.0" y="637.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_StatusCalculated" sourceElement="_BPMNShape_ScriptTask_2" targetElement="_BPMNShape_ExclusiveGateway_10">
+        <di:waypoint xsi:type="dc:Point" x="531.0" y="673.0"/>
+        <di:waypoint xsi:type="dc:Point" x="612.0" y="673.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="548.0" y="673.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_2" bpmnElement="BoundaryEvent_TaskReminder">
+        <dc:Bounds height="36.0" width="36.0" x="212.0" y="523.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="230.0" y="564.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_18" bpmnElement="ServiceTask_TaskReminder">
+        <dc:Bounds height="73.0" width="100.0" x="180.0" y="637.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_15" bpmnElement="SequenceFlow_TaskReminder" sourceElement="_BPMNShape_BoundaryEvent_2" targetElement="_BPMNShape_ServiceTask_18">
+        <di:waypoint xsi:type="dc:Point" x="230.0" y="559.0"/>
+        <di:waypoint xsi:type="dc:Point" x="230.0" y="637.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="227.0" y="587.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_3" bpmnElement="BoundaryEvent_TimeOut">
+        <dc:Bounds height="36.0" width="36.0" x="536.0" y="523.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="551.0" y="564.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_16" bpmnElement="SequenceFlow_DefaultAction" sourceElement="_BPMNShape_BoundaryEvent_3" targetElement="_BPMNShape_ExclusiveGateway_10">
+        <di:waypoint xsi:type="dc:Point" x="554.0" y="559.0"/>
+        <di:waypoint xsi:type="dc:Point" x="554.0" y="616.0"/>
+        <di:waypoint xsi:type="dc:Point" x="612.0" y="656.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="38.0" width="56.0" x="558.0" y="558.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_9" bpmnElement="BoundaryEvent_ItemResubmitted">
+        <dc:Bounds height="36.0" width="36.0" x="1150.0" y="283.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1165.0" y="324.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_ReactivatedBySubmit" sourceElement="_BPMNShape_BoundaryEvent_9" targetElement="_BPMNShape_ExclusiveGateway_11">
+        <di:waypoint xsi:type="dc:Point" x="1186.0" y="301.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1221.0" y="301.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1221.0" y="214.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1142.0" y="161.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1195.0" y="198.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_69" bpmnElement="ServiceTask_CreateTask">
+        <dc:Bounds height="73.0" width="100.0" x="180.0" y="108.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_17" bpmnElement="SequenceFlow_CreateTask" sourceElement="_BPMNShape_StartEvent_17" targetElement="_BPMNShape_ServiceTask_69">
+        <di:waypoint xsi:type="dc:Point" x="132.0" y="145.0"/>
+        <di:waypoint xsi:type="dc:Point" x="180.0" y="144.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="168.0" y="145.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_70" bpmnElement="ServiceTask_UpdateStatusSubmitted">
+        <dc:Bounds height="73.0" width="100.0" x="504.0" y="108.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_18" bpmnElement="SequenceFlow_NotifySubmitted" sourceElement="_BPMNShape_ServiceTask_69" targetElement="_BPMNShape_ServiceTask_145">
+        <di:waypoint xsi:type="dc:Point" x="280.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="336.0" y="144.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="281.0" y="144.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_71" bpmnElement="ServiceTask_CreateNotificationReviewTask">
+        <dc:Bounds height="73.0" width="100.0" x="180.0" y="446.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_19" bpmnElement="SequenceFlow_ItemCompared" sourceElement="_BPMNShape_ServiceTask_14" targetElement="_BPMNShape_SubProcess_7">
+        <di:waypoint xsi:type="dc:Point" x="554.0" y="336.0"/>
+        <di:waypoint xsi:type="dc:Point" x="554.0" y="380.0"/>
+        <di:waypoint xsi:type="dc:Point" x="480.0" y="380.0"/>
+        <di:waypoint xsi:type="dc:Point" x="480.0" y="424.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="551.0" y="361.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_72" bpmnElement="ServiceTask_CreateNotificationRejected">
+        <dc:Bounds height="73.0" width="100.0" x="912.0" y="721.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_20" bpmnElement="SequenceFlow_CreateNotificationRejected" sourceElement="_BPMNShape_ServiceTask_17" targetElement="_BPMNShape_ServiceTask_72">
+        <di:waypoint xsi:type="dc:Point" x="856.0" y="757.0"/>
+        <di:waypoint xsi:type="dc:Point" x="912.0" y="757.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="878.0" y="757.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_73" bpmnElement="ServiceTask_UpdateTaskRejected">
+        <dc:Bounds height="73.0" width="100.0" x="1068.0" y="721.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_21" bpmnElement="SequenceFlow_UpdateTaskRejected" sourceElement="_BPMNShape_ServiceTask_72" targetElement="_BPMNShape_ServiceTask_73">
+        <di:waypoint xsi:type="dc:Point" x="1012.0" y="757.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1068.0" y="757.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1036.0" y="757.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_74" bpmnElement="ServiceTask_CreateNotificationPromoted">
+        <dc:Bounds height="73.0" width="100.0" x="912.0" y="637.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_22" bpmnElement="SequenceFlow_CreateNotificationPromoted" sourceElement="_BPMNShape_ServiceTask_15" targetElement="_BPMNShape_ServiceTask_74">
+        <di:waypoint xsi:type="dc:Point" x="856.0" y="673.0"/>
+        <di:waypoint xsi:type="dc:Point" x="912.0" y="673.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="878.0" y="673.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_75" bpmnElement="ServiceTask_UpdateTaskPromoted">
+        <dc:Bounds height="73.0" width="100.0" x="1068.0" y="637.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_23" bpmnElement="SequenceFlow_UpdateTaskPromoted" sourceElement="_BPMNShape_ServiceTask_74" targetElement="_BPMNShape_ServiceTask_75">
+        <di:waypoint xsi:type="dc:Point" x="1012.0" y="673.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1068.0" y="673.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1035.0" y="673.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_76" bpmnElement="ServiceTask_CreateNotificationReassigned">
+        <dc:Bounds height="73.0" width="100.0" x="912.0" y="550.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_24" bpmnElement="SequenceFlow_CreateNotificationReassigned" sourceElement="_BPMNShape_ServiceTask_16" targetElement="_BPMNShape_ServiceTask_76">
+        <di:waypoint xsi:type="dc:Point" x="856.0" y="586.0"/>
+        <di:waypoint xsi:type="dc:Point" x="912.0" y="586.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="878.0" y="586.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_77" bpmnElement="ServiceTask_UpdateTaskReassigned">
+        <dc:Bounds height="73.0" width="100.0" x="1068.0" y="550.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_25" bpmnElement="SequenceFlow_UpdateTaskReassigned" sourceElement="_BPMNShape_ServiceTask_76" targetElement="_BPMNShape_ServiceTask_77">
+        <di:waypoint xsi:type="dc:Point" x="1012.0" y="586.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1068.0" y="586.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="1035.0" y="586.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_78" bpmnElement="ServiceTask_CreateNotificationResumed">
+        <dc:Bounds height="73.0" width="100.0" x="888.0" y="108.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_26" bpmnElement="SequenceFlow_ResumedCreateNotification" sourceElement="_BPMNShape_ExclusiveGateway_11" targetElement="_BPMNShape_ServiceTask_78">
+        <di:waypoint xsi:type="dc:Point" x="1092.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1040.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1040.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="988.0" y="144.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="61.0" x="1020.0" y="119.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_79" bpmnElement="ServiceTask_UpdateTaskReactivated">
+        <dc:Bounds height="73.0" width="100.0" x="720.0" y="108.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_27" bpmnElement="SequenceFlow_ResumedUpdateTask" sourceElement="_BPMNShape_ServiceTask_78" targetElement="_BPMNShape_ServiceTask_79">
+        <di:waypoint xsi:type="dc:Point" x="888.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="854.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="854.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="820.0" y="144.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="859.0" y="144.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_28" bpmnElement="SequenceFlow_UpdateItemStatus" sourceElement="_BPMNShape_ServiceTask_145" targetElement="_BPMNShape_ServiceTask_70">
+        <di:waypoint xsi:type="dc:Point" x="436.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="504.0" y="144.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="459.0" y="144.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_145" bpmnElement="ServiceTask_CreateNotificationSubmitted">
+        <dc:Bounds height="73.0" width="100.0" x="336.0" y="108.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_SubProcess_7" bpmnElement="SubProcess_ReviewCycle" isExpanded="true">
+        <dc:Bounds height="117.0" width="817.0" x="72.0" y="424.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_147" bpmnElement="ServiceTask_CreateNotificationReviewed">
+        <dc:Bounds height="73.0" width="100.0" x="504.0" y="446.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_31" bpmnElement="SequenceFlow_ReviewTaskCompleted" sourceElement="_BPMNShape_UserTask_11" targetElement="_BPMNShape_ServiceTask_147">
+        <di:waypoint xsi:type="dc:Point" x="436.0" y="482.0"/>
+        <di:waypoint xsi:type="dc:Point" x="504.0" y="482.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="447.0" y="482.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_148" bpmnElement="ServiceTask_UpdateTaskReviewed">
+        <dc:Bounds height="73.0" width="100.0" x="672.0" y="446.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_32" bpmnElement="SequenceFlow_UpdateTaskReviewed" sourceElement="_BPMNShape_ServiceTask_147" targetElement="_BPMNShape_ServiceTask_148">
+        <di:waypoint xsi:type="dc:Point" x="604.0" y="482.0"/>
+        <di:waypoint xsi:type="dc:Point" x="672.0" y="482.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="605.0" y="482.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_28" bpmnElement="StartEvent_ApproveCycle">
+        <dc:Bounds height="36.0" width="36.0" x="96.0" y="465.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="114.0" y="506.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_33" bpmnElement="SequenceFlow_NotifyApprovers" sourceElement="_BPMNShape_StartEvent_28" targetElement="_BPMNShape_ServiceTask_71">
+        <di:waypoint xsi:type="dc:Point" x="132.0" y="483.0"/>
+        <di:waypoint xsi:type="dc:Point" x="180.0" y="482.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="153.0" y="483.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_26" bpmnElement="EndEvent_ReviewCycle">
+        <dc:Bounds height="36.0" width="36.0" x="816.0" y="465.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="834.0" y="506.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_34" bpmnElement="SequenceFlow_EndReviewCycle" sourceElement="_BPMNShape_ServiceTask_148" targetElement="_BPMNShape_EndEvent_26">
+        <di:waypoint xsi:type="dc:Point" x="772.0" y="482.0"/>
+        <di:waypoint xsi:type="dc:Point" x="816.0" y="483.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="775.0" y="482.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_43" bpmnElement="SequenceFlow_CompareItemVersions" sourceElement="_BPMNShape_ServiceTask_70" targetElement="_BPMNShape_ServiceTask_14">
+        <di:waypoint xsi:type="dc:Point" x="554.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="554.0" y="264.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="551.0" y="204.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

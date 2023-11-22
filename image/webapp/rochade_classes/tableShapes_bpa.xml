@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<?xml-stylesheet type="text/xsl" href="Resources.xsl"?>
+<ShapeResources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ShapeRes.xsd">
+
+	<TableColumn Title="%dynBusinessContext" ID="dynBpaBusinessContext">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.BPContextCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBPContextPath" ID="dynBPContextPath">
+		<ColumnText Key="AbsName" />
+		<ColumnProperty
+			Renderer="com.rochade.bpa.cellrenderer.BPContextPathCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="" ID="dynBpaNameNoHeader">
+		<ColumnText Key="name" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaName" ID="dynBpaName">
+		<ColumnText Key="name" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaName" ID="dynBpaMLNameWithIcon" Width="1" >
+		<ColumnText Key="languages" />
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WAMLNameWithIconCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDef" ID="dynBpaMLDefinition" Width="3">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+
+	<TableColumn Title="%dynGoverningContext" ID="dynBPOwnedBy" Width="1">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.BPContextCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynCrDate" ID="dynBpaCrDate">
+		<ColumnText Key="crDate" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.DateCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynModifDate" ID="dynBpaModifDate">
+		<ColumnText Key="upDate" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.DateCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynStatus" ID="dynBpaStatus" Width="1">
+		<ColumnText Key="RBG/STATUS" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.BtStatusCellRenderer" />
+	</TableColumn>
+
+	<Table ID="BI_Items">
+		<TableColumn ref="dynActions" Filterable ="false"/>
+		<TableColumn ref="dynBpaName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynType" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDefWidth2" Object.Use="assoc.dst" />
+	</Table>
+
+	<Table ID="BI_Items_with_context">
+		<TableColumn ref="dynBpaName" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynType" />
+		<TableColumn ref="dynDefWidth2" />
+		<TableColumn ref="dynBpaBusinessContext" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="baseType" Value="BPK__BUSINESS_ITEM" />
+		<Property Name="ignoreAttributesOfTypes" Value="RBG/BUSINESS-TERM, BPK_BUSINESS_RULE, BPK_PROCESS, BPK_CRITICAL_DATA_ELEMENT, GDP_PERSONAL_INFORMATION, GDP_PI_STRUCTURE, BPK_POLICY, BPK_STANDARD, BPK__CUST_TIMED_BUSINESS_ITEM, BPK__CUST_BUSINESS_ITEM" />
+	</Table>
+
+	<Table ID="BI_Items_with_def">
+		<TableColumn ref="dynBpaName" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynType" Sort="1" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynDef"  Sort="2" Object.Use="assoc.dst"/>
+	</Table>
+
+
+	<Table ID="BI_Contexts">
+		<TableColumn ref="dynBpaName" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDefWidth2" />
+		<TableColumn ref="dynBPContextPath" />
+		<TableColumn ref="dynTags" Visible="false" />
+	</Table>
+
+	<Table ID="BP-HasContext-Name">
+		<TableColumn ref="dynBpaNameNoHeader" Sort="0" />
+	</Table>
+
+	<Table ID="BP_MyBusinessItemList">
+		<TableColumn ref="dynBpaMLNameWithIcon" Sort="0" MultiplexML="true" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynType" Sort="1" />
+		<TableColumn ref="dynBpaMLDefinition"  MultiplexML="true" />
+		<TableColumn ref="dynBPOwnedBy" Filterable ="false"/>
+		<TableColumn ref="dynQualContextName" Visible="false" Filterable ="false"/>
+		<TableColumn ref="dynBpaCrDate" Filterable ="false"/>
+		<TableColumn ref="dynBpaModifDate" Filterable ="false"/>
+		<TableColumn ref="dynBpaStatus" Filterable="false"/>
+		<TableColumn ref="dynDesignatedAttsML" Visible="false" Filterable ="true" MultiplexML="true"/>
+		<TableColumn ref="dynMgOwner" Visible="false" Filterable="false" />
+		<Property Name="baseType" Value="BPK__BUSINESS_ITEM" />
+		<Property Name="ignoreAttributesOfTypes" Value="RBG/BUSINESS-TERM, BPK_BUSINESS_RULE, BPK_PROCESS, BPK_CRITICAL_DATA_ELEMENT, GDP_PERSONAL_INFORMATION, GDP_PI_STRUCTURE, BPK_POLICY, BPK_STANDARD, BPK__CUST_TIMED_BUSINESS_ITEM, BPK__CUST_BUSINESS_ITEM" />
+		<Property Name="pageSize" Value="*" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+
+	<TableColumn Title="%dynActionsDocBP" ID="dynActionsDocBP" Width="1" isAction="true">
+		<ColumnProperty Renderer="com.rochade.wa.ui.editor.link.RemoveDocumentLinkActionCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynReferenceDocumentKindBP" ID="dynReferenceDocumentKindBP"   Width="3">
+		<ColumnText Key="RBG/URL" />
+		<ColumnText Key="RBG/DOCUMENT-TITLE" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.ReferenceDocumentKindCellRenderer" />
+	</TableColumn>
+
+	<Table ID="BP_REFDOCUMENTVIEW">
+		<TableColumn ref="dynActionsDocBP" Filterable="false"/>
+		<!-- TableColumn ref="dynBpaMLNameWithIcon" Visible="false" Sort="0" Object.Use="assoc.dst" /-->
+		<TableColumn ref="dynReferenceDocumentKindBP" Filterable="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDefinition" Object.Use="assoc.dst" />
+		<Property Name="pageSize" Value="5" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+
+	<TableColumn Title="%dynUser" ID="dynBpaHistUser">
+		<ColumnList Direction="forward" ObjectType="RBG/USER" AssocType="RBG/MODIFIER">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.UserLDAPPropsCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynHistDate" ID="dynBpaHistDate">
+		<ColumnText Key="RBG/MODIFICATION-DATE" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.DateCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynHistComment" ID="dynBpaHistComment">
+		<ColumnText Key="RBG/CHANGE-COMMENT" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.MappedHistoryCommentCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynHistAtts" ID="dynBpaHistAtts">
+		<ColumnList Direction="forward" ObjectType="RBG/ATTR-RECORD" AssocType="RBG/ATT-CHANGES">
+			<ColumnText Key="RBG/ATTRIBUTE-NAME" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.MappedAttributeCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynHistRefByTask" ID="dynBpaHistRefByTask">
+		<ColumnList Direction="backward" ObjectType="RWF/NOTIFICATION" AssocType="RWF/ITEM-HISTORY">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.HistTaskCellRenderer" />
+	</TableColumn>
+
+	<!--Table ID="BPA_historyView">
+		<TableColumn ref="dynBpaHistUser"/>
+		<TableColumn ref="dynBpaHistDate" Sort="0" Filterable="false"/>
+		<TableColumn ref="dynBpaHistComment"/>
+		<TableColumn ref="dynBpaHistAtts" Filterable="false"/>
+		<TableColumn ref="dynBpaHistRefByTask" Filterable="false"/>
+		<Property Name="pageSize" Value="5" />
+		<Property Name="sortDirection" Value="descending" />
+		<Property Name="lineHeight" Value="3" />
+	</Table-->
+
+	<TableColumn Title="%dynBpaDateProfiled" ID="dynBpaDateProfiled">
+		<ColumnText Key="BPK_DATE_PROFILED"/>
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.DateCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaVersionProfiled" ID="dynBpaVersionProfiled">
+		<ColumnText Key="BPK_VERSION_PROFILED"/>
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaBusinessLinkage" ID="dynBpaLinkage.Business">
+		<ColumnText Key="BPK_RESULT_DATA" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.CDEProfileResultsRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaLDMLinkage" ID="dynBpaLinkage.LDM">
+		<ColumnText Key="BPK_RESULT_DATA" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.CDEProfileResultsRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaPDMLinkage" ID="dynBpaLinkage.PDM">
+		<ColumnText Key="BPK_RESULT_DATA" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.CDEProfileResultsRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaOperationalLinkage" ID="dynBpaLinkage.Op">
+		<ColumnText Key="BPK_RESULT_DATA" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.CDEProfileResultsRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaDataType" ID="dynBpaData.Type">
+		<ColumnText Key="BPK_RESULT_DATA" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.CDEProfileResultsRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaDataLength" ID="dynBpaData.Length">
+		<ColumnText Key="BPK_RESULT_DATA" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.CDEProfileResultsRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaOptionalNulls" ID="dynBpaOptionality">
+		<ColumnText Key="BPK_RESULT_DATA" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.CDEProfileResultsRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynBpaLineage" ID="dynBpaLineage">
+		<ColumnText Key="BPK_RESULT_DATA" />
+		<ColumnProperty Renderer="com.rochade.bpa.cellrenderer.CDEProfileResultsRenderer" />
+	</TableColumn>
+
+	<Table ID="BP_CDEProfiles">
+		<TableColumn ref="dynBpaDateProfiled" Sort="0" />
+		<TableColumn ref="dynBpaVersionProfiled" />
+		<TableColumn ref="dynBpaLinkage.Business" />
+		<TableColumn ref="dynBpaLinkage.LDM" />
+		<TableColumn ref="dynBpaLinkage.PDM" />
+		<TableColumn ref="dynBpaLinkage.Op" />
+		<TableColumn ref="dynBpaData.Type" />
+		<TableColumn ref="dynBpaData.Length" />
+		<TableColumn ref="dynBpaOptionality" />
+		<TableColumn ref="dynBpaLineage" />
+		<Property Name="sortDirection" Value="descending" />
+	</Table>
+	
+	<TableColumn Title="%dynLockedBy" ID="dynBpaLockedBy" Width="2">
+		<ColumnText Key="RBG/LOCKED-BY" />
+	</TableColumn>
+	<Table ID="BP_RelatedBIs">
+		<TableColumn ref="dynMgMLName" />
+		<TableColumn ref="dynType" />
+		<TableColumn ref="dynDef" />
+		<TableColumn ref="dynApprovedBy" Filterable ="false"/>
+		<TableColumn ref="dynOwnedBy" Filterable ="false"/>
+		<Property Name="pageSizeEmbedded" Value="5" />
+	</Table>
+	<Table ID="BP_CombinedCreation">
+		<TableColumn ref="dynMgMLName" />
+		<TableColumn ref="dynType" />
+		<TableColumn ref="dynDef" />
+		<TableColumn ref="dynOwnedBy" Filterable ="false"/>
+		<Property Name="pageSizeEmbedded" Value="10" />
+	</Table>
+		<Table ID="BP_CombinedCreationSearchItem">
+		<TableColumn ref="dynMLNameWithIcon" Sort="0" MultiplexML="true"/>
+		<TableColumn ref="dynMgDefinition"/>
+		<TableColumn ref="dynOwnedBy" Filterable ="false" />
+		<TableColumn ref="dynQualContextName" Filterable="false"/>
+		<TableColumn ref="dynBpaStatus" Filterable="false"/>
+		<TableColumn ref="dynBpaLockedBy" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+	<Table ID="BP_CombinedCreationSearchGlsCtx">
+		<TableColumn ref="dynMLNameWithIcon" Sort="0"/>
+		<TableColumn ref="dynMgDefinition"/>
+		<TableColumn ref="dynType"/>
+		<TableColumn ref="dynContextPath" Filterable="false"/>
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+</ShapeResources>

@@ -1,0 +1,404 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Login
+  description: | 
+    Login OpenAPI definition.  
+    
+    The login to services may happen through multiple login methods:  
+    * `BASIC`: The HTTP Basic authentication protocol is used.  
+      The user agent provides, to the [/login](#Security/login) operation, the username and password
+      via the ***Authorization*** HTTP header according to the *Basic* scheme (_so, the header looks like: 'Authorization: Basic BASE64'_).  
+      In reply, the user agent receives an authentication token.  
+      
+      _See: [Basic Authentication](https://swagger.io/docs/specification/authentication/basic-authentication/)._  
+    
+    * `GUEST`: No credentials are required.  
+      However the authentication operation via [/login](#Security/login) is still required to obtain an authentication token.  
+      
+      _Note: In practice, with this method, the access to services is tied to a fixed user
+      (what allows to apply Authorization aspect, respectively with rights of that user).  
+      The user tied for that purpose is controlled by the configuration of the underlying RochadeServices layer._  
+    
+    * `SSO_GSSAPI`: When [/login](#Security/login) operation is invoked,
+      the [Generic Security Services api](https://en.wikipedia.org/wiki/Generic_Security_Services_Application_Program_Interface) is exploited
+      to obtain directly the authentication from the user agent. The exchange of tokens happens beyond the scene.
+      So, from the point of view of this service, there is no need to send any specific information.  
+      At end, an authentication token is also returned by the login operation.
+      
+      _Rule of thumb: The user agent must support GSSAPI. Most web browsers satisfy this condition, but they need to be configured for enabling GSSAPI support._  
+      
+      _Note: [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) is a GSSAPI implementation on server side.  
+      Kerberos and NTLM are the most common underlying protocols used by GSSAPI implementations to access
+      the Active Directory acting as an Authentication Server (AS)._  
+    
+    * `SSO_OPENID`: A third-party OpenID Connect server is invoked to generate an authentication token.  
+      In this method, the [/login](#Security/login) endpoint is not implied.  
+      
+      _Note: OpenID is built on OAuth. See: [Difference Between OAuth, OpenID Connect, and SAML](https://www.okta.com/identity-101/whats-the-difference-between-oauth-openid-connect-and-saml/)_  
+    
+    For any method, once the authentication token is obtained, the user agent must provide it in each subsequent request to services.  
+    This is done via the ***Authorization*** HTTP header according to the *Bearer* scheme (_so, the header looks like: 'Authorization: Bearer BASE64'_).  
+    _See: [Bearer Authentication](https://swagger.io/docs/specification/authentication/bearer-authentication/)._  
+    
+    Note: For any method, the Authorization aspect (access rights to resources) is always managed directly by the underlying Rochade server.  
+    So, even if an Authorization Server (like an OAuth-compliant server) is implied into the authentication aspect, it is not in charge of
+    defining the Rochade roles of the user (which in turn drive the access to the Rochade resources).  
+    
+    For distinction between Authorization and Authentication, see [OAuth vs OpenID](https://www.securew2.com/blog/oauth-vs-openid-which-is-better).  
+
+servers:
+  - url: '/rest'
+tags:
+  # TRICK: if using tags currently openapi-generator generates in one Api file all the endpoints having the same tag
+  # An additional issue of that way to do is that the first entry of paths defines the base path for all the endpoints
+  # what leads to incorrect REST Api routing (example: /login and /logout endpoint are declared as /login/login and /login/logout into JAX-RS/Jersey)
+  # The solution is to configure openapi-generator with useTags=false into pom.xml 
+  # For another issue about generation is split (or not) into multiple API files, see https://github.com/OpenAPITools/openapi-generator/issues/6595
+  - name: Security
+
+paths:
+  /login/config:
+    get:
+      tags:
+        - Security
+      operationId: getLoginConfig
+      summary: List the methods that are available to login, and how to access them.
+      description: |
+      responses:
+        '200':
+          description: | 
+            HATEOAS links to access the valid login methods.  
+          content:
+            application/vnd.bdi-services-login-config.v1+json:
+              schema:
+                $ref: '#/components/schemas/LoginConfig'
+
+
+  /login:
+    get:
+      security:
+        - BasicAuth: []
+      tags:
+        - Security
+      operationId: login
+      summary: Authenticates the user agent and provides an authentication token in case of success
+      description: |
+        Authentication happens based on the specified login method.  
+      parameters:
+        - name: method
+          in: query
+          description: |
+            The method used to authenticate the caller.  
+            Possible values are: [`BASIC`, `GUEST`, `SSO_GSSAPI`].  
+            However, only methods that are active, as retrieved by [/login/config](#Security/getLoginConfig), can be used; otherwise a 400 (BadRequest) error is thrown.  
+            
+            CAUTION: the `SSO_OPENID` login method is **not** exploited via this endpoint!
+          required: true
+          schema:
+            $ref: '#/components/schemas/LoginMethod'
+        - name: Authorization
+          in: header
+          description: |
+            Required only when using the `BASIC` method.  
+            Provides name and password (credentials) of an user known by Rochade server.  
+            The *Basic* scheme must be used to provide the credentials (_so, the header looks like: 'Authorization: Basic BASE64'_).  
+            
+            _Note: The user can be either an embedded one of Rochade server, or, if the Rochade server is configured with LDAP access, it can be any of the LDAP users._  
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: |
+            Authentication token that the user agent must provide in each subsequent request
+            via the ***Authorization*** HTTP header according to the *Bearer* scheme (_so, the header looks like: 'Authorization: Bearer BASE64'_).  
+            See: [Bearer Authentication](https://swagger.io/docs/specification/authentication/bearer-authentication/).  
+            
+            _Note: The format of the token is opaque for the user agent. The user agent needs only to obtain and forward it.  
+            In practice, that token uses the JWT format._
+          content:
+            application/vnd.bdi-services-login-result.v1+json:
+              schema:
+                $ref: '#/components/schemas/LoginResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/LoginUnauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+  /logout:
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+        - Security
+      operationId: logout
+      summary: Frees the cached resources associated with an authenticated user and revokes its authentication token.
+      description: |
+        The bearer authentication token must be provided into the **Authorization** HTTP header.  
+        After logged out, a new [/login](#Security/login) operation is then required to access again the services (as a new valid authentication token is needed).  
+        
+        _Note: a 404 status code is returned if the authentication token was already revoked._  
+      parameters:
+        - name: Authorization
+          in: header
+          description: |
+            Authentication token of the user to logout.  
+            The *Bearer* scheme must be used to provide the authentication token (_so, the header looks like: 'Authorization: Bearer BASE64'_).  
+          required: false
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No content is returned on success.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+
+####################
+components:
+  securitySchemes:
+    BasicAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+    BearerAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+
+####################
+  responses:
+    BadRequest:
+      description: A bad request was submitted (HTTP 400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unauthorized:
+      description: Unauthorized (HTTP 401)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    LoginUnauthorized:
+      description: |
+        Unauthorized (HTTP 401)  
+        
+        The cause of the login failure is provided by the **code** attribute according to the following table:
+        * 001: exact cause is undetermined (limited details due to security restrictions)
+        * 002: credentials are invalid (either username or password)
+        * 003: account is locked
+        * 004: password has expired
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Forbidden:
+      description: You are not authorized to perform this action (HTTP 403)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotFound:
+      description: The specified resource was not found (HTTP 404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Conflict:
+      description: A conflict occurred (HTTP 409)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionFailed:
+      description: Condition is not fulfilled (HTTP 412)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionRequired:
+      description: Condition is required (HTTP 428)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    TooManyRequests:
+      description: Too many requests in a given amount of time, aka "rate limiting" (HTTP 429).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    InternalServerError:
+      description: An error occurred on the server (HTTP 500)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotImplemented:
+      description: Method not implemented (HTTP 501)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    ServiceUnavailable:
+      description: Server is not ready to handle the request (HTTP 503)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+
+
+  schemas:
+    # Schema for error response body when Jersey dispatcher triggers the error
+    JerseyError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+
+    # Schema for error response body when ASG-Services-SDK maps automatically one of its standard com.asg.services.common.exceptions into response body
+    SDKError:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^\d{3}$'
+        message:
+          type: string
+        correlationId:
+          type: string
+
+    LoginConfig:
+      description: Valid methods for login and how to access them via HATEOAS links
+      type: object
+      properties:
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      example:
+        links:
+          -
+            rel: self
+            method: GET
+            href: /rest/login/config
+          -
+            rel: login-basic
+            method: GET
+            href: /rest/login?method=BASIC
+          -
+            rel: login-guest
+            method: GET
+            href: /rest/login?method=GUEST
+          -
+            rel: login-sso-gssapi
+            method: GET
+            href: /rest/login?method=SSO_GSSAPI
+          -
+            rel: login-sso-openid
+            method: POST
+            href: https://www.okta.com/bdi/
+
+    HATEOASLinks:
+      description: HATEOAS links
+      type: array
+      items:
+        $ref: '#/components/schemas/HATEOASLink'
+
+    HATEOASLink:
+      description: HATEOAS link
+      type: object
+      properties:
+        rel:
+          description: the relation between the resource associated with this HATEOAS link and the resource designated by the target href
+          type: string
+        method:
+          description: HTTP method to use when invoking href
+          type: string
+          enum: [GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH]
+        href:
+          description: the URL to follow to obtain the related resource
+          type: string
+          format: uri
+
+    LoginMethod:
+      type: string
+      enum: [BASIC, GUEST, SSO_GSSAPI]
+
+    LoginResult:
+      type: object
+      properties:
+        access_token:
+          description: The authentication token. It must be provided to each subsequent requests to any service (except the login one), exactly in the same representation format (generally Base64 encoded data, or close like JWT that is 3 parts encoded in Base64Url with dot separators, what is not pure Base64).
+          type: string
+          # CAUTION: do NOT specify 'byte' format as Swagger UI will always interpret it as Base64 encode wil in fact the bearer token can be anything and is not necessarily Base64-encoded
+          #format: byte
+        token_type:
+          description: meaning of access token (mimic OAuth2)
+          type: string
+          enum: [BEARER]
+        scope:
+          description: scope of the access granted by the token. Unused for now (mimic OAuth2).
+          type: string

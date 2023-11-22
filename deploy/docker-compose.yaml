@@ -36,7 +36,6 @@ services:
       DI_SERVER_LICENSE_COMPANY: "ASG Internal Use"
     ports:
       - '8888:8888'
-      - '9092:9092'
     volumes:
     - ./datbas:/home/rocket/rochade/datbas
     - ./conf:/home/rocket/rochade/conf

@@ -1,0 +1,42 @@
+digraph G {
+rankdir="LR"; bgcolor="transparent"; penwidth="0.1"; nodesep="0.05"; pad="0.014"; margin="0.02,0.02";
+ node [tooltip=" " fontsize="10", fontname="Arial", fontcolor="black", color="black", shape="plaintext", style="filled", fillcolor="white", fixedsize="false"];
+ edge [tooltip=" " fontsize="10", fontname="Arial", fontcolor="black", color="grey70"];
+_5 [ shape="diamond" height="0.15" width="0.15" fixedsize="true" tooltip=" " label=<<table href="[&amp;apos;2859464&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" tooltip="Transformation-Map AlbumId TO AlbumId" border="0" cellborder="0" cellpadding="1.5"><tr><td port="0">&#160;</td></tr></table>> color="#6F619D"];
+_7 [ shape="diamond" height="0.15" width="0.15" fixedsize="true" tooltip=" " label=<<table href="[&amp;apos;2904695&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" tooltip="Stitching Element Link |Album TO albums|2859463|sti_struct|2859463|Album TO albums|.|AlbumId TO AlbumId|2859464|stitch|2859464|AlbumId TO AlbumId|" border="0" cellborder="0" cellpadding="1.5"><tr><td port="0">&#160;</td></tr></table>> color="gray"];
+_10 [ shape="diamond" height="0.15" width="0.15" fixedsize="true" tooltip=" " label=<<table href="[&amp;apos;2859466&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" tooltip="Transformation-Map Title TO Title" border="0" cellborder="0" cellpadding="1.5"><tr><td port="0">&#160;</td></tr></table>> color="#6F619D"];
+_12 [ shape="diamond" height="0.15" width="0.15" fixedsize="true" tooltip=" " label=<<table href="[&amp;apos;2904697&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" tooltip="Stitching Element Link |Album TO albums|2859463|sti_struct|2859463|Album TO albums|.|Title TO Title|2859466|stitch|2859466|Title TO Title|&amp;#10;Identical Names" border="0" cellborder="0" cellpadding="1.5"><tr><td port="0">&#160;</td></tr></table>> fillcolor="gray" color="gray"];
+_15 [ shape="diamond" height="0.15" width="0.15" fixedsize="true" tooltip=" " label=<<table href="[&amp;apos;2859465&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" tooltip="Transformation-Map ArtistId TO ArtistId" border="0" cellborder="0" cellpadding="1.5"><tr><td port="0">&#160;</td></tr></table>> color="#6F619D"];
+_17 [ shape="diamond" height="0.15" width="0.15" fixedsize="true" tooltip=" " label=<<table href="[&amp;apos;2904696&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" tooltip="Stitching Element Link |Album TO albums|2859463|sti_struct|2859463|Album TO albums|.|ArtistId TO ArtistId|2859465|stitch|2859465|ArtistId TO ArtistId|&amp;#10;Identical Names" border="0" cellborder="0" cellpadding="1.5"><tr><td port="0">&#160;</td></tr></table>> fillcolor="gray" color="gray"];
+_2147483647 [label=<<table cellspacing="0" border="0" cellborder="1">
+<tr><td align="left" href="" bgcolor="#F0E0E0" colspan="2" tooltip="Business Application Media Data Chinook">Business Application Media Data Chinook       </td></tr>
+<tr><td align="left" href="" bgcolor="#EBA389" colspan="2" tooltip="DB-System GECHEM8R2DEV1">DB-System GECHEM8R2DEV1    </td></tr>
+<tr><td align="left" href="" bgcolor="#EBA389" colspan="2" tooltip="Database GECHEM8R2DEV1.Chinook">Database Chinook   </td></tr>
+<tr><td align="left" href="" bgcolor="#EBA389" colspan="2" tooltip="Schema Chinook.dbo">Schema dbo  </td></tr>
+<tr><td port="0" href="[&amp;apos;1401317&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" bgcolor="#D94835" tooltip="Table | View dbo.Album" border="3" color="#FAF42A" colspan="2" align="left">Table Album  </td></tr>
+<tr><td port="L1" href="[&amp;apos;1401412&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" align="left" bgcolor="#EB8A66" tooltip="Column Album.AlbumId">AlbumId </td><td port="R1" align="left" bgcolor="#EB8A66" href="" tooltip="Column int">int</td></tr>
+<tr><td port="L2" href="[&amp;apos;1401413&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" align="left" bgcolor="#EB8A66" tooltip="Column Album.Title">Title </td><td port="R2" align="left" bgcolor="#EB8A66" href="" tooltip="Column nvarchar">nvarchar(160)</td></tr>
+<tr><td port="L3" href="[&amp;apos;1401414&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" align="left" bgcolor="#EB8A66" tooltip="Column Album.ArtistId">ArtistId </td><td port="R3" align="left" bgcolor="#EB8A66" href="" tooltip="Column int">int</td></tr>
+</table>>];
+_2147483646 [label=<<table cellspacing="0" border="0" cellborder="1">
+<tr><td align="left" href="" bgcolor="#F0E0E0" colspan="2" tooltip="Business Application BigData Warehouse">Business Application BigData Warehouse       </td></tr>
+<tr><td align="left" href="" bgcolor="#d7e4bd" colspan="2" tooltip="DB-System Hive.10.33.6.133">DB-System Hive.10.33.6.133     </td></tr>
+<tr><td align="left" href="" bgcolor="#d7e4bd" colspan="2" tooltip="Database Hive.10.33.6.133.media">Database media  </td></tr>
+<tr><td port="0" href="[&amp;apos;1127225&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" bgcolor="#84a343" tooltip="Table | View media.albums" colspan="2" align="left">Table albums  </td></tr>
+<tr><td port="L6" href="[&amp;apos;1127227&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" align="left" bgcolor="#d7e4bd" tooltip="Column albums.albumid">albumid </td><td port="R6" align="left" bgcolor="#d7e4bd" href="" tooltip="Column int">int</td></tr>
+<tr><td port="L11" href="[&amp;apos;2874895&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" align="left" bgcolor="#d7e4bd" tooltip="Column albums.albumTitle">albumTitle  </td><td port="R11" align="left" bgcolor="#d7e4bd" href="" tooltip="Column string">string</td></tr>
+<tr><td port="L16" href="[&amp;apos;1127226&amp;apos;,&amp;apos;_top&amp;apos;]" target="_blank" align="left" bgcolor="#d7e4bd" tooltip="Column albums.artistid">artistid </td><td port="R16" align="left" bgcolor="#d7e4bd" href="" tooltip="Column int">int</td></tr>
+</table>>];
+_2147483647:R1:e -> _5:w [ labeltooltip=" " label=""];
+_5:e -> _2147483646:L6:w [ labeltooltip=" " label=""];
+_5:e -> _7:w [style="dashed" labeltooltip=" " label=""];
+_7:e -> _5:w [style="dashed" labeltooltip=" " label=""];
+_2147483647:R2:e -> _10:w [ labeltooltip=" " label=""];
+_10:e -> _2147483646:L11:w [ labeltooltip=" " label=""];
+_10:e -> _12:w [style="dashed" labeltooltip=" " label=""];
+_12:e -> _10:w [style="dashed" labeltooltip=" " label=""];
+_2147483647:R3:e -> _15:w [ labeltooltip=" " label=""];
+_15:e -> _2147483646:L16:w [ labeltooltip=" " label=""];
+_15:e -> _17:w [style="dashed" labeltooltip=" " label=""];
+_17:e -> _15:w [style="dashed" labeltooltip=" " label=""];
+}

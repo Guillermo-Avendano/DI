@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- For the general syntax of configuration files see the documentation in log4j manual, XML section --> 
+<!-- (https://logging.apache.org/log4j/2.x/manual/configuration.html#XML). -->
+<Configuration>
+	<Appenders>
+		<!-- For documentation please see https://logging.apache.org/log4j/2.x/manual/appenders.html -->
+		<!-- STDOUT is the ConsoleAppender that outputs to the system console -->
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{DEFAULT} %-5p RaaS - %c - %m%n" />
+		</Console>
+		<!-- LOGFILE1 uses the RollingFileAppender that outputs to a rolling log file -->
+		<!-- (by default relative to current directory) -->
+        <!--
+		<RollingFile name="LOGFILE1" fileName="logs/rochade.log"
+			filePattern="logs/$${date:yyyy-MM}/rochade-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%d{DEFAULT} %-5p Rochade - %c - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+		</RollingFile>
+        -->        
+	</Appenders>
+	<Loggers>
+		<!-- Level may be ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF. -->
+		<!-- See the log4j.Level class of the Log4j API -->
+		<Root level="warn">
+			<AppenderRef ref="STDOUT" />
+			<!-- <AppenderRef ref="LOGFILE1"/> -->
+		</Root>
+		<!-- be more verbose for web application -->
+		<Logger name="com.rochade" level="info" />
+	</Loggers>
+</Configuration>

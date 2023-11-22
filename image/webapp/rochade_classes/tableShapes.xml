@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	WTB Shape for Table and Tree
+	
+	@author YO, 09.05.2011, created
+-->
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<?xml-stylesheet type="text/xsl" href="Resources.xsl"?>
+<ShapeResources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ShapeRes.xsd">
+
+	<TableColumn Title="%dynType" ID="dynType">
+		<ColumnText Key="MappedType" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynName" ID="dynName">
+		<ColumnText Key="name"/>
+	</TableColumn>
+	
+	<TableColumn Title="%dynName" ID="dynNameType">
+		<!-- IVisDataObjects are not items but types, used in tableshape "typeList"-->
+		<Image Key="icon"/>
+		<ColumnText Key="name"/>
+	</TableColumn>
+
+	<TableColumn Title="%dynName" ID="dynDispName">
+		<Image Key="icon" />
+		<ColumnText Key="DispName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynNameNoHeader" ID="dynDispNameType">
+		<!-- IVisDataObjects are not items but types, used in tableshape "typeTree"-->
+		<Image Key="icon" />
+		<ColumnText Key="DispName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDesc" ID="dynDesc">
+		<ColumnText Key="shortDesc" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynName" ID="dynNameTGT">
+		<Image Key="icon"/>
+		<ColumnText Key="name"/>
+	</TableColumn>
+	
+	<TableColumn Title="%dynQualifiedName" ID="dynQualifiedNameWidth2" Width="2">
+		<!-- Image Key="icon" / -->
+		<ColumnText Key="AbsName" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynType" ID="dynTypeTGT">
+		<ColumnText Key="MappedType_TGT" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynDesc" ID="dynDescTGT">
+		<ColumnText Key="DEFINITION_TGT" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynQual" ID="dynQual">
+		<ColumnText Key="qual" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynActions" ID="dynActions" Width="1" isAction="true">
+		<ColumnProperty	Renderer="com.rochade.wa.ui.editor.link.RemoveLinkActionCellRenderer"/>
+	</TableColumn>	
+	
+	<TableColumn Title="%dynAbsName" ID="dynAbsName">
+		<ColumnText Key="AbsName" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynDef" ID="dynDef">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+	
+	<!-- ############# Tag related ######################## -->
+	<TableColumn Title="%dynTags" ID="dynTags">
+		<ColumnList MPath="_DWR_TAGGABLE_ITEM2TAG" Mask="Tags"  Depth="3" ObjectType="DWR_TAG" Sortkey1="name">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+
+	<!--
+	 DefaultTableProperties specify properties for all Tables declared here.
+	 The following are possible values for each property:
+	 	pageSize      = <positive number>
+	 	sortDirection = ascending|descending
+	 	lineHeight    = <0 or positive number>
+	 -->
+	<DefaultTableProperties>
+		<Property Name="pageSize" Value="*"/>
+		<Property Name="pageSizeEmbedded" Value="10"/>
+		<Property Name="sortDirection" Value="ascending"/>
+		<Property Name="lineHeight" Value="1"/>
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</DefaultTableProperties>
+
+	<!--
+	 Table can have multiple attributes. The following are default values of attributes
+	 and they don't need to be specified if they have such value.
+		<Table ID="tblID">
+			<TableColumn ref="colID" 
+				Moveable   ="true"
+			    Visible    ="true"
+			    Filterable ="true"
+			    Mandatory  ="false"
+			    Editable   ="false"
+	   		/>
+		</Table>
+	 -->
+	<Table ID="itemList">
+		<TableColumn ref="dynName" Sort="0"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible = "false" />
+		<TableColumn ref="dynType" Sort="1"/>
+	</Table>
+
+	<Table ID="itemListWithTags">
+		<TableColumn ref="dynName" Sort="0"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible = "false" />
+		<TableColumn ref="dynType" Sort="1"/>
+		<TableColumn ref="dynTags" Visible="false" />
+	</Table>
+
+	<Table ID="itemListDef">
+		<TableColumn ref="dynName" Sort="0"/>
+		<TableColumn ref="dynType" Sort="1"/>
+		<TableColumn ref="dynDef"  Sort="2"/>
+	</Table>
+	
+	<Table ID="itemListDrilldown">
+		<TableColumn ref="dynName" Sort="0"/>
+		<TableColumn ref="dynType" Sort="1"/>
+		<TableColumn ref="dynAbsName"/>
+	</Table>
+
+	<Table ID="itemListSearch">
+		<TableColumn ref="dynName" Sort="0"/>
+		<TableColumn ref="dynType" Sort="1"/>
+		<TableColumn ref="dynAbsName"/>
+	</Table>
+	
+	<Table ID="typeList">
+		<TableColumn ref="dynNameType" Sort="0"/>
+		<TableColumn ref="dynDesc" Sort="1"/>
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.DummyShapeFiller"/>		
+	</Table>
+
+	<Table ID="typeTree">
+		<TableColumn ref="dynDispNameType" Sort="0"/>
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.DummyShapeFiller"/>		
+	</Table>
+
+	<Table ID="itemTree">
+		<TableColumn ref="dynDispName" Sort="0"/>
+		<TableColumn ref="dynType" Sort="1"/>
+	</Table>
+
+	<Table ID="itemNameDef">
+		<TableColumn ref="dynName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDef" Object.Use="assoc.dst" />
+	</Table>
+
+	<Table ID="linkAttribute">
+		<TableColumn ref="dynActions" Visible="false"/>
+		<TableColumn ref="dynName" Object.Use="assoc.dst" />
+		<TableColumn ref="dynType" Object.Use="assoc.dst" />
+		<TableColumn ref="dynQual" />
+		<Property Name="pageSize" Value="5" />
+	</Table>	
+	
+	<!-- Table ID="linkItemList">
+		<TableColumn ref="dynNameTGT" Sort="0"/>
+		<TableColumn ref="dynDescTGT" Sort="1"/>
+		<! sample override default property's value >
+		<Property Name="sortDirection" Value="descending"/>
+		<Property Name="pageSize" Value="15" />
+	</Table-->
+	
+	
+	<TableColumn Title="" ID="dynEimbSearchName" Width="3">
+		<ColumnText Key="AbsName" />
+		<ColumnProperty Renderer="com.rochade.wa.ui.search.SearchNameCellRenderer" />
+	</TableColumn>
+	
+	<TableColumn Title="" ID="dynEimbSearchReadMore" Width="1">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.ui.search.SearchReadMoreCellRenderer" />
+	</TableColumn>
+
+	<Table ID="EIMB_DEFAULT_RESULTCOLUMNS">
+		<TableColumn ref="dynEimbSearchName" Sort="0" />
+		<TableColumn ref="dynEimbSearchReadMore"/>
+		<Property Name="pageSize" Value="15" />
+	</Table>
+	
+	<TableColumn Title="%dynActions" ID="dynActionsRemoveMetanote">
+		<ColumnProperty Renderer="com.rochade.wa.metanote.RemoveMetanoteActionCellRenderer" />
+	</TableColumn>
+	
+	<TableColumn Title="" ID="dynEIM_METANOTE" Width="6">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.metanote.MetaNoteCellRenderer" />
+	</TableColumn>
+	
+	<Table ID="EIM_METANOTE">
+		<TableColumn ref="dynEIM_METANOTE" Sort="0"/>
+		<TableColumn ref="dynActionsRemoveMetanote"/>
+		<Property Name="sortDirection" Value="descending"/>
+		<Property Name="lineHeight" Value="0"/><!-- flexible height -->
+	</Table>
+	
+</ShapeResources>

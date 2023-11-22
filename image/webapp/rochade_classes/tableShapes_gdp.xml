@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GDP Shape for Table and Tree @author ST, 2017-04-03, created -->
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<?xml-stylesheet type="text/xsl" href="Resources.xsl"?>
+<ShapeResources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ShapeRes.xsd">
+
+	<TableColumn Title="%dynPIIdentifiable" ID="dynPIIdentifiable">
+		<ColumnText Key="GDP_PI_IS_PERSONAL_IDENTIFIABLE" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynPIQualifying" ID="dynPIQualifying">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.gdp.cellrenderer.GdpPIQualifyingCellrenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynPISensitive" ID="dynPISensitive">
+		<ColumnText Key="GDP_PI_IS_SENSITIVE" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynPISensitiveWith" ID="dynPISensitiveWith">
+		<ColumnList MPath="GDP_SensitiveWith" Mask="PIs" ObjectType="GDP_PERSONAL_INFORMATION" Sortkey1="name">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynPIClassification" ID="dynPIClassification">
+		<ColumnText Key="GDP_PI_CLASSIFICATION" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynPIClosureRule" ID="dynPIClosureRule">
+		<ColumnText Key="GDP_PI_CLOSURE_RULE" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynPICategory" ID="dynPICategory">
+		<ColumnList Direction="forward" ObjectType="GDP_PI_CATEGORY" AssocType="GDP_PI_CATEGORY">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynPIDefinedBy" ID="dynPIDefinedBy">
+		<ColumnList Direction="forward" ObjectType="RBG/BUSINESS-TERM" AssocType="GDP_PI_DEFINED_BY">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynPIImplementedIn" ID="dynPIImplementedIn">
+		<ColumnList Direction="forward" AssocType="GDP_PI_IMPLEMENTED_IN">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameType" />
+	</TableColumn>
+	<TableColumn Title="%dynPIStructureUsedIn" ID="dynPIStructureUsedIn">
+		<ColumnList Direction="backward" ObjectType="RBG/CONTEXT" AssocType="RBG/CTX-REFERENCE">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynPIStructureUses" ID="dynPIStructureUses">
+		<ColumnList Direction="forward" ObjectType="GDP_PERSONAL_INFORMATION" AssocType="GDP_USES_PERSONAL_INFORMATION">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynActions" ID="dynCascadeActions" isAction="true">
+		<ColumnProperty Renderer="com.rochade.wa.ui.editor.link.CheckboxActionRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynCascadeQualifier" ID="dynCascadeQualifier">
+		<ColumnText Key="qual" />
+		<ColumnProperty Renderer="com.rochade.gdp.ui.GDP_CascadeQualRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynCascadeQualifierOld" ID="dynCascadeQualifierOld">
+		<ColumnText Key="qual" />
+		<ColumnProperty Renderer="com.rochade.gdp.ui.GDP_CascadeQualRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPCRType" ID="dynGDPCRType">
+		<ColumnText Key="GDP_CR_TYPE" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPESType" ID="dynGDPESType">
+		<ColumnText Key="GDP_ES_TYPE" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPRiskSeverity" ID="dynGDPRiskSeverity">
+		<ColumnText Key="GDP_RISK_SEVERITY" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPRiskLikelihood" ID="dynGDPRiskLikelihood">
+		<ColumnText Key="GDP_RISK_LIKELIHOOD" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPUsingSensiblePI" ID="dynGDPUsingSensiblePI">
+		<ColumnText Key="GDP_USING_SENSIBLE_PI" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPDataOutsideEU" ID="dynGDPDataOutsideEU">
+		<ColumnText Key="GDP_DATA_OUTSIDE_EU" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPDataMinimization" ID="dynGDPDataMinimization">
+		<ColumnText Key="GDP_DATA_MINIMIZATION" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPDataAccurate" ID="dynGDPDataAccurate">
+		<ColumnText Key="GDP_DATA_ACCURATE" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynGDPRightOfContrObligations" ID="dynGDPRightOfContrObligations">
+		<ColumnText Key="GDP_RIGHTOF_CONTR_OBLIGATIONS" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynApplLOB" ID="dynApplLOB">
+		<ColumnText Key="DWR_ARC_LOB" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynApplCountry" ID="dynApplCountry">
+		<ColumnText Key="DWR_ARC_LOCATION" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WACellRenderer" />
+	</TableColumn>
+	
+	<Table ID="GDP_EntryTopicPIs">
+		<TableColumn ref="dynRbrName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIIdentifiable" />
+		<TableColumn ref="dynPISensitive" />
+		<TableColumn ref="dynPISensitiveWith" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIClassification" />
+		<TableColumn ref="dynPIClosureRule" />
+		<TableColumn ref="dynPICategory" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIStructureUsedIn" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIDefinedBy" Object.Use="assoc.dst"  />
+		<TableColumn ref="dynPIImplementedIn" Object.Use="assoc.dst" Visible="false" />
+		<TableColumn ref="dynTags" Object.Use="assoc.dst"  Visible="false" />
+	</Table>
+	<!-- Same columns as 'GDP_EntryTopicPIs' table + dynActions column to remove link during edition + Object.Use="assoc.dst" required everywhere otherwise some data not displayed in PI_Structure viewer -->
+	<Table ID="GDP_PIsForEdition">
+		<TableColumn ref="dynActions" Filterable ="false"/>
+		<TableColumn ref="dynRbrName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIIdentifiable" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPISensitive" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPISensitiveWith" />
+		<TableColumn ref="dynPIClassification" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIClosureRule" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPICategory" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIStructureUsedIn" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPIDefinedBy" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPIImplementedIn" Visible="false" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynTags" Visible="false" Object.Use="assoc.dst"/>
+	</Table>
+	<Table ID="GDP_ListPIs">
+		<TableColumn ref="dynRbrName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIIdentifiable" />
+		<TableColumn ref="dynPISensitive" />
+		<TableColumn ref="dynPISensitiveWith" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIClassification" />
+		<TableColumn ref="dynPIClosureRule" />
+		<TableColumn ref="dynPICategory" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIStructureUsedIn" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIDefinedBy" Object.Use="assoc.dst"  />
+		<TableColumn ref="dynPIQualifying"/>
+	</Table>
+	<Table ID="GDP_EntryTopicPIStructures">
+		<TableColumn ref="dynRbrName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynRbrDef" />
+		<TableColumn ref="dynPIStructureUsedIn" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIStructureUses" Object.Use="assoc.dst" />
+		<TableColumn ref="dynTags" Object.Use="assoc.dst" Visible="false" />
+	</Table>
+	<Table ID="GDP_EntryTopicPIA">
+		<TableColumn ref="dynRbrName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynRbrDef" />
+		<TableColumn ref="dynGDPUsingSensiblePI"  />
+		<TableColumn ref="dynGDPDataOutsideEU"  />
+		<TableColumn ref="dynGDPDataMinimization"  />
+		<TableColumn ref="dynGDPDataAccurate"  />
+		<TableColumn ref="dynGDPRightOfContrObligations"  />
+		<TableColumn ref="dynGDPRiskSeverity"  />
+		<TableColumn ref="dynGDPRiskLikelihood"  />
+		<TableColumn ref="dynPIStructureUsedIn" Object.Use="assoc.dst" />
+		<TableColumn ref="dynTags" Object.Use="assoc.dst" Visible="false" />
+	</Table>
+	<Table ID="GDP_SensitiveList">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynRbrName" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIIdentifiable" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPISensitive" />
+		<TableColumn ref="dynPIClassification" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPIClosureRule" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPICategory" />
+	</Table>
+	<Table ID="GDP_SensitiveListBackLinks">
+		<TableColumn ref="dynRbrName" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIIdentifiable" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPISensitive" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPIClassification" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPIClosureRule" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPICategory" Object.Use="assoc.dst"/>
+	</Table>
+	<Table ID="GDP_NameDef">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynRbrName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynRbrDef" Object.Use="assoc.dst" />
+	</Table>
+	<Table ID="GDP_RefItemWithTypeAndAbsName">
+		<TableColumn ref="dynBpaName" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynType" Sort="1" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynDef" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynPIQualifying"/>
+	</Table>
+	<Table ID="GDP_ImplementationAndCascade">
+	    <TableColumn ref="dynBelongsToBApplication" />
+		<TableColumn ref="dynBpaName" Sort="0" />
+		<TableColumn ref="dynType" Sort="1" />
+		<TableColumn ref="dynQualifiedNameWidth2" />
+		<TableColumn ref="dynDWR_Stage" />
+		<TableColumn ref="dynERM_BusinessTermFmERM" />
+	</Table>
+	<Table ID="GDP_CascadeToTable">
+		<TableColumn ref="dynCascadeActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynType" Sort="1" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Sort="3" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynDef" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynCascadeQualifier" Assoc.Direction="forward"/>
+	</Table>
+	<Table ID="GDP_CascadeToIgnoreTable">
+		<TableColumn ref="dynCascadeActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynType" Sort="1" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Sort="3" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynDef" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynCascadeQualifierOld" Assoc.Direction="forward"/>
+	</Table>
+	
+	<Table ID="GDP_CRAppliesTo">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynRbrName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynType" Sort="1" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynRbrDef" Object.Use="assoc.dst" />
+	</Table>
+	<Table ID="GDP_PIAProcessingPolicies">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynRbrDef" Object.Use="assoc.dst" />
+		<TableColumn ref="dynOwnedBy" Filterable ="false" Object.Use="assoc.dst" />
+	</Table>
+	<Table ID="GDP_PIAControlsExisting">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynGDPCRType" Object.Use="assoc.dst" />
+		<TableColumn ref="dynRbrDef" Object.Use="assoc.dst" />
+	</Table>
+	<Table ID="GDP_PIA_ES_RISK_ACCESS">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynGDPESType" Object.Use="assoc.dst" />
+		<TableColumn ref="dynRbrDef" Object.Use="assoc.dst" />
+	</Table>
+	<Table ID="GDP_PIAUsesPITable">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPICategory" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPISensitive" Filterable="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynPIClassification" Object.Use="assoc.dst" />
+		<Property Name="pageSizeEmbedded" Value="5" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+	<Table ID="GDP_PIAUsesPoliciesTable">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDef" Object.Use="assoc.dst" />
+		<TableColumn ref="dynOwnedBy" Filterable="false" Object.Use="assoc.dst" />
+		<Property Name="pageSizeEmbedded" Value="5" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+	<Table ID="GDP_PIAUsesControlsTable">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false"/>
+		<TableColumn ref="dynDef" Object.Use="assoc.dst" />
+		<TableColumn ref="dynGDPCRType" Object.Use="assoc.dst" />
+		<TableColumn ref="dynOwnedBy" Filterable="false" Object.Use="assoc.dst" />
+		<Property Name="pageSizeEmbedded" Value="5" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+	<Table ID="GDP_PIAUsesEvSrcTable">
+		<TableColumn ref="dynActions" Filterable="false"/>
+		<TableColumn ref="dynBpaName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false"/>
+		<TableColumn ref="dynGDPESType"  Object.Use="assoc.dst"/>
+		<TableColumn ref="dynDef" Object.Use="assoc.dst" />
+		<Property Name="pageSizeEmbedded" Value="5" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+	
+	<Table ID="GDP_EntryTopicControlRule">
+		<TableColumn ref="dynBpaName" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false"/>
+		<TableColumn ref="dynGDPCRType" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDefWidth2" />
+		<TableColumn ref="dynBpaBusinessContext" />
+		<TableColumn ref="dynTags" Visible="false" />
+	</Table>
+	<Table ID="GDP_EntryTopicGDPPolicies">
+		<TableColumn ref="dynBpaName" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false"/>
+		<TableColumn ref="dynDefWidth2" />
+		<TableColumn ref="dynBpaBusinessContext" />
+		<TableColumn ref="dynTags" Visible="false" />
+	</Table>
+	
+	<Table ID="GDP_AssessedApplications">
+		<TableColumn ref="dynRbrActions" Filterable="false"/>
+		<TableColumn ref="dynRbrName" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDefWidth2" Object.Use="assoc.dst" />
+		<TableColumn ref="dynApplLOB" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynApplCountry" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynRbrType" Object.Use="assoc.dst"/>
+		<Property Name="pageSizeEmbedded" Value="5" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+	<Table ID="GDP_AssessingPIAs">
+		<TableColumn ref="dynRbrName" Object.Use="assoc.dst" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynRbrDef" />
+		<TableColumn ref="dynGDPUsingSensiblePI" />
+		<TableColumn ref="dynGDPDataOutsideEU" />
+		<TableColumn ref="dynOwnedBy" Filterable ="false"/>
+		<TableColumn ref="dynApprovedBy" Filterable ="false"/>
+	</Table>
+	<Table ID="GDP_CreatePIAforApplSelect">
+		<TableColumn ref="dynMLNameWithIcon" Sort="0"/>
+		<TableColumn ref="dynRbrType"/>
+		<TableColumn ref="dynRbrDef"/>
+		<TableColumn ref="dynGlossaryFmContext" Filterable="false"/>
+		<TableColumn ref="dynQualContextName" Filterable="false"/>
+		<Property Name="pageSize" Value="6" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+</ShapeResources>

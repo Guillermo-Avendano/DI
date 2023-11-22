@@ -1,0 +1,32 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="processEngineConfiguration" class="org.camunda.bpm.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+
+		<property name="jdbcUrl"
+			value="jdbc:h2:tcp://localhost/c:/camunda/databases/process-engine;TRACE_LEVEL_FILE=0;DB_CLOSE_ON_EXIT=FALSE" />
+		<property name="jdbcDriver" value="org.h2.Driver" />
+		<property name="jdbcUsername" value="sa" />
+		<property name="jdbcPassword" value="sa" />
+
+		<property name="databaseSchemaUpdate" value="true" />
+
+		<!-- RaaS accesses the same workflow database as the Rochade web application. 
+			Starting a job executor here can cause workflow issues because asynchronous jobs 
+			are executed without required Java classes (ServiceDelegates, ...) and will fail. -->
+		<property name="jobExecutorActivate" value="false" />
+
+		<property name="history" value="NONE" />
+
+		<!-- turn off metrics -->
+		<property name="metricsEnabled" value="false" />
+		<property name="taskMetricsEnabled" value="false" />
+		<property name="dbMetricsReporterActivate" value="false" />
+
+		<!-- turn off telemetry -->
+		<property name="initializeTelemetry" value="false" />
+		<property name="telemetryReporterActivate" value="false" />
+
+	</bean>
+</beans>

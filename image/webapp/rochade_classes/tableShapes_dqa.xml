@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DQA Shape for Table and Tree -->
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<?xml-stylesheet type="text/xsl" href="Resources.xsl"?>
+<ShapeResources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ShapeRes.xsd">
+
+	<!-- general columns -->
+<!--  JLW Copied from RBR tableshapes - most won't be used here but useful for consistency with RBR  -->
+
+	<TableColumn Title="%dynName" ID="dynDqaNameTooltipAbsName">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynType" ID="dynItemType">
+		<ColumnText Key="type" />
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.MeasureReferncedDataElementCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynType" ID="dynDqaModelPropertiesType">
+		<ColumnText Key="MappedType" />
+	</TableColumn>
+
+	<TableColumn Title="%dynName" ID="dynDqaDispName">
+		<Image Key="icon" />
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynName" ID="dynDqaNameTGT">
+		<ColumnText Key="name" />
+	</TableColumn>
+
+	<TableColumn Title="%dynLinkAttribute" ID="dynDqaLinkAttribute">
+		<!-- ColumnText Key="attribute" / -->
+		<ColumnText Key="MappedAtt" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+
+<!-- DQA System DQ Measures Link Table -->
+
+	<Table ID="DQA_DQMeasuresRelatedDataElement">
+		<TableColumn ref="dynDqaNameTGT" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynItemType" Sort="0" Object.Use="assoc.dst"/>
+		<Property Name="pageSize" Value="*"/>
+		<Property Name="lineHeight" Value="1"/>
+	</Table>
+
+<!-- MG -->
+
+	<!-- ############# Navigator Tree ########################### -->
+	<TableColumn Title="%dynName" ID="dynDqaNavTreeDispName">
+		<Image Key="icon" />
+		<ColumnText Key="DispName" />
+			<ColumnProperty Renderer="com.rochade.mg.useradministration.NavTreeImgController" />
+	</TableColumn>
+
+	<Table ID="DQA_TYPETREE">
+		<TableColumn ref="dynDqaNavTreeDispName" Sort="0"  Filterable ="false"/>
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.DummyShapeFiller"/>
+	</Table>
+
+	<!-- DQA TDQ queries -->
+
+	<TableColumn Title="%dynDateProfiled" ID="dqmLoadedDate">
+		<ColumnText Key="DQM_LOADED_DATE" />
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMSequentialDateAttributeCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynLoadedRows" ID="dqmLoadedRows">
+		<ColumnText Key="DQM_LOADED_ROWS" />
+	</TableColumn>
+
+	<TableColumn Title="%dynLoadedValues" ID="dqmLoadedValues">
+		<ColumnText Key="DQM_LOADED_VALUES" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRecMin" ID="dqmRecMin">
+		<ColumnText Key="DQM_RECORD_MIN_LEN" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRecMax" ID="dqmRecMax">
+		<ColumnText Key="DQM_RECORD_MAX_LEN" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRulesEnt" ID="dqmRulesEnt">
+		<ColumnText Key="DQM_RULES_ENT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRulesEnabled" ID="dqmRulesEnabled">
+		<ColumnText Key="DQM_RULES_ENABLED" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRulesPassed" ID="dqmRulesPassed">
+		<ColumnText Key="DQM_RULES_PASSED" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRulesFailed" ID="dqmRulesFailed">
+		<ColumnText Key="DQM_RULES_FAILED" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRulesCompilanceEnt" ID="dqmRulesCompilanceEnt">
+		<ColumnText Key="DQM_RULES_COMPLIANCE_ENT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynProfResAvVal" ID="dqmProfResAvVal">
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMProfileAverageValueCellRenderer" />
+	</TableColumn>
+
+	<Table ID="DQA_EntityProfileResults">
+		<TableColumn ref="dqmLoadedDate" Sort="0" />
+		<TableColumn ref="dqmLoadedRows" />
+		<TableColumn ref="dqmLoadedValues" />
+		<TableColumn ref="dqmRecMin" />
+		<TableColumn ref="dqmRecMax" />
+		<TableColumn ref="dqmRulesEnt" />
+		<TableColumn ref="dqmRulesEnabled" />
+		<TableColumn ref="dqmRulesPassed" />
+		<TableColumn ref="dqmRulesFailed" />
+		<TableColumn ref="dqmRulesCompilanceEnt" />
+		<TableColumn ref="dqmProfResAvVal" />
+		<Property Name="pageSize" Value="*" />
+		<Property Name="lineHeight" Value="1" />
+		<Property Name="sortDirection" Value="descending" />
+	</Table>
+
+	<TableColumn Title="%dynValueCount" ID="dqmValueCount">
+		<ColumnText Key="DQM_VALUE_VALUES" />
+	</TableColumn>
+
+	<TableColumn Title="%dynNullCount" ID="dqmNullCount">
+		<ColumnText Key="DQM_VALUE_NULL_COUNT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynNullDist" ID="dqmNullDist">
+		<ColumnText Key="DQM_VALUE_NULL_DIST" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDistincValues" ID="dqmDistinctValues">
+		<ColumnText Key="DQM_VALUE_UNIQUE_COUNT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDistincDist" ID="dqmDistinctDist">
+		<ColumnText Key="DQM_VALUE_UNIQUE_DIST" />
+	</TableColumn>
+
+	<TableColumn Title="%dynValueMin" ID="dqmValueMin">
+		<ColumnText Key="DQM_VALUE_MIN" />
+	</TableColumn>
+
+	<TableColumn Title="%dynValueMax" ID="dqmValueMax">
+		<ColumnText Key="DQM_VALUE_MAX" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDiscoveryType" ID="dqmDiscoveryType">
+		<ColumnText Key="DQM_DISCOVERY_TYPE" />
+	</TableColumn>
+
+	<TableColumn Title="%dynTargetType" ID="dqmTargetType">
+		<ColumnText Key="DQM_INFERRED_TYPE" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRulesCompilanceEnt" ID="dqmAttRuleCompliance">
+		<ColumnText Key="DQM_RULES_COMPLIANCE_ATT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDateProfiled" ID="dqmEntLoadedDate">
+		<ColumnText Key="DQM_ENTITY_LOADED_DATE" />
+		<ColumnText Key="DQM_EDITED_DATE_ATT" />
+		<ColumnText Key="DQM_CREATED_DATE_ATT" />
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMSequentialDateAttributeCellRenderer" />
+	</TableColumn>
+
+	<Table ID="DQA_AttributeProfileResults">
+		<TableColumn ref="dqmEntLoadedDate" Sort="0" />
+		<TableColumn ref="dqmValueCount" />
+		<TableColumn ref="dqmNullCount" />
+		<TableColumn ref="dqmNullDist" />
+		<TableColumn ref="dqmDistinctValues" />
+		<TableColumn ref="dqmDistinctDist" />
+		<TableColumn ref="dqmValueMin" />
+		<TableColumn ref="dqmValueMax" />
+		<TableColumn ref="dqmDiscoveryType" />
+		<TableColumn ref="dqmTargetType" />
+		<TableColumn ref="dqmAttRuleCompliance" />
+		<TableColumn ref="dqmProfResAvVal" />
+		<Property Name="pageSize" Value="*" />
+		<Property Name="lineHeight" Value="1" />
+		<Property Name="sortDirection" Value="descending" />
+	</Table>
+
+	<TableColumn Title="%dynDesc" ID="dqmDescr" Width="2">
+		<ColumnText Key="DQM_DESCRIPTION" />
+	</TableColumn>
+
+	<TableColumn Title="%dqmActive" ID="dqmActive">
+		<ColumnText Key="DQM_MEASURE_STATUS" />
+	</TableColumn>
+
+	<TableColumn Title="%dynPriority" ID="dqmPriority">
+		<ColumnText Key="DQM_PRIORITY" />
+	</TableColumn>
+
+	<TableColumn Title="%dynAnalysisStatus" ID="dqmAnalysisStatus">
+		<ColumnText Key="DQM_ANALYSIS_STATUS" />
+	</TableColumn>
+
+	<TableColumn Title="%dynLastAnalyzed" ID="dqmLastAnalyzed" Width="2">
+		<ColumnList Direction="forward" ObjectType="DQM_DATA_QUALITY_MEASURE_RESULT" AssocType="DQM_HAS_RESULT">
+			<ColumnText Key="DQM_PP_CREATION_TIMESTAMP,DQM_MEASURED_RESULT,DQM_INSPECTION_DATE" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMLatestMeasureResultDateCellRenderer" />
+	</TableColumn>
+
+    <TableColumn Title="%dynLastMeasuredValue" ID="dqmLastMeasuredValue">
+        <ColumnList Direction="forward" ObjectType="DQM_DATA_QUALITY_MEASURE_RESULT" AssocType="DQM_HAS_RESULT">
+            <ColumnText Key="DQM_PP_CREATION_TIMESTAMP,DQM_MEASURED_VALUE,DQM_INSPECTION_DATE" />
+        </ColumnList>
+        <ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMLatestMeasureResultValueCellRenderer" />
+    </TableColumn>
+
+	<TableColumn Title="%dynMeasuredResult" ID="dqmMeasuredResultStatus" >
+		<ColumnList Direction="forward" ObjectType="DQM_DATA_QUALITY_MEASURE_RESULT" AssocType="DQM_HAS_RESULT">
+			<ColumnText Key="DQM_PP_CREATION_TIMESTAMP,DQM_MEASURED_RESULT,DQM_INSPECTION_DATE" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMLatestMeasureResultCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynName" ID="dynNameWidth2WOTooltip" Width="2">
+		<ColumnText Key="name" />
+	</TableColumn>
+	
+	<Table ID="DQA_DataQualityMeasures">
+		<TableColumn ref="dynNameWidth2WOTooltip" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dqmDescr" />
+		<TableColumn ref="dqmActive" />
+		<TableColumn ref="dqmPriority" />
+		<TableColumn ref="dqmAnalysisStatus" />
+		<TableColumn ref="dqmLastAnalyzed" Filterable ="false" />
+        <TableColumn ref="dqmLastMeasuredValue" Filterable ="false" />
+		<TableColumn ref="dqmMeasuredResultStatus" Filterable ="false" />
+		<Property Name="pageSize" Value="*"/>
+		<Property Name="lineHeight" Value="1"/>
+	</Table>
+
+	<TableColumn Title="%dynTypeTableOrColumn" ID="dqmTypeTableOrColumn" Width="2">
+		<ColumnText Key="DWR_RDB_TABLE_OR_VIEW_TYPE" />
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMQualityMeasureTypeCellRenderer" />
+	</TableColumn>
+
+	<Table ID="DQA_ListDataQualityMeasures">
+		<TableColumn ref="dynDqaNameTooltipAbsName" Sort="0"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dqmTypeTableOrColumn"/>
+		<TableColumn ref="dqmDescr" />
+		<TableColumn ref="dqmActive" />
+		<TableColumn ref="dqmPriority" />
+		<TableColumn ref="dqmAnalysisStatus" />
+		<TableColumn ref="dqmLastAnalyzed" Filterable ="false" />
+		<TableColumn ref="dqmLastMeasuredValue" Filterable ="false" />
+		<TableColumn ref="dqmMeasuredResultStatus" Filterable ="false" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="pageSize" Value="*"/>
+		<Property Name="lineHeight" Value="1"/>
+	</Table>
+
+	<TableColumn Title="%dynInspectionDate" ID="dqmInspectionDate" Width="2">
+		<ColumnText Key="DQM_INSPECTION_DATE" />
+		<ColumnText Key="DQM_PP_CREATION_TIMESTAMP" />
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMSequentialDateAttributeCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynMeasuredResul" ID="dqmMeasuredResult">
+		<ColumnText Key="DQM_MEASURED_RESULT" />
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMQualityMeasureResultCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynTotal" ID="dqmPopulationCount">
+		<ColumnText Key="DQM_POPULATION_COUNT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRowPassCount" ID="dqmRowPassCount">
+		<ColumnText Key="DQM_ROW_PASS_COUNT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRowFailCount" ID="dqmRowFailCount">
+		<ColumnText Key="DQM_ROW_FAIL_COUNT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRowErrorCount" ID="dqmRowErrorCount">
+		<ColumnText Key="DQM_ROW_ERROR_COUNT" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRowPassedDist" ID="dqmRowPassedDist">
+		<ColumnText Key="DQM_MEASURED_VALUE" />
+	</TableColumn>
+
+	<TableColumn Title="%dynProfiled" ID="dqmProfiled">
+		<ColumnList MPath="DQM_MeasureResult2ProfileResult">
+			<ColumnText Key="DQM_PP_CREATION_TIMESTAMP,DQM_INSPECTION_DATE,DQM_LOADED_DATE,DQM,DQM_ENTITY_LOADED_DATE" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMQualityMeasureResultProfiledCellRenderer" />
+	</TableColumn>
+
+	<Table ID="DQA_DataQualityMeasureResultTab">
+		<TableColumn ref="dqmInspectionDate" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dqmMeasuredResult" Object.Use="assoc.dst"/>
+		<TableColumn ref="dqmPopulationCount" Object.Use="assoc.dst"/>
+		<TableColumn ref="dqmRowPassCount" Object.Use="assoc.dst"/>
+		<TableColumn ref="dqmRowFailCount" Object.Use="assoc.dst"/>
+		<TableColumn ref="dqmRowPassedDist" Object.Use="assoc.dst"/>
+		<TableColumn ref="dqmRowErrorCount" Object.Use="assoc.dst"/>
+		<TableColumn ref="dqmProfiled" Object.Use="assoc.dst"/>
+		<Property Name="pageSize" Value="*"/>
+		<Property Name="lineHeight" Value="1"/>
+		<Property Name="sortDirection" Value="descending" />
+	</Table>
+
+	<TableColumn Title="%dynName" ID="dyDimensionType">
+		<ColumnText Key="name" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDesc" ID="dqmDescrWidthOne">
+		<ColumnText Key="DQM_DESCRIPTION" />
+	</TableColumn>
+
+	<Table ID="DQA_DataQualityMeasureDimensionTab">
+		<TableColumn ref="dyDimensionType" Sort="0" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst"/>
+		<TableColumn ref="dqmDescrWidthOne" Object.Use="assoc.dst"/>
+		<Property Name="pageSize" Value="*"/>
+		<Property Name="lineHeight" Value="1"/>
+	</Table>
+
+	<TableColumn Title="%dynProfiledItemName" ID="profileName">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMAttributeRelatedItemCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynType" ID="profileType">
+		<ColumnText Key="DWR_RDB_TABLE_OR_VIEW_TYPE" />
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMAttributeTypeCellrenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynLastProfiled" ID="lastProfile" >
+		<ColumnList Direction="forward" AssocType="DQM_HAS_RESULT">
+			<ColumnText Key="DQM_PP_CREATION_TIMESTAMP,DQM_LOADED_DATE,DQM,DQM_ENTITY_LOADED_DATE,DQM_RULES_COMPLIANCE_ATT,DQM_RULES_COMPLIANCE_ENT" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMLatestProfileResultDateCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRulesCompilanceEnt" ID="lastProfileCompliance" >
+		<ColumnList Direction="forward" AssocType="DQM_HAS_RESULT">
+			<ColumnText Key="DQM_PP_CREATION_TIMESTAMP,DQM_LOADED_DATE,DQM,DQM_ENTITY_LOADED_DATE,DQM_RULES_COMPLIANCE_ATT,DQM_RULES_COMPLIANCE_ENT" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.dqa.cellrenderer.DQMLatestProfileResultComplianceCellRenderer" />
+	</TableColumn>
+
+	<Table ID="DQA_ProfilesList">
+		<TableColumn ref="dynName" Sort="0"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="profileName" Sort="1"/>
+		<TableColumn ref="profileType"/>
+		<TableColumn ref="lastProfile"/>
+		<TableColumn ref="lastProfileCompliance"/>
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="pageSize" Value="*"/>
+		<Property Name="lineHeight" Value="1"/>
+	</Table>
+
+	<!-- ##################################################################### -->
+	<!-- ###################### ################################ -->
+	<!-- ###################### define Tables ################################ -->
+	<!-- ###################### ################################ -->
+	<!-- ##################################################################### -->
+
+	<!-- Metaapp can use only WTB's default. See http://gechemhudson.asg.com/bugzilla/show_bug.cgi?id=1389. <DefaultTableProperties AppID="mdm">
+		<Property Name="pageSize" Value="10"/> </DefaultTableProperties> -->
+
+
+	<Table ID="DQA_RefUsage">
+		<TableColumn ref="dynDqaDispName" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynDqaModelPropertiesType" />
+		<TableColumn ref="dynDqaLinkAttribute" Visible="false" />
+	</Table>
+
+</ShapeResources>

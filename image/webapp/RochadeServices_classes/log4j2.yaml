@@ -1,0 +1,49 @@
+Configuration:
+  name: test
+  status: error
+  monitorInterval: 30
+
+  Properties:
+    Property:
+      name: log-path
+      value: 'logs'
+
+  Appenders:
+    Console:
+      name: Console
+      target: SYSTEM_OUT
+      PatternLayout: {Pattern: '%d{HH:mm:ss.SSS} [%-5level] %X{CORRELATION_ID} %X{USER} %X{SERVICE} [%t] %c:%M - %msg%n'}
+
+
+    RollingFile:
+      name: MetricsFile
+      type: RollingFile
+      fileName: ${log-path}/raas-metrics.csv
+      filePattern: 'logs/metrics-%d{yyyy-MM-dd}-%i.log'
+      PatternLayout: {Pattern: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %X{CORRELATION_ID} %X{USER} %X{SERVICE} [%t] %c:%M - %msg%n'}
+      Policies:
+        #        SizeBasedTriggeringPolicy:
+        #          size: 100 MB
+        OnStartupTriggeringPolicy:
+          minSize: 1
+      DefaultRollOverStrategy:
+        max: 50
+
+
+  Loggers:
+    Logger:
+      # messages from test package are routed to Console and RollingFile, the other messages are routed to File only
+      - name: com.rochade.diagram.bdi.lineage.metrics
+        level: error
+        additivity: false
+        AppenderRef:
+          - ref: MetricsFile
+            level: error
+
+
+
+
+    Root:
+      level: error
+      AppenderRef:
+        - ref: Console

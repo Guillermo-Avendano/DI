@@ -1,0 +1,1546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MDM Shape for Table and Tree @author HC, 20.07.2011, created SB, 20.07.2014, cleanup to resolve confilcts for integrated release -->
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<?xml-stylesheet type="text/xsl" href="Resources.xsl"?>
+<ShapeResources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ShapeRes.xsd">
+
+	<!-- #### attention: if no column using query(neither simple nor stored query) in the table, make sure not to use IShapeFiller properties
+		in the table: this issue should be resolved in future -->
+
+	<!--###################################################### MDM specific columns for MDM editor ######################################################################## -->
+
+	<!--####################### Data Concept ######################################## -->
+	<!-- TableColumn Title="%dynRefDCptImplDetail" ID="dynRefDCptImplDetail"> <ColumnList MPath="MDM_ItemView-DCpt-ImpDetlTab" Mask="TableNColumn"
+		Depth="6" ObjectType="DWR_RDB_COLUMN"> <ColumnText Key="name"/> </ColumnList -->
+	<!-- ColumnProperty Renderer="com.rochade.mdm.cellrenderer.ExpandCellRenderer"/ -->
+	<!-- /TableColumn -->
+	<TableColumn Title="%dynRefDataConceptName" ID="dynRefDataConceptName">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDataConceptName" ID="dynRefDataConceptNameIcon">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.DataConceptValidityCellRenderer" />
+	</TableColumn>
+
+
+	<TableColumn Title="%dynRefDCptValueDomain" ID="dynRefDCptValueDomain">
+		<ColumnList MPath="MDM_ItemView-DCpt-HierTab-VD" Mask="VD" Depth="4" ObjectType="MDM_RMD_VALUE_DOMAIN">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDCptConceptualDomain" ID="dynRefDCptConceptualDomain">
+		<ColumnList Direction="backward" ObjectType="MDM_RMD_CONCEPTUAL_DOMAIN" AssocType="MDM_RMD_CONTAINS_VALUE_MEANING">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+	
+	<!--####################### Data Context ######################################## -->
+	<!-- TableColumn Title="%dynRefDCConceptDefinitionC" ID="dynRefDCConceptDefinitionCol"> <ColumnList Direction="" ObjectType=""> <ColumnText
+		Key=""/> </ColumnList> <ColumnProperty Renderer=""/> </TableColumn -->
+
+	<TableColumn Title="%dynName" ID="dynRefNameWithTooltip">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynDef" ID="dynRefDefWidth3" Width="3">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_Stage" ID="dynRefStage">
+		<ColumnText Key="DWR_STAGE" />
+	</TableColumn>
+	<TableColumn Title="%dynDBSys" ID="dynRefRDB_DBBackward.DBSys">
+		<ColumnList Direction="backward" ObjectType="DWR_RDB_DB_SYSTEM" AssocType="DWR_RDB_HAS_DATABASE">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynRefSQLDialect" ID="dynRefSQLDialect">
+		<ColumnList Direction="backward" ObjectType="MDM_RDM_SQL_DIALECT" AssocType="MDM_RDM_RELATED_DATABASE">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+
+	<!--####################### List Data Context ######################################## -->
+	<TableColumn Title="%dynRefDCtxtName" ID="dynRefNameDataContext">
+		<!-- <Image Key="icon"/>-->
+		<ColumnText Key="name"/>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer"/>
+	</TableColumn>
+	<TableColumn Title="%dynRefDef" ID="dynRefDef">
+		<ColumnText Key="DEFINITION"/>
+	</TableColumn>
+	<TableColumn Title="%dynRefDCtxtContextPath" ID="dynRefDCtxtContextPath" >
+		<ColumnText Key="AbsName"/>
+	</TableColumn>
+	<TableColumn Title="%dynRefType" ID="dynRefType">
+		<ColumnText Key="MappedType" />
+	</TableColumn>
+
+	<!--####################### Column: Value Collection ################################# -->
+	<TableColumn Title="%dynRefVCUsedValueName" ID="dynRefMDM_VDColumn-ValueCollection.Name">
+		<ColumnText Key="name" />
+		<!-- ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer"/ -->
+	</TableColumn>
+	<TableColumn Title="%dynRefVCValueDef" ID="dynRefMDM_VDColumn-ValueCollection.ValueDef">
+		<ColumnList MPath="MDM_ItemView-VC-VCtab-UsedValue" Mask="DataConcept" Depth="4" ObjectType="MDM_RMD_DATA_CONCEPT">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefVCValueDef" ID="dynRefMDM_VDColumn-ValueCollection.ValueDef_mod">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+	<TableColumn Title="%dynRefUsageCount" ID="dynRefMDM_VDColumn-ValueCollection.UsageCount">
+		<ColumnText Key="MDM_RDM_USAGE_COUNT" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.NumericCellRenderer" />
+	</TableColumn>
+
+	<!--####################### Value Collection######################################## -->
+	<TableColumn Title="%dynRefVCUsedValueName" ID="dynRefVCUsedValueName">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefVCUsedValueName" ID="dynRefVCUsedValueNameWithAnomaly">
+		<ColumnList MPath="MDMAnom_UV" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_CONCERNED_ITEM"/>
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.ScannedValueAnomalyCellRenderer" />
+	</TableColumn>
+
+	<!-- TableColumn Title="%dynRefVCValueDef" ID="dynRefVCValueDef"> <ColumnList MPath="MDM_ItemView-VC-VCtab-UsedValue" Mask="DataConcept"
+		Depth="4" ObjectType="MDM_RMD_DATA_CONCEPT"> <ColumnText Key="name"/> </ColumnList> <ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer"/>
+		</TableColumn -->
+	<TableColumn Title="%dynRefVCValueDef" ID="dynRefVCValueDef">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefUsageCount" ID="dynRefUsageCount">
+		<ColumnText Key="MDM_RDM_USAGE_COUNT" />
+	</TableColumn>
+	<TableColumn Title="%dynRefVCHisValue" ID="dynRefVCHisValue">
+		<ColumnList MPath="MDM_ItemView-VC-VCtab-HisValue" Mask="his" Depth="4" ObjectType="MDM_RDM_VALUE_COLLECTION">
+			<ColumnText Key="MDM_RDM_LAST_SCAN" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HistoricalValueCellRenderer" />
+	</TableColumn>
+
+	<!-- Value collection references To/By Business Term -->
+	<TableColumn Title="%dynRefName" ID="dynRefMDM_Ref_BusinessTerm_To_By.Name">
+		<ColumnText Key="name" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDef" ID="dynRefMDM_Ref_BusinessTerm_To_By.Definition">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+	<TableColumn Title="%dynRefAssociatedContextBT" ID="dynRefMDM_Ref_BusinessTerm_To_By.AssociatedContext">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.BtermContextCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefGlossaryBT" ID="dynRefMDM_Ref_BusinessTerm_To_By.Glossary">
+		<ColumnText Key="absPath" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.GlossaryCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefRelationType" ID="dynRefMDM_Ref_BusinessTerm_To_By.Relationtype">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.AssocTypeCellRenderer" />
+	</TableColumn>
+
+	<!-- Business Term Provides definition for -->
+	<TableColumn Title="%dynRefName" ID="dynRefMDM_BusinessTerm__Pro_Def_for.Name">
+		<ColumnText Key="name" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDef" ID="dynRefMDM_BusinessTerm__Pro_Def_for.Definition">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+	<TableColumn Title="%dynRefQualifiedName" ID="dynRefMDM_BusinessTerm__Pro_Def_for.QualifiedName"  Width="2">
+		<ColumnText Key="AbsName" />
+	</TableColumn>
+	<TableColumn Title="%dynRefType" ID="dynRefMDM_BusinessTerm__Pro_Def_for.Type">
+		<ColumnText Key="Type" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.TypyCellRenderer" />
+	</TableColumn>
+
+	<!--####################### Reference Collection######################################## -->
+
+
+
+	<TableColumn Title="%dynRefDef" ID="dynRefDefinition">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+
+	<!-- ##################Database MultTab columns -->
+	<!-- ################# MDM ReferenceData #################### -->
+	<!-- mdm columns for ListDataContext item list -->
+	<!-- mdm columns for ListDataConcept item list -->
+	<TableColumn Title="%dynRefDCDefinition" ID="dynRefDCDefinition">
+		<ColumnList Direction="forward" ObjectType="RBG/BUSINESS-TERM" AssocType="MDM_BUS_RELATED_TERM">
+			<ColumnText Key="DEFINITION" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDCbusinessTerm" ID="dynRefDCbusinessTermBCK">
+		<ColumnList Direction="forward" ObjectType="RBG/BUSINESS-TERM" AssocType="MDM_BUS_RELATED_TERM">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDCdataContext" ID="dynRefDCdataContextBCK">
+		<ColumnList Direction="backward" ObjectType="MDM_DATA_CONTEXT" AssocType="MDM_HAS_CONCEPT">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDCdataContext" ID="dynRefDCdataContextBCK2">
+		<ColumnList Direction="backward" ObjectType="MDM_DATA_CONTEXT">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDCconceptualDomain" ID="dynRefDCconceptualDomainBCK">
+		<ColumnList Direction="backward" ObjectType="MDM_RMD_CONCEPTUAL_DOMAIN" AssocType="MDM_RMD_SPECIFIES">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefCode" ID="dynRefCode">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.DataConceptValidityCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefCode" ID="dynRefCodeWithAnomaly">
+		<ColumnList MPath="MDM_DV2DA" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_CONCERNED_ITEM"/>
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.ScannedValueAnomalyCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDesc" ID="dynRefValueDef">
+		<ColumnText Key="MDM_RDM_VALUE_DEFINITION" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDVRCTable" ID="dynRefDVRCTable">
+		<ColumnList MPath="MDM_DV2RC2Table" Mask="Tables" Depth="2" ObjectType="DWR_RDB_TABLE_OR_VIEW">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+
+	<!-- Begin columns for List Conceptual Domain -->
+	<TableColumn Title="%dynRefCDconceptualDomainName" ID="dynRefCDconceptualDomainName">
+		<ColumnText Key="name" />
+	</TableColumn>
+	<TableColumn Title="%dynRefCDusesDataConcept" ID="dynRefCDusesDataConceptFWD">
+		<ColumnList Direction="forward" ObjectType="MDM_RMD_DATA_CONCEPT" AssocType="MDM_RMD_SPECIFIES">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefCDbusinessTerm" ID="dynRefCDbusinessTermCPX">
+		<ColumnList MPath="MDMCellRenderer_ConceptD2BT" Mask="BT" Depth="3" ObjectType="RBG/BUSINESS-TERM">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefCDdataContext" ID="dynRefCDdataContextBCK">
+		<!--ColumnText Key="MDM_HAS_DOMAIN" / -->
+		<ColumnList Direction="backward" ObjectType="MDM_DATA_CONTEXT" AssocType="MDM_HAS_DOMAIN">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<!-- End columns for List Conceptual Domain -->
+
+	<!-- Begin columns for List Value Domains -->
+	<TableColumn Title="%dynRefVDvalueDomainName" ID="dynRefVDvalueDomainName">
+		<ColumnText Key="name" />
+	</TableColumn>
+	<TableColumn Title="%dynRefVDdataConcept" ID="dynRefVDdataConceptCPX">
+		<ColumnList MPath="MDMCellRenderer_VD2DataConcept" Mask="DataConcept" Depth="3" ObjectType="MDM_RMD_DATA_CONCEPT">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefVDconceptualDomain" ID="dynRefVDconceptualDomainBCK">
+		<ColumnList Direction="backward" ObjectType="MDM_RMD_CONCEPTUAL_DOMAIN" AssocType="MDM_RMD_REPRESENTED_BY">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefVDbusinessTerm" ID="dynRefVDbusinessTermCPX">
+		<ColumnList MPath="MDMCellRenderer_VD2BT" Mask="BT" Depth="4" ObjectType="RBG/BUSINESS-TERM">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefVDdataContext" ID="dynRefVDdataContextSRC">
+		<ColumnList MPath="MDMCellRenderer_VD2DataContext" Mask="DataContext" Depth="3" ObjectType="MDM_DATA_CONTEXT">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<!-- End columns for List Value Domains -->
+
+	<!-- mdm columns for ListReferenceCollection item list -->
+	<TableColumn Title="%dynRefRCreferenceCollection" ID="dynRefRCreferenceCollection">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefRCvalueDomain" ID="dynRefRCvalueDomain">
+		<ColumnList Direction="backward" ObjectType="MDM_RMD_VALUE_DOMAIN" AssocType="MDM_RMD_REFERS_TO">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+
+	<!-- mdm columns for ListValueCollection item list -->
+	<TableColumn Title="%dynRefRCvalueCollection" ID="dynRefRCvalueCollection">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer" />
+	</TableColumn>
+
+	<!-- begin MDM columns for List Value Driven Column -->
+	<!-- end MDM columns for List Value Driven Column -->
+
+	<!-- MDM columns for Business Term item list -->
+	<TableColumn Title="%dynRefNameBT" ID="dynRefNameBT">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDefinitionBT" ID="dynRefDefinitionBT">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+	<TableColumn Title="%dynRefGlossaryBT" ID="dynRefGlossaryBT">
+		<ColumnText Key="absPath" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.GlossaryCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDCdataContext" ID="dynRefDCdataContextBCK_Hierarchy">
+		<ColumnList Direction="backward" ObjectType="MDM_DATA_CONTEXT" AssocType="MDM_HAS_CONCEPT">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.DataContextForHierarchyCellRenderer" />
+	</TableColumn>
+
+
+	<!-- ################ ####################### -->
+	<!-- ################ Begin Relational Databases columns ####################### -->
+	<!-- ################ ####################### -->
+
+	<!-- mdm columns for List DBSystem, DB, Schema, TableOrView, column item list -->
+
+	<!-- begin MDM columns for List Databases -->
+	<TableColumn Title="%dynRefDBSysDB" ID="dynRefDBName">
+		<ColumnList MPath="MDMCellRenderer_Table2DB" Mask="DB" Depth="3" ObjectType="DWR_RDB_DATABASE">
+			<ColumnText Key="AbsName" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefDBSysSchema" ID="dynRefDBSchema">
+		<ColumnList Direction="backward" ObjectType="DWR_RDB_SCHEMA" AssocType="DWR_RDB_HAS_TABLE_OR_VIEW">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableTable" ID="dynRefDBTable">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableTableOrView" ID="dynRefDBTableOrView">
+		<ColumnText Key="DWR_RDB_TABLE_OR_VIEW_TYPE" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableIsRefTable" ID="dynRefDBIsRefTable">
+		<ColumnText Key="AbsName" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RTandVDCCellRenderer" Editor="com.rochade.mdm.celleditor.IsRCAndVDCCellEditor" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDBSysBusinessTerm" ID="dynRefDBBusinessTerm">
+		<ColumnList Direction="backward" ObjectType="RBG/BUSINESS-TERM" AssocType="RBG/REFERENCES">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<!-- end MDM columns for List Databases -->
+
+	<!-- begin MDM columns for List Schemas -->
+	<TableColumn Title="%dynRefDBSysSchema" ID="dynRefSchemaSchemaName">
+		<ColumnList Direction="backward" ObjectType="DWR_RDB_SCHEMA" AssocType="DWR_RDB_HAS_TABLE_OR_VIEW">
+			<ColumnText Key="AbsName" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefTableTable" ID="dynRefSchemaOfTable">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableTableOrView" ID="dynRefSchemaTableOrView">
+		<ColumnText Key="DWR_RDB_TABLE_OR_VIEW_TYPE" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableIsRefTable" ID="dynRefSchemaIsRefTable">
+		<ColumnText Key="MDM_RDB_IS_LUT" />
+		<!-- ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RTandVDCCellRenderer" Editor="com.rochade.mdm.celleditor.IsRCAndVDCCellEditor"/ -->
+	</TableColumn>
+	<TableColumn Title="%dynRefDBSysBusinessTerm" ID="dynRefSchemaBusinessTerm">
+		<ColumnList Direction="backward" ObjectType="RBG/BUSINESS-TERM" AssocType="RBG/REFERENCES">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<!-- end MDM columns for List Schemas -->
+
+	<!-- ############ begin List Reference Table/List Tables ############### -->
+	<TableColumn Title="%dynRefTableTable" ID="dynRefTableTable">
+		<!-- <Image Key="icon" />-->
+		<ColumnText Key="name" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableDef" ID="dynRefTableDef">
+		<ColumnList Direction="backward" ObjectType="RBG/BUSINESS-TERM" AssocType="RBG/REFERENCES">
+			<ColumnText Key="DEFINITION" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefTableIsRefTable" ID="dynRefTableIsRefTable">
+		<ColumnText Key="MDM_RDB_RELATED_lUT" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RTandVDCCellRenderer" Editor="com.rochade.wa.view.cellrenderer.RadioButtonCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableBTerm" ID="dynRefTableBTerm">
+		<ColumnList Direction="backward" ObjectType="RBG/BUSINESS-TERM" AssocType="RBG/REFERENCES">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableVDomain" ID="dynRefTableVDomain">
+		<ColumnList MPath="MDMCellRenderer_TB2VD" Mask="ValueDomain" Depth="5" ObjectType="MDM_RMD_VALUE_DOMAIN">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableDConcept" ID="dynRefTableDConcept">
+		<ColumnList MPath="MDMCellRenderer_Table2DataCpt" Mask="DataConcept" Depth="5" ObjectType="MDM_RMD_DATA_CONCEPT">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableDataContext" ID="dynRefTableDataContext" >
+		<ColumnList Direction="backward" ObjectType="MDM_DATA_CONTEXT" AssocType="MDM_HAS_COLLECTION">
+			<ColumnText Key="AbsName" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynName" ID="dynRefNameWidth2" Width="2">
+		<ColumnText Key="name" />
+	</TableColumn>
+	<TableColumn Title="%dynDBTabType" ID="dynRefDBTabType" Width="80px">
+		<ColumnText Key="DWR_RDB_TABLE_OR_VIEW_TYPE" />
+	</TableColumn>
+	<TableColumn Title="%dynDBSysSchemaName" ID="dynRefTableBackward.Schema">
+		<ColumnList Direction="backward" ObjectType="DWR_RDB_SCHEMA" AssocType="DWR_RDB_HAS_TABLE_OR_VIEW">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynTable.ImplementsEntity" ID="dynRefImplementsEntity" Width="2">
+		<ColumnList Direction="forward" ObjectType="DWR_ERM_ENTITY" AssocType="DWR_DAT_IMPLEMENTS_ENTITY">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynTable.ImplementedAsTable" ID="dynRefTable.ImplementedAsTable" Width="2">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_TABLE_OR_VIEW" AssocType="DWR_RDB_IMPLEMENTED_AS_TABLE">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_Stage" ID="dynRefDWR_Stage">
+		<ColumnText Key="DWR_STAGE" />
+	</TableColumn>
+	<TableColumn Title="%dynBT" ID="dynRefBusinessTermFmERM" Width="2">
+		<ColumnList Direction="backward" ObjectType="RBG/BUSINESS-TERM" AssocType="RBG/REFERENCES">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_Datatype" ID="dynRefRDB_Column.Datatype">
+		<ColumnList Direction="forward" ObjectType="DWR_DAT_DATA_TYPE" AssocType="DWR_DAT_OF_TYPE">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+		<TableColumn Title="%dynDWR_Format" ID="dynRefRDB_Column.Format">
+		<ColumnList Direction="forward" ObjectType="DWR_DAT_DATA_TYPE" AssocType="DWR_DAT_OF_TYPE">
+			<ColumnText Key="DWR_DAT_DATATYPE" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynDWR_Scale" ID="dynRefRDB_Column.RenderedScale">
+		<ColumnList MPath="_DWR_COLUMN2DATTYPE" Depth="4">
+			<ColumnText Key="DWR_DAT_SCALE" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.dwr.cellrenderer.DatScaleCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_Length" ID="dynRefRDB_Column.RenderedLength">
+		<ColumnList MPath="_DWR_COLUMN2DATTYPE" Depth="4">
+			<ColumnText Key="DWR_DAT_LENGTH" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.dwr.cellrenderer.DatLengthCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynDBSysTable" ID="dynRefRDB_RDBBackward.hasColumn" Width="2">
+		<ColumnList Direction="backward" ObjectType="DWR_RDB_TABLE_OR_VIEW" AssocType="DWR_RDB_HAS_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynDBSysDB" ID="dynRefBulkDatabase">
+		<ColumnText Key="absPath" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.ColumnToDBCellRendererWithoutHyperlink" />
+	</TableColumn>
+	<TableColumn Title="%dynTable.ImplementsAttr" ID="dynRefDAT.ImplementsAttr" Width="2">
+		<ColumnList Direction="forward" ObjectType="DWR_ERM_ATTRIBUTE" AssocType="DWR_DAT_IMPLEMENTS_ATTRIBUTE">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+		<TableColumn Title="%dynColumn.ImplementedAsColumn" ID="dynRefColumn.ImplementedAsColumn" Width="2">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="DWR_RDB_IMPLEMENTED_AS_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<!-- ############ end List Reference Table ############### -->
+
+	<!-- Columns related to Foreign key -->
+	<TableColumn Title="%dynRefIsForeignFK" ID="dynRefIsForeignFK">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="DWR_RDB_IS_FOREIGN_KEY_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDependsFK" ID="dynRefDependsFK">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="DWR_RDB_DEPENDS_ON_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer" />
+	</TableColumn>
+
+	<!-- DB Schema item view -->
+
+
+	<!-- metaGlossary columns -->
+
+
+	<!-- general columns -->
+	<TableColumn Title="%dynRefDCName" ID="dynRefNameDataConcept">
+		<!-- <Image Key="icon" />-->
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer" />
+	</TableColumn>
+
+	<TableColumn Title="" ID="dynRefNameNoHeader">
+		<!-- <Image Key="icon" />-->
+		<ColumnText Key="name" />
+	</TableColumn>
+
+	<!-- ################ ####################### -->
+	<!-- ################ End Relational Databases columns ####################### -->
+	<!-- ################ ####################### -->
+
+	<TableColumn Title="%dynRefName" ID="dynRefName">
+		<!-- <Image Key="icon" />-->
+		<ColumnText Key="name" />
+	</TableColumn>
+	<!-- ################ ####################### -->
+	<!-- ################ Begin Data Structures columns ####################### -->
+	<!-- ################ ####################### -->
+	<!-- Begin List Records columns -->
+	<!-- End List Records columns -->
+	<!-- Begin List Datatypes columns -->
+	<!-- End List Datatypes columns -->
+	<!-- Begin List Files columns -->
+	<!-- End List Files columns -->
+	<!-- Begin List Fields columns -->
+	<!-- End List Fields columns -->
+
+	<!-- ################# MDM Anomaly Start #################### -->
+	<TableColumn Title="%dynRefDataAnomaly" ID="dynRefUVAnomaly" Width="35px" >
+		<ColumnList MPath="MDMAnom_UV" Depth="3" ObjectType="MDM_DATA_ANOMALY"> <!--   Mask="dataAnom" -->
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_CONCERNED_ITEM"/>
+			</ColumnList>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.DataAnomalyCellRenderer"/>
+	</TableColumn>
+	<TableColumn Title="%dynRefDataAnomaly" ID="dynRefDCptAnomaly" Width="45px" >
+		<ColumnList MPath="MDMAnom_DCpt" Mask="dataAnom" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_RMD_RELATED_MEANING"/>
+			</ColumnList>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.DataAnomalyCellRenderer"/>
+	</TableColumn>
+	<TableColumn Title="%dynRefDataAnomaly" ID="dynRefCptDAnomaly" Width="35px">
+		<ColumnList MPath="MDMAnom_CptD" Mask="dataAnom" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_RMD_RELATED_MEANING"/>
+		</ColumnList>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.DataAnomalyCellRenderer"/>
+	</TableColumn>
+	<TableColumn Title="%dynRefDataAnomaly" ID="dynRefVDAnomaly" Width="35px">
+		<ColumnList MPath="MDMAnom_VD" Mask="dataAnom" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_RMD_RELATED_MEANING"/>
+			</ColumnList>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.DataAnomalyCellRenderer"/>
+	</TableColumn>
+	<!-- not in use -->
+	<TableColumn Title="%dynRefDataAnomaly" ID="dynRefColAnomaly" Width="35px">
+		<ColumnList MPath="MDMAnom_Column" Mask="dataAnom" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_RMD_RELATED_MEANING"/>
+			</ColumnList>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.DataAnomalyCellRenderer"/>
+	</TableColumn>
+	<TableColumn Title="%dynRefDataAnomaly" ID="dynRefTblAnomaly" Width="35px">
+		<ColumnList MPath="MDMAnom_Tbl" Mask="dataAnom" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_RMD_RELATED_MEANING"/>
+			</ColumnList>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.DataAnomalyCellRenderer"/>
+	</TableColumn>
+	<!-- begin MDM columns for List Databases -->
+	<TableColumn Title="%dynRefDataAnomaly" ID="dynRefDBSchemaAnomaly" Width="35px">
+		<ColumnList MPath="MDMAnom_DBnSchema" Mask="dataAnom" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_RMD_RELATED_MEANING"/>
+		</ColumnList>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.DataAnomalyCellRenderer"/>
+	</TableColumn>
+	<TableColumn Title="%dynRefDataAnomaly" ID="dynRefSchemaAnomaly" Width="35px">
+		<ColumnList MPath="MDMAnom_DBnSchema" Mask="dataAnom" Depth="3" ObjectType="MDM_DATA_ANOMALY">
+			<ColumnText Key="MDM_KIND"/>
+			<ColumnText Key="MDM_SEVERITY"/>
+			<ColumnText Key="MDM_RMD_RELATED_MEANING"/>
+		</ColumnList>
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.DataAnomalyCellRenderer"/>
+	</TableColumn>
+
+   <TableColumn Title="%dynRefDataAnomaly" ID="dynRefDataAnomaly_grid" Width="35px">
+		<ColumnText Key="name" />
+		<ColumnProperty	Renderer="com.rochade.mdm.comp.grid.cellrenderer.DataAnomalyGridCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefName" ID="dynRefTooltipName">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+	<!-- ################# MDM Anomaly End #################### -->
+
+
+	<!-- MDM_DS_Record_Fields -->
+	<TableColumn Title="%dynRefMDM_DS_Record_Fields.Field" ID="dynRefMDM_DS_Record_Fields.Field">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HyperlinkButtonCellRencederer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefMDM_DS_Record_Fields.Datatype" ID="dynRefMDM_DS_Record_Fields.Datatype" Width="1">
+		<ColumnList Direction="forward" ObjectType="DWR_DAT_DATA_TYPE" AssocType="DWR_DAT_OF_TYPE">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefMDM_DS_Record_Fields.Format" ID="dynRefMDM_DS_Record_Fields.Format" Width="1">
+		<ColumnList Direction="forward" ObjectType="DWR_DAT_DATA_TYPE" AssocType="DWR_DAT_OF_TYPE">
+			<ColumnText Key="DWR_DAT_DATATYPE" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefMDM_DS_Record_Fields.Length" ID="dynRefMDM_DS_Record_Fields.Length">
+		<ColumnList Direction="forward" ObjectType="DWR_DAT_DATA_TYPE" AssocType="DWR_DAT_OF_TYPE">
+			<ColumnText Key="DWR_DAT_LENGTH" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefMDM_DS_Record_Fields.Scale" ID="dynRefMDM_DS_Record_Fields.Scale">
+		<ColumnList Direction="forward" ObjectType="DWR_DAT_DATA_TYPE" AssocType="DWR_DAT_OF_TYPE">
+			<ColumnText Key="DWR_DAT_SCALE" />
+		</ColumnList>
+	</TableColumn>
+
+	<!-- End List Fields columns -->
+	<!-- ################ ##################### -->
+	<!-- ################ End Data Structures columns ####################### -->
+	<!-- ################ ##################### -->
+
+	<!-- Metaapp can use only WTB's default. See http://gechemhudson.asg.com/bugzilla/show_bug.cgi?id=1389. <DefaultTableProperties> <Property
+		Name="pageSize" Value="10"/> <Property Name="sortDirection" Value="ascending"/> </DefaultTableProperties> -->
+
+	<!-- Begin Grid columns -->
+	<TableColumn Title="%dynRefName" ID="dynRefName_grid">
+		<ColumnText Key="name" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefType" ID="dynRefType_grid">
+		<ColumnText Key="Type" />
+		<ColumnProperty Renderer="com.rochade.mdm.comp.grid.cellrenderer.TypeGridCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDCDefinition" ID="dynRefDC_DEFINITION_grid">
+		<ColumnList Direction="forward" ObjectType="RBG/BUSINESS-TERM" AssocType="MDM_BUS_RELATED_TERM">
+			<ColumnText Key="DEFINITION" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefVDDefinition" ID="dynRefVD_DEFINITION_grid">
+		<ColumnList Direction="forward" ObjectType="RBG/BUSINESS-TERM" AssocType="MDM_BUS_RELATED_TERM">
+			<ColumnText Key="DEFINITION" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefCDDefinition" ID="dynRefCD_DEFINITION_grid">
+		<ColumnList Direction="forward" ObjectType="RBG/BUSINESS-TERM" AssocType="MDM_BUS_RELATED_TERM">
+			<ColumnText Key="DEFINITION" />
+		</ColumnList>
+	</TableColumn>
+	<!-- End Grid columns -->
+
+	<!-- Begin Search Business Term Wizard columns -->
+	<TableColumn Title="%dynRefCrDate" ID="dynRefCrDate">
+		<ColumnText Key="crDate" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.DateCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefModifDate" ID="dynRefModifDate">
+		<ColumnText Key="upDate" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.DateCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefStatus" ID="dynRefStatus" Width="1">
+		<ColumnText Key="RBG/STATUS" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.BtStatusCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefGoverningContext" ID="dynRefGoverningContext" Width="1">
+		<ColumnList Direction="backward" AssocType="MDM_HAS_CONCEPT">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RefOwnedByCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefOwner" ID="dynRefOwner" Width="1">
+		<ColumnText Key="owner" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.UserLDAPPropsCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefAcronym" ID="dynRefDesignatedAttsML" Width="1" >
+		<ColumnText Key="RBG/DESIGNATION" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefName" ID="dynRefMLNameWithIcon" Width="1">
+		<ColumnText Key="languages" />
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WAMLNameWithIconCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefGoverningContext" ID="dynRefOwnedBy" Width="1">
+		<ColumnText Key="absPath" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.GovContextCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefGlossaryBT" ID="dynRefGlossaryFmBT">
+		<ColumnText Key="absPath" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.GlossaryFmContextCellRenderer" />
+	</TableColumn>
+	<!-- End Search Business Term Wizard columns -->
+
+	<!-- Begin specify SQL Dialect wizard columns -->
+	<TableColumn Title="%dynRefSQLDialectName" ID="dynRefSQLDialectName">
+		<ColumnText Key="name" />
+	</TableColumn>
+	<!-- End specify SQL Dialect wizard columns -->
+
+	<!-- Begin Search Reference Column Wizard columns -->
+	<TableColumn Title="%dynRefDataColumnName" ID="dynRefDataColumnName">
+		<!-- <Image Key="icon" />-->
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_RELATED_VDC">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefQualifiedName" ID="dynRefDataColumnQualifiedName" Width="2">
+		<!-- <Image Key="icon" />-->
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_RELATED_VDC">
+			<ColumnText Key="AbsName" />
+		</ColumnList>
+	</TableColumn>
+	
+	<TableColumn Title="%dynRefDataColumnDataType" ID="dynRefDataColumnDataType">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RefColumnDataTypeCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDataColumnFormat" ID="dynRefDataColumnFormat">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RefColumnDataTypeCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDataColumnLength" ID="dynRefDataColumnLength">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_RELATED_VDC">
+			<ColumnText Key="DWR_DAT_LENGTH" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefDataColumnScale" ID="dynRefDataColumnScale">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_RELATED_VDC">
+			<ColumnText Key="DWR_DAT_SCALE" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefDataColumnTable" ID="dynRefDataColumnTable">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RefColumnTableNameCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRefDataColumnTable" ID="dynRefGridDataColumnTable">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RefGridColumnTableNameCellRenderer" />
+	</TableColumn>
+	<!--TableColumn Title="%dynRefDBSysDB" ID="dynRefDBSysDB"> <ColumnList MPath="_DWR_CellRenderer_Table2DB" Mask="DB" Depth="3" ObjectType="DWR_RDB_DATABASE">
+		<ColumnText Key="AbsName" /> </ColumnList> </TableColumn -->
+	<!-- End Search Reference Column Wizard columns -->
+
+	<!-- Begin List Reference Tables - one of MDM context menu actions -->
+	<TableColumn Title="%dynRefTableName" ID="dynRefTableName">
+		<!-- <Image Key="icon" />-->
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_TABLE_OR_VIEW" AssocType="MDM_RDM_RELATED_LUT">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefQualifiedName" ID="dynRefTableQualifiedName" Width="2">
+		<!-- <Image Key="icon" />-->
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_TABLE_OR_VIEW" AssocType="MDM_RDM_RELATED_LUT">
+			<ColumnText Key="AbsName" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefReferenceTableName" ID="dynRefReferenceTableName">
+		<!-- <Image Key="icon" />-->
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_TABLE_OR_VIEW" AssocType="MDM_RDM_RELATED_LUT">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefCollectionName" ID="dynRefCollectionName">
+		<ColumnText Key="name" />
+	</TableColumn>
+	<TableColumn Title="%dynRefReferenceCollectionName" ID="dynRefReferenceCollectionName">
+		<ColumnText Key="name" />
+	</TableColumn>
+	<TableColumn Title="%dynRefTableValueColumn" ID="dynRefTableValueColumn">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_VALUE_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefTableValueDescription" ID="dynRefTableValueDescription">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_DEF_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRefTableHierarchyParent" ID="dynRefTableHierarchyParent">
+		<ColumnList Direction="forward" MPath="MDM_RC_Hierarchy_Parent" Mask="Parents" Depth="2" ObjectType="MDM_RDM_REFERENCE_COLLECTION">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.HierarchyParentCellRenderer" />
+	</TableColumn>
+	<!--End List Reference Tables - one of MDM context menu actions -->
+
+	<!--Begin List Reference Columns - one of MDM context menu actions -->
+	<TableColumn Title="%dynRefVDCRelTableName" ID="dynRefVDCRelTableName">
+		<ColumnList Direction="backward" ObjectType="DWR_RDB_TABLE_OR_VIEW">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<!--End List Reference Columns - one of MDM context menu actions -->
+
+	<!-- Begin DWR Table itemview reference collection list -->
+	<TableColumn Title="" ID="dynRefGridDetails" Width="42px">
+		<ColumnProperty Renderer="com.rochade.mdm.comp.grid.cellrenderer.details.DetailsFromZulCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="" ID="dynRefGridDetailsNonClickable" Width="42px">
+		<ColumnProperty Renderer="com.rochade.mdm.comp.grid.cellrenderer.details.DetailsInShortFormatCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="" ID="dynScrollerColumn" Width="20px">
+	</TableColumn>
+
+	<TableColumn Title="%dynRefValueColumn" ID="dynRefValueColumn">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_VALUE_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDefinitionColumn" ID="dynRefDefinitionColumn">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_DEF_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynReferenceColumn" ID="dynReferenceColumn">
+		<ColumnList Direction="forward" ObjectType="DWR_RDB_COLUMN" AssocType="MDM_RDM_REF_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefCollection" ID="dynRefCollection">
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.LineBreakValueCellRenderer" />
+		<ColumnList Direction="forward" MPath="MDM_RC_ParentRC" Mask="ParentRC" Depth="2" ObjectType="MDM_RDM_REFERENCE_COLLECTION">
+			<ColumnText Key="name" />
+		</ColumnList>
+	</TableColumn>
+	<!-- End DWR Table itemview reference collection list -->
+
+	<!-- Begin DWR Column itemview value collection list -->
+	<TableColumn Title="" ID="dynValGridDetails" Width="42px">
+		<ColumnProperty Renderer="com.rochade.mdm.comp.grid.cellrenderer.details.DetailsFromZulCellRenderer" />
+	</TableColumn>
+	<!-- End DWR Column itemview value collection list -->
+
+
+
+	<!--######################################################################################################################################################################## -->
+	<!--###################################################### End MDM specific columns for MDM editor ######################################################################## -->
+	<!--######################################################################################################################################################################## -->
+
+	<!-- ##################################################################### -->
+	<!-- ###################### define Tables ############################### -->
+	<!-- ##################################################################### -->
+
+	<!-- ##################################################################### -->
+	<!-- ###################### item list view ############################### -->
+	<!-- ##################################################################### -->
+
+	<Table ID="MDM_MyDataConceptList">
+		<TableColumn ref="dynRefMLNameWithIcon" Sort="0" MultiplexML="true" />
+		<TableColumn ref="dynRefDCDefinition"  MultiplexML="true" />
+		<TableColumn ref="dynRefGoverningContext" Filterable ="false"/>
+		<TableColumn ref="dynRefDCtxtContextPath" Visible="false" Filterable ="false"/>
+		<TableColumn ref="dynRefCrDate" Filterable ="false"/>
+		<TableColumn ref="dynRefModifDate" Filterable ="false"/>
+		<TableColumn ref="dynRefStatus" Filterable="false"/>
+		<TableColumn ref="dynRefDesignatedAttsML" Visible="false" Filterable ="true" MultiplexML="true"/>
+		<TableColumn ref="dynRefOwner" Visible="false" Filterable="false" />
+		<Property Name="baseType" Value="MDM_RMD_DATA_CONCEPT" />
+		<Property Name="pageSize" Value="*" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+
+	<!-- ListDataContext List view - one of MDM popupmenu actions -->
+	<Table ID="MDM_dataContextsList">
+		<TableColumn ref="dynRefNameDataContext" Sort="0"/>
+		<TableColumn ref="dynRefDef"/>
+		<TableColumn ref="dynRefDCtxtContextPath"/>
+		<TableColumn ref="dynRefType"/>
+		<TableColumn ref="dynTags" Visible="false" />
+	</Table>
+
+	<TableColumn Title="%dynRefType" ID="dynRefTypeName">
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.TypeCellRenderer" />
+	</TableColumn>
+
+	<!-- ListDataContext List view - one of MDM popupmenu actions -->
+	<Table ID="MDM_dataContextsSnapshotList">
+		<TableColumn ref="dynRefNameDataContext" Sort="0"/>
+		<TableColumn ref="dynRefDef"/>
+		<TableColumn ref="dynRefDCtxtContextPath"/>
+		<TableColumn ref="dynRefTypeName"/>
+	</Table>
+
+	<!--  ListDataConcept List view - one of MDM popupmenu actions -->
+	<Table ID="MDM_dataConceptsList">
+		<TableColumn ref="dynRefDCptAnomaly" Filterable="false" />
+		<TableColumn ref="dynRefNameDataConcept" Sort="0" />
+		<TableColumn ref="dynRefDCDefinition" />
+		<TableColumn ref="dynRefDCbusinessTermBCK" />
+		<TableColumn ref="dynRefDCdataContextBCK" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<Table ID="MDM_anomalyScopesList">
+		<TableColumn ref="dynRefDCptAnomaly" Filterable="false" />
+		<TableColumn ref="dynRefTooltipName" Sort="0" />
+		<TableColumn ref="dynType" />
+		<TableColumn ref="dynRefDCdataContextBCK2" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<Table ID="MDM_parentDataConceptsList">
+		<TableColumn ref="dynRefNameDataConcept" Sort="0" />
+		<TableColumn ref="dynRefDCdataContextBCK_Hierarchy" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<!-- conceptualDomainList List view - one of MDM popupmenu actions -->
+	<Table ID="MDM_conceptualDomainList">
+		<TableColumn ref="dynRefCptDAnomaly" Filterable="false" />
+		<TableColumn ref="dynRefCDconceptualDomainName" Sort="0" />
+		<TableColumn ref="dynRefCDusesDataConceptFWD" />
+		<TableColumn ref="dynRefCDbusinessTermCPX" />
+		<TableColumn ref="dynRefCDdataContextBCK" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<!-- valueDomainList List view - one of MDM popupmenu actions -->
+	<Table ID="MDM_valueDomainList">
+		<TableColumn ref="dynRefVDAnomaly" Filterable="false" />
+		<TableColumn ref="dynRefVDvalueDomainName" Sort="0" />
+		<TableColumn ref="dynRefVDdataConceptCPX" />
+		<TableColumn ref="dynRefVDconceptualDomainBCK" />
+		<TableColumn ref="dynRefVDbusinessTermCPX" />
+		<TableColumn ref="dynRefVDdataContextSRC" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<!-- referenceCollectionList list view -->
+	<Table ID="MDM_referenceCollectionList">
+		<TableColumn ref="dynRefRCreferenceCollection" Sort="0" />
+		<TableColumn ref="dynRefRCvalueDomain" Sort="1" />
+		<!--Property Name="baseType" Value="MDM_RDM__SCAN_COLLECTION"/ -->
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<!-- valueCollectionList list view -->
+	<Table ID="MDM_valueCollectionList">
+		<TableColumn ref="dynRefRCvalueCollection" Sort="0" />
+		<TableColumn ref="dynRefType" />
+	</Table>
+
+	<TableColumn Title="%dynTags" ID="dynRefRCTags" >
+		<ColumnList MPath="MDM_REF_COL_TO_TABLE_TAG" Mask="Tags"  Depth="3" ObjectType="DWR_TAG" Sortkey1="name">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+
+	<!-- List Reference Tables - one of MDM context menu actions -->
+	<Table ID="MDM_RefTableList">
+		<TableColumn ref="dynRefTableName" />
+		<TableColumn ref="dynRefTableQualifiedName" Visible="false" />
+		<TableColumn ref="dynRefCollectionName" Sort="0" />
+		<TableColumn ref="dynRefTableValueColumn" />
+		<TableColumn ref="dynRefTableValueDescription" />
+		<TableColumn ref="dynRefTableHierarchyParent" />
+		<TableColumn ref="dynRefTableDataContext" />
+		<TableColumn ref="dynRefRCTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<!-- List Tables - one of MDM context menu actions -->
+	<Table ID="MDM_TableList">
+		<TableColumn ref="dynRefTblAnomaly" Filterable="false" />
+		<TableColumn ref="dynRefTableTable" Sort="0" />
+		<TableColumn ref="dynRefTableDef" />
+		<TableColumn ref="dynRefTableIsRefTable" Editable="true" Filterable="false" />
+		<TableColumn ref="dynRefTableBTerm" />
+		<TableColumn ref="dynRefTableVDomain" />
+		<TableColumn ref="dynRefTableDConcept" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<TableColumn Title="%dynTags" ID="dynRefVCTags" >
+		<ColumnList MPath="MDM_VAL_COL_TO_COL_TAG" Mask="Tags"  Depth="3" ObjectType="DWR_TAG" Sortkey1="name">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRenderer" />
+	</TableColumn>
+
+	<!-- List Value Driven Column - one of MDM popupmenu actions -->
+	<Table ID="MDM_vdcList">
+		<TableColumn ref="dynRefDataColumnName" Sort="0" />
+		<TableColumn ref="dynRefDataColumnQualifiedName" Visible="false" />
+		<TableColumn ref="dynRefCollectionName" />
+		<TableColumn ref="dynRefDataColumnTable" />
+		<TableColumn ref="dynRefVCTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<Table ID="MDM_vdcGridList">
+		<TableColumn ref="dynRefGridDetailsNonClickable" />
+		<TableColumn ref="dynRefDataColumnName" Sort="0" />
+		<TableColumn ref="dynRefCollectionName" />
+		<TableColumn ref="dynRefGridDataColumnTable" />
+		<TableColumn ref="dynRefTableDataContext" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<!-- DBList List view - one of MDM popupmenu actions -->
+	<Table ID="MDM_DataBasesList">
+		<TableColumn ref="dynRefDBSchemaAnomaly" Filterable="false" />
+		<TableColumn ref="dynRefDBName" />
+		<TableColumn ref="dynRefDBSchema" />
+		<TableColumn ref="dynRefDBTable" Sort="0" />
+		<TableColumn ref="dynRefDBTableOrView" Sort="1" />
+		<TableColumn ref="dynRefDBIsRefTable" Filterable="false" />
+		<TableColumn ref="dynRefDBBusinessTerm" Sort="2" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<!-- SchemaList List view - one of MDM popups menu actions -->
+	<Table ID="MDM_SchemasList">
+		<TableColumn ref="dynRefSchemaAnomaly" Filterable="false" />
+		<TableColumn ref="dynRefSchemaSchemaName" Sort="0" />
+		<TableColumn ref="dynRefSchemaOfTable" Sort="1" />
+		<TableColumn ref="dynRefSchemaTableOrView" />
+		<TableColumn ref="dynRefSchemaIsRefTable" Filterable="false" />
+		<TableColumn ref="dynRefSchemaBusinessTerm" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<!-- Business Term List view - one of MDM popupmenu actions -->
+	<Table ID="MDM_BusinessTermList">
+		<TableColumn ref="dynRefNameBT" Sort="0" />
+		<TableColumn ref="dynRefDefinitionBT" Sort="1" />
+		<TableColumn ref="dynRefGlossaryBT" Sort="2" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<!-- <TableColumn ref="dynRefGoverningContextBT" Sort="2"/> <TableColumn ref="dynRefAcronym" Sort="3"/> <TableColumn ref="dynRefApprovedByBT"
+			Sort="4"/> <Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller"/> -->
+	</Table>
+
+	<Table ID="MDM_BusinessTermList_woGlossary">
+		<TableColumn ref="dynRefNameBT" Sort="0" />
+		<TableColumn ref="dynRefDefinitionBT" Sort="1" />
+	</Table>
+	<!-- ##################################################################### -->
+	<!-- ################## mdm editor ##################################### -->
+	<!-- ##################################################################### -->
+
+	<Table ID="MDM_VD-HierList">
+		<TableColumn ref="dynRefName" />
+		<!-- TableColumn ref="dynRefDCptValueDomain"/> <Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller"/ -->
+	</Table>
+	<Table ID="MDM_CD-HierList">
+		<TableColumn ref="dynRefName" />
+		<!-- TableColumn ref="dynRefDCptValueDomain"/> <Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller"/ -->
+	</Table>
+
+	<!-- ################### Data Concept item view -->
+
+	<Table ID="MDM_DCImplDetailTabGridTabel">
+		<TableColumn ref="dynRefName_grid" Visible="true" Sort="0" />
+		<TableColumn ref="dynRefDataAnomaly_grid" Visible="true" Sort="3" />
+		<TableColumn ref="dynRefType_grid" Visible="true" Sort="2" />
+		<TableColumn ref="dynRefDC_DEFINITION_grid" Visible="true" Sort="1" />
+		<!-- Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller"/ -->
+	</Table>
+
+	<Table ID="MDM_VDImplDetailTabGridTabel">
+		<TableColumn ref="dynRefName_grid" Visible="true" Sort="0" />
+		<TableColumn ref="dynRefDataAnomaly_grid" Visible="true" Sort="3" />
+		<TableColumn ref="dynRefType_grid" Visible="true" Sort="2" />
+		<TableColumn ref="dynRefVD_DEFINITION_grid" Visible="true" Sort="1" />
+		<!-- Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller"/ -->
+	</Table>
+
+	<Table ID="MDM_CDImplDetailTabGridTabel">
+		<TableColumn ref="dynRefName_grid" Visible="true" Sort="0" />
+		<TableColumn ref="dynRefDataAnomaly_grid" Visible="true" Sort="3" />
+		<TableColumn ref="dynRefType_grid" Visible="true" Sort="2" />
+		<TableColumn ref="dynRefCD_DEFINITION_grid" Visible="true" Sort="1" />
+		<!-- Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller"/ -->
+	</Table>
+
+	<Table ID="MDM_DCpt-DVList">
+	</Table>
+
+	<Table ID="MDM_DCpt-HierList">
+		<TableColumn ref="dynRefDataConceptName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRefDCptValueDomain" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<Table ID="MDM_DCpt-HierListCDom">
+		<TableColumn ref="dynRefDataConceptNameIcon" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRefDCptConceptualDomain" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<!-- ################### Value Collection item view -->
+	<Table ID="MDM_VC-VCList">
+		<TableColumn ref="dynRefUVAnomaly" Filterable="false"/>
+		<TableColumn ref="dynRefVCUsedValueName" />
+		<TableColumn ref="dynRefVCValueDef" />
+		<TableColumn ref="dynRefUsageCount" />
+		<TableColumn ref="dynRefVCHisValue" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+		<Property Name="pageSize" Value="8" />
+	</Table>
+
+	<Table ID="MDM_VC-VCListWithAnomalies">
+		<TableColumn ref="dynRefVCUsedValueNameWithAnomaly"/>
+		<TableColumn ref="dynRefUsageCount" />
+		<TableColumn ref="dynRefVCHisValue" />
+		<Property Name="pageSize" Value="8" />
+	</Table>
+
+	<Table ID="MDM_VC-ValColList">
+		<TableColumn ref="dynRefName" Sort="0" />
+		<TableColumn ref="dynRefTableDataContext" />
+		<Property Name="pageSize" Value="15" />
+	</Table>
+
+	<!-- ################### DWR Table itemview reference collection list -->
+
+	<Table ID="MDM_GRID-RC-RefColList">
+		<TableColumn ref="dynRefGridDetails" />
+		<TableColumn ref="dynRefName" Sort="0" />
+		<TableColumn ref="dynRefValueColumn" />
+		<TableColumn ref="dynRefDefinitionColumn" />
+		<TableColumn ref="dynRefCollection" />
+		<TableColumn ref="dynRefTableDataContext" />
+	</Table>
+
+	<Table ID="MDM_GRID-VC-ValColList">
+		<TableColumn ref="dynRefGridDetails" />
+		<TableColumn ref="dynRefName" Sort="0" />
+		<TableColumn ref="dynRefTableDataContext" />
+	</Table>
+
+	<Table ID="MDM_RC-RefColList">
+		<TableColumn ref="dynRefName" Sort="0" />
+		<TableColumn ref="dynRefValueColumn" />
+		<TableColumn ref="dynRefDefinitionColumn" />
+		<TableColumn ref="dynRefCollection" />
+		<TableColumn ref="dynRefTableDataContext" />
+		<Property Name="pageSize" Value="15" />
+	</Table>
+	<!-- ################### Reference Collection item view -->
+
+	<Table ID="MDM_RC-DefinedValues">
+		<TableColumn ref="dynRefCode" Sort="0" />
+		<TableColumn ref="dynRefValueDef" Sort="1" />
+		<Property Name="pageSize" Value="8" />
+	</Table>
+
+	<Table ID="MDM_RC-DefinedValuesWithAnomalies">
+		<TableColumn ref="dynRefCodeWithAnomaly" Sort="0" />
+		<TableColumn ref="dynRefValueDef" Sort="1" />
+		<Property Name="pageSize" Value="8" />
+	</Table>
+
+	<Table ID="MDM_RC-DefinedValuesTable">
+		<TableColumn ref="dynRefCode" Sort="0" />
+		<TableColumn ref="dynRefValueDef" Sort="1" />
+		<TableColumn ref="dynRefDVRCTable" />
+		<Property Name="pageSize" Value="8" />
+	</Table>
+
+	<!-- ################## VDC item view -->
+
+	<!-- the same for MDM_RDM_USED_VALUE, MDM_RMD_PERMISSIBLE_VALUE, MDM_RDM_DEFINED_VALUE, MDM_RMD_CDRELATIONSHIP, MDM_RMD_VDRELATIONSHIP -->
+	<Table ID="MDM_MR-Value">
+		<TableColumn ref="dynRefType" Sort="0" />
+		<TableColumn ref="dynRefName" Sort="1" />
+	</Table>
+
+	<!-- The same for MDM_RMD_CDRELATIONSHIP and MDM_RMD_VDRELATIONSHIP -->
+	<Table ID="MDM_RI-RelatItem">
+		<TableColumn ref="dynRefName" Sort="0" />
+		<TableColumn ref="dynRefDef" Sort="1" />
+	</Table>
+
+	<Table ID="MDM-HasContext-Name">
+		<TableColumn ref="dynRefNameNoHeader" Sort="0" />
+	</Table>
+
+	<Table ID="MDM-RDB-Tables">
+		<TableColumn ref="dynRefName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynRefDef" Sort="1" Object.Use="assoc.dst" />
+	</Table>
+
+	<!-- Foreign Key item view -->
+	<Table ID="MDM_RDB_Foreign_Key">
+		<TableColumn ref="dynRefDef" />
+		<TableColumn ref="dynRefIsForeignFK" />
+		<TableColumn ref="dynRefDependsFK" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<!-- Column ItemView: Value Collection Tab -->
+	<Table ID="MDM_VDColumn-ValueCollection">
+		<TableColumn ref="dynRefMDM_VDColumn-ValueCollection.Name" />
+		<TableColumn ref="dynRefMDM_VDColumn-ValueCollection.ValueDef_mod" />
+		<!-- TODO SK: previous definition doesn't work without dynRefMDM_VDColumn-ValueCollection.ValueDef -->
+		<TableColumn ref="dynRefMDM_VDColumn-ValueCollection.ValueDef" Visible="false" />
+		<TableColumn ref="dynRefMDM_VDColumn-ValueCollection.UsageCount" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<Table ID="MDM_Ref_BusinessTerm_To_By">
+		<TableColumn ref="dynRefMDM_Ref_BusinessTerm_To_By.Name" Sort="0" />
+		<TableColumn ref="dynRefMDM_Ref_BusinessTerm_To_By.Definition" />
+		<TableColumn ref="dynRefMDM_Ref_BusinessTerm_To_By.AssociatedContext" />
+		<TableColumn ref="dynRefMDM_Ref_BusinessTerm_To_By.Glossary" Sort="1" />
+		<TableColumn ref="dynRefMDM_Ref_BusinessTerm_To_By.Relationtype" />
+	</Table>
+
+	<Table ID="MDM_Provide_def_for">
+		<TableColumn ref="dynRefMDM_BusinessTerm__Pro_Def_for.Name" Sort="0" />
+		<TableColumn ref="dynRefMDM_BusinessTerm__Pro_Def_for.Definition" />
+		<TableColumn ref="dynRefMDM_BusinessTerm__Pro_Def_for.QualifiedName" Sort="1" />
+		<TableColumn ref="dynRefMDM_BusinessTerm__Pro_Def_for.Type" />
+	</Table>
+
+	<Table ID="MDM_ConceptualDomainList_BTerm">
+		<TableColumn ref="dynRefNameBT" Sort="0" />
+	</Table>
+
+	<Table ID="MDM_DS_Record_Fields">
+		<TableColumn ref="dynRefMDM_DS_Record_Fields.Field" Sort="0" />
+		<TableColumn ref="dynRefMDM_DS_Record_Fields.Datatype" />
+		<TableColumn ref="dynRefMDM_DS_Record_Fields.Format" />
+		<TableColumn ref="dynRefMDM_DS_Record_Fields.Length" />
+		<TableColumn ref="dynRefMDM_DS_Record_Fields.Scale" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<Table ID="MDM-RDB-DCList">
+		<TableColumn ref="dynRefName" Sort="0" />
+		<TableColumn ref="dynRefType" />
+		<TableColumn ref="dynRefDefinition" />
+		<Property Name="pageSize" Value="15" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+
+	<!-- Begin Specify SQL dialect Wizart table -->
+	<Table ID="MDM-SQLDialectList">
+		<TableColumn ref="dynRefSQLDialectName" Sort="0" />
+		<TableColumn ref="dynRefDefinition" />
+		<Property Name="pageSize" Value="15" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+	<!-- End Specify SQL dialect Wizart table -->
+
+	<!-- Begin Search Data Context Wizard tables -->
+	<Table ID="MDM_SearchDataContextsList">
+		<TableColumn ref="dynRefNameDataContext" Sort="0" />
+		<TableColumn ref="dynRefType" />
+		<TableColumn ref="dynRefDef" />
+	</Table>
+	<!-- End Search Data Context Wizard tables -->
+
+	<!-- Begin Add Reference Table Wizard tables -->
+	<Table ID="REF_EntryTopicRDBTables_Wizard">
+		<TableColumn ref="dynRefNameWidth2" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRefDBTabType" />
+		<TableColumn ref="dynRefTableBackward.Schema" />
+		<TableColumn ref="dynRefImplementsEntity" />
+		<TableColumn ref="dynRefTable.ImplementedAsTable" />
+		<TableColumn ref="dynRefDWR_Stage" />
+		<TableColumn ref="dynRefBusinessTermFmERM" />
+	</Table>
+	<!-- End Add Reference Table Wizard tables -->
+
+	<!-- Begin Add Reference Column Wizard tables -->
+	<Table ID="REF_EntryTopicRDBColumns">
+		<TableColumn ref="dynRefNameWidth2" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRefRDB_Column.Datatype" />
+		<TableColumn ref="dynRefRDB_Column.Format" />
+		<TableColumn ref="dynRefRDB_Column.RenderedLength" Filterable="false" />
+		<TableColumn ref="dynRefRDB_Column.RenderedScale" Filterable="false" />
+		<TableColumn ref="dynRefRDB_RDBBackward.hasColumn" />
+		<TableColumn ref="dynRefBulkDatabase" />
+		<TableColumn ref="dynRefDAT.ImplementsAttr" />
+		<TableColumn ref="dynRefColumn.ImplementedAsColumn" />
+		<TableColumn ref="dynRefDWR_Stage" />
+		<TableColumn ref="dynRefBusinessTermFmERM" />
+	</Table>
+	<!-- End Add Reference Column Wizard tables -->
+
+	<!-- Begin Search Reference Collections Wizard tables -->
+	<Table ID="MDM_SearchReferenceTableList">
+		<TableColumn ref="dynRefGridDetailsNonClickable" />
+		<TableColumn ref="dynRefReferenceTableName" />
+		<TableColumn ref="dynRefReferenceCollectionName" Sort="0" />
+		<TableColumn ref="dynRefTableValueColumn" />
+		<TableColumn ref="dynRefTableValueDescription" />
+		<TableColumn ref="dynRefTableHierarchyParent" />
+		<TableColumn ref="dynRefTableDataContext" />
+		<Property Name="pageSize" Value="15" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<!-- End Search Reference Collections Wizard tables -->
+
+	<!-- Begin Search Reference Column Wizard tables -->
+	<Table ID="MDM_SearchReferenceColumnList">
+		<TableColumn ref="dynRefDataColumnName" Sort="0" />
+		<TableColumn ref="dynRefDataColumnDataType" />
+		<TableColumn ref="dynRefDataColumnFormat" />
+		<TableColumn ref="dynRefDataColumnLength" />
+		<TableColumn ref="dynRefDataColumnScale" />
+		<TableColumn ref="dynRefDataColumnTable" />
+		<Property Name="pageSize" Value="15" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<!-- End Search Reference Collections Wizard tables -->
+
+	<!-- Begin Search Business Term Wizard tables -->
+	<Table ID="MDM_SEARCHBTRESULTLIST">
+		<TableColumn ref="dynRefMLNameWithIcon" Sort="0" Filterable="true" />
+		<TableColumn ref="dynRefDefinition" Filterable="true" />
+		<TableColumn ref="dynRefOwnedBy" Filterable="false" />
+		<TableColumn ref="dynRefGlossaryFmBT" Filterable="false" />
+		<Property Name="pageSize" Value="15" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+	<!-- End Search Business Term Wizard tables -->
+
+	<TableColumn Title="%dynRefQualifiedName" ID="dynRefQualifiedName" Width="2">
+		<ColumnText Key="AbsName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefCollectionName" ID="dynRefLutOrVdcName">
+		<ColumnText Key="LutOrVdcName" />
+		<ColumnProperty	Renderer="com.rochade.wa.view.grid.WAGridCellRenderer"/>
+	</TableColumn>
+
+	<TableColumn Title="%dynType" ID="dynRefLutOrVdc">
+		<ColumnText Key="LutOrVdc" />
+		<ColumnProperty	Renderer="com.rochade.wa.view.grid.WAGridCellRenderer"/>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefQualifiedName" ID="dynRefLutOrVdcQualifiedName" Width="2">
+		<ColumnText Key="LutOrVdcQualifiedName" />
+		<ColumnProperty	Renderer="com.rochade.wa.view.grid.WAGridCellRenderer"/>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefDCptValueDomain" ID="dynImplDomain">
+		<ColumnText Key="DomainName" />
+		<ColumnProperty	Renderer="com.rochade.mdm.cellrenderer.LineBreakValueCellRenderer"/>
+	</TableColumn>
+
+	<TableColumn Title="%dynRefCollQualifiedName" ID="dynImplScanColl" Width="2">
+		<ColumnText Key="AbsName" />
+	</TableColumn>
+
+	<Table ID="MDM_GRID-DC-ImplList">
+		<TableColumn ref="dynRefGridDetails" />
+		<TableColumn ref="dynImplScanColl" Sort="0" />
+		<TableColumn ref="dynRefLutOrVdc" />
+		<TableColumn ref="dynRefLutOrVdcQualifiedName" />
+		<TableColumn ref="dynImplDomain" />
+	</Table>
+
+	<Table ID="MDM_BT_dataConceptsList">
+		<TableColumn ref="dynRefGridDetails" />
+		<TableColumn ref="dynRefDCptAnomaly" Filterable="false"/>
+		<TableColumn ref="dynRefName" Sort="0"/>
+		<TableColumn ref="dynRefQualifiedName"/>
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller"/>
+	</Table>
+
+	<!--###################################################### MDM specific columns/tables for DataConcept Export ######################################################### -->
+	<TableColumn Title="%dynPMDispName" ID="dynPMDispName" Width="1">
+		<!-- <Image Key="icon" />-->
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynMeaning" ID="dynForward.Meaning" Width="1">
+		<ColumnList Direction="forward" ObjectType="MDM_RMD_DATA_CONCEPT" AssocType="MDM_RMD_RELATED_MEANING">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDefinDom" ID="dynBackward.OD" Width="1">
+		<ColumnList Direction="backward" ObjectType="MDM_RMD_VALUE_DOMAIN" AssocType="MDM_RMD_CONTAINS_PERMISSIBLE_VAL">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+
+	<TableColumn Title="%dynUsedinDom" ID="dynBackward.UD" Width="2">
+		<ColumnList Direction="backward" ObjectType="MDM_RMD_VALUE_DOMAIN" AssocType="MDM_RMD_USES_PERMISSIBLE_VALUE">
+			<ColumnText Key="AbsName" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+
+	<Table ID="MDM_dataConceptExportList">
+		<TableColumn ref="dynPMDispName" />
+		<TableColumn ref="dynForward.Meaning" />
+		<TableColumn ref="dynBackward.OD" />
+		<TableColumn ref="dynBackward.UD" />
+	</Table>
+
+	<Table ID="MDM_EntryTopicRDBs">
+		<TableColumn ref="dynRefNameWithTooltip" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRefDefWidth3" />
+		<TableColumn ref="dynRefRDB_DBBackward.DBSys" />
+		<TableColumn ref="dynRefStage" />
+		<TableColumn ref="dynRefSQLDialect"/>
+	</Table>
+
+	<TableColumn Title="%dynRefRelatedItemName" ID="dynRefRelatedItemName">
+		<ColumnText Key="MDM_RDM_RELATED_VDC" />
+		<ColumnText Key="MDM_RDM_RELATED_LUT" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RelatedItemNameRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefRelatedItemType" ID="dynRefRelatedItemType">
+		<ColumnText Key="MDM_RDM_RELATED_VDC" />
+		<ColumnText Key="MDM_RDM_RELATED_LUT" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.RelatedItemTypeRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRefHasQuery" ID="dynRefHasQuery">
+		<ColumnText Key="MDM_RDM_QUERY_EXPR" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.SqlDialectSpecifiedRenderer" />
+	</TableColumn>
+
+	<Table ID="MDM_ListOfVcRc">
+		<TableColumn ref="dynRefRelatedItemName" Sort="0" />
+		<TableColumn ref="dynRefRelatedItemType" Sort="0" />
+		<TableColumn ref="dynRefName" />
+		<TableColumn ref="dynRefHasQuery" />
+	</Table>
+
+	<TableColumn Title="%dynHistDate" ID="dynHistDateComparable">
+		<ColumnText Key="RBG/MODIFICATION-DATE" />
+		<ColumnProperty Renderer="com.rochade.mdm.cellrenderer.DateCellRendererComparable" />
+	</TableColumn>
+
+	<TableColumn Title="%dynUser" ID="dynRefHistUser">
+		<ColumnList Direction="forward" ObjectType="RBG/USER" AssocType="RBG/MODIFIER">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.UserLDAPPropsCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynHistComment" ID="dynRefHistComment">
+		<ColumnText Key="RBG/CHANGE-COMMENT" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.MappedHistoryCommentCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynHistAtts" ID="dynRefHistAtts">
+		<ColumnList Direction="forward" ObjectType="RBG/ATTR-RECORD" AssocType="RBG/ATT-CHANGES">
+			<ColumnText Key="RBG/ATTRIBUTE-NAME" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.MappedAttributeCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynHistRefByTask" ID="dynRefHistRefByTask">
+		<ColumnList Direction="backward" ObjectType="RWF/NOTIFICATION" AssocType="RWF/ITEM-HISTORY">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.HistTaskCellRenderer" />
+	</TableColumn>
+
+	<Table ID="refHistoryView">
+		<TableColumn ref="dynRefHistUser"/>
+		<TableColumn ref="dynHistDateComparable" Sort="0" Filterable="false"/>
+		<TableColumn ref="dynRefHistComment" />
+		<TableColumn ref="dynRefHistAtts" Filterable="false"/>
+		<TableColumn ref="dynRefHistRefByTask" Filterable="false"/>
+		<Property Name="pageSize" Value="5" />
+		<Property Name="sortDirection" Value="descending" />
+		<Property Name="lineHeight" Value="3" />
+	</Table>
+
+	<Table ID="MDM_dataConceptsList_SearchHierarchy">
+		<TableColumn ref="dynRefNameDataConcept" Sort="0" />
+		<TableColumn ref="dynRefDCbusinessTermBCK" />
+		<TableColumn ref="dynRefDCdataContextBCK" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+</ShapeResources>

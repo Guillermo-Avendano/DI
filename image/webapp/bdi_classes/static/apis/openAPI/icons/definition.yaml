@@ -1,0 +1,171 @@
+openapi: 3.0.3
+info:
+  title: Icons
+  description: |-
+  version: 1.0.0
+
+externalDocs:
+  description: Find out more about Swagger
+  url: https://swagger.io
+
+security:
+  - BasicAuth: []
+  - BearerAuth: []
+
+servers:
+  - url: '/rest'
+
+tags:
+  - name: Icons
+    description: Download icons to display in UI
+
+paths:
+  /icons/{id}:
+    get:
+      tags:
+        - Icons
+      operationId: downloadIcon
+      summary: Download specified icon for the input
+      description: Download specified icon for the input
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: |
+            The ID of the icon that needs to be downloaded is constructed on the lineage call to show applications associated with technical items. Thus showing the application level of the lineage diagram.
+          schema:
+            type: string
+        - name: fileName
+          in: query
+          description: >-
+            If this parameter is not null, the response will be saved to a file
+            by browser mentioned in the content-disposition.
+          schema:
+            type: string
+            default: ''
+      responses:
+        '200':
+          description: successful operation
+          content:       # Response body
+            image/*:     # Media type
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+####################
+components:
+  securitySchemes:
+    BasicAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+    BearerAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+
+  responses:
+    BadRequest:
+      description: A bad request was submitted (HTTP 400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unauthorized:
+      description: Unauthorized (HTTP 401)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+    Forbidden:
+      description: You are not authorized to perform this action (HTTP 403)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotFound:
+      description: The specified resource was not found (HTTP 404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+    TooManyRequests:
+      description: Too many requests in a given amount of time, aka "rate limiting" (HTTP 429).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    InternalServerError:
+      description: An error occurred on the server (HTTP 500)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotImplemented:
+      description: Method not implemented (HTTP 501)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    ServiceUnavailable:
+      description: Server is not ready to handle the request (HTTP 503)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+
+
+  schemas:
+    # Schema for error response body when Jersey dispatcher triggers the error
+    JerseyError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+
+    # Schema for error response body when ASG-Services-SDK maps automatically one of its standard com.asg.services.common.exceptions into response body
+    SDKError:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^\d{3}$'
+        message:
+          type: string
+        correlationId:
+          type: string

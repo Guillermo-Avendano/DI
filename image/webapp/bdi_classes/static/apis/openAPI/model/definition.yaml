@@ -1,0 +1,764 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Model
+  description: Model OpenAPI definition
+
+security:
+  - BasicAuth: []
+  - BearerAuth: []
+
+servers:
+  - url: '/rest'
+tags:
+  - name: Model
+
+paths:
+  /model/langs:
+    get:
+      tags:
+        - Model
+      operationId: getLangs
+      summary: Retrieves the active languages.
+      description: |
+        Retrieves the languages currently enabled into the current Model for multi-language item names and attribute contents.  
+        Indicates which one is currently the default language.
+      responses:
+        '200':
+          description: Active languages.
+          content:
+            application/vnd.bdi-services-model-activeLanguages.v1+json:
+              schema:
+                $ref: '#/components/schemas/ActiveLanguages'
+              examples:
+                activeLanguages:
+                  $ref: '#/components/examples/activeLanguages'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+  /model/labels/types:
+    get:
+      tags:
+        - Model
+      operationId: getModelLabelsByTypeNameWithLang
+      summary: Retrieves the L10N labels by type name and specific language.
+      description: |
+        For specified languages, retrieves the localized label of each type of the Rochade Information Model.
+      parameters:
+        - name: langs
+          in: query
+          required: false
+          description: |
+            The languages in ISO 639-1 format (two-letter codes) for which localized labels of model elements must be retrieved.  
+            The specified language should be among available language packs, otherwise corresponding results will be empty.  
+            If not specified, labels for all available language packs are retrieved.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: type
+          in: query
+          required: false
+          description: |
+            If provided, type labels will be retrieved only for that type name.
+          schema:
+            type: string
+            default: ""
+      responses:
+        '200':
+          description: |
+            Localized labels of types of the model.  
+            If some localized labels are missing for the requested languages, they are automatically replaced by the corresponding label localized in English.
+            In other words, there is a fall-back mechanism to English.
+          content:
+            application/vnd.bdi-services-model-labels.v1+json:
+              schema:
+                $ref: "#/components/schemas/Labels"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /model/labels/attributes:
+    get:
+      tags:
+        - Model
+      operationId: getModelLabelsByAttributeNameWithLang
+      summary: Retrieves the L10N labels by attribute name and specific language.
+      description: |
+        For specified languages, retrieves the localized label of each attribute of the Rochade Information Model.
+      parameters:
+        - name: langs
+          in: query
+          required: false
+          description: |
+            The languages in ISO 639-1 format (two-letter codes) for which localized labels of model elements must be retrieved.  
+            The specified language should be among available language packs, otherwise corresponding results will be empty.  
+            If not specified, labels for all available language packs are retrieved.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: attribute
+          in: query
+          required: false
+          description: |
+            Provide the attribute name for which label attributes will be retrieved
+          schema:
+            type: string
+            default: ""
+      responses:
+        '200':
+          description: |
+            Localized labels of attributes of the model.  
+            If some localized labels are missing for the requested languages, they are automatically replaced by the corresponding label localized in English.
+            In other words, there is a fall-back mechanism to English.
+          content:
+            application/vnd.bdi-services-model-labels.v1+json:
+              schema:
+                $ref: "#/components/schemas/Labels"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /model/subtypes:
+    get:
+      tags:
+        - Model
+      operationId: getSubTypes
+      summary: Retrieves the sub types.
+      description: |
+        Get all the sub types of a given type. The given type itself will not be part of the response.
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: |
+            Provide the type for which sub types will be retrieved
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RochadeItemType'
+      responses:
+        '200':
+          description: List of sub types, sorted from the most generic ones (direct subtypes) to the most specific ones (leaf types).
+          content:
+            application/vnd.bdi-services-model-subtypes.v1+json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/Types'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /model/supertypes:
+    get:
+      tags:
+        - Model
+      operationId: getSuperTypes
+      summary: Retrieves the super types.
+      description: |
+        Get all the super types of a given type. The given type itself will not be part of the response.
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: |
+            Provide the type for which super types will be retrieved
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RochadeItemType'
+      responses:
+        '200':
+          description: List of super types, sorted from the most specific ones (direct supertypes) to the most generic ones (root types).
+          content:
+            application/vnd.bdi-services-model-supertypes.v1+json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/Types'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /model/item-types:
+    get:
+      tags:
+        - Model
+      operationId: getUiTypes
+      summary: Retrieves the corresponding UI item type for given Rochade item types and their subtypes.
+      description: |
+        Get the corresponding UI item type for given Rochade item type Ids (and all subtypes of them)
+      parameters:
+        - name: typeIds
+          in: query
+          description: |
+            The Rochade type Ids for which UI item types will be retrieved.  
+            If empty or absent, all the known UI item type mappings will be returned.  
+            Any subtype of the specified types will also be included into the response.  
+
+            CAUTION: for the Rochade types, for which the type name itself is not enough to identify the exact type (like DWR_RDB_TABLE_OR_VIEW type), the 'typeId' is structured.  
+            See the [RochadeItemType](#/components/schemas/) schema.
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RochadeItemType'
+      responses:
+        '200':
+          description: List of Ui item types for the queried rochade types (and their subtypes).
+          content:
+            application/vnd.bdi-services-model-itemtypes.v1+json:
+              schema:
+                $ref: '#/components/schemas/UiTypes'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /model/item-categories:
+    get:
+      tags:
+        - Model
+      operationId: getItemCategories
+      summary: Retrieves the corresponding item category for a given Rochade item types and their subtypes.
+      description: |
+        Get the corresponding item category for given Rochade item type Ids (and all subtypes of them)
+      parameters:
+        - name: typeIds
+          in: query
+          description: |
+            The Rochade type Ids for which item categories will be retrieved.  
+            If empty or absent, all the known item category mappings will be returned.  
+            Any subtype of the specified types will also be included into the response.  
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RochadeItemType'
+      responses:
+        '200':
+          description: List of item categories for the queried rochade types (and their subtypes).
+          content:
+            application/vnd.bdi-services-model-itemcategories.v1+json:
+              schema:
+                $ref: '#/components/schemas/TypeCategories'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+####################
+components:
+  securitySchemes:
+    BasicAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+    BearerAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+
+  ####################
+  examples:
+    activeLanguages:
+      summary: Active languages
+      value:
+        default: en
+        others:
+          - fr
+          - de
+    modelLabelsAllLangs:
+      summary: All localized labels for types and attributes
+      value:
+        '':
+          types:
+            RBG/BUSINESS-TERM: Business Term
+            DWR_RDB_DATABASE: Database
+          attributes:
+            RBG/DESCRIPTION: Description
+            DWR_RDB_FOREIGN_KEY: Foreign Key
+        de:
+          types:
+            RBG/BUSINESS-TERM: Begriff
+            DWR_RDB_DATABASE: Datenbank
+          attributes:
+            RBG/DESCRIPTION: Beschreibung
+            DWR_RDB_FOREIGN_KEY: Fremdschlüssel
+    modelLabelMapping:
+      summary: Labels for types and attributes localized in German
+      value:
+        types:
+          RBG/BUSINESS-TERM: Begriff
+          DWR_RDB_DATABASE: Datenbank
+        attributes:
+          RBG/DESCRIPTION: Beschreibung
+          DWR_RDB_FOREIGN_KEY: Fremdschlüssel
+
+
+  ####################
+  responses:
+    BadRequest:
+      description: A bad request was submitted (HTTP 400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unauthorized:
+      description: Unauthorized (HTTP 401)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Forbidden:
+      description: You are not authorized to perform this action (HTTP 403)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotFound:
+      description: The specified resource was not found (HTTP 404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Conflict:
+      description: A conflict occurred (HTTP 409)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionFailed:
+      description: Condition is not fulfilled (HTTP 412)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionRequired:
+      description: Condition is required (HTTP 428)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    TooManyRequests:
+      description: Too many requests in a given amount of time, aka "rate limiting" (HTTP 429).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    InternalServerError:
+      description: An error occurred on the server (HTTP 500)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotImplemented:
+      description: Method not implemented (HTTP 501)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    ServiceUnavailable:
+      description: Server is not ready to handle the request (HTTP 503)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+
+
+  ####################
+  schemas:
+    # Schema for error response body when Jersey dispatcher triggers the error
+    JerseyError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+
+    # Schema for error response body when ASG-Services-SDK maps automatically one of its standard com.asg.services.common.exceptions into response body
+    SDKError:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^\d{3}$'
+        message:
+          type: string
+        correlationId:
+          type: string
+
+    Language:
+      description: A language in ISO 639-1 format (two-letter code)
+      type: string
+      pattern: '^[a-zA-Z]{2}$'
+
+    ItemType:
+      type: string
+      description: |
+        The UI type of the item (mapped from the real Rochade Type, see /model/item-types).  
+        It is used in the user interface to identify which icon must be displayed on an item (plus other usages like selecting the template to display). 
+      example: Field
+
+    Category:
+      type: string
+      description: |
+        The UI category of the contextual item (mapped from the real Rochade Type, see /model/item-categories).  
+        It is used in UI to propose distinct navigation flows according to the category of the items.
+      example: Field
+
+    RochadeItemType:
+      type: string
+      description: |
+        The unique identifier of the item type in Rochade.  
+        For any filtering based on the _itemType_ the _typeId_ value should be used, when sending the request.  
+        
+        CAUTION: for the Rochade types, for which the type name itself is not enough to identify the exact type, the 'typeId' is structured.  
+        
+        For example, the DWR_RDB_TABLE_OR_VIEW type in Rochade can in fact designate either a table, a view, a materialized view or an alias.  
+        To decide which kind is really an item of type DWR_RDB_TABLE_OR_VIEW, it is necessary to look at the value of its DWR_RDB_TABLE_OR_VIEW_TYPE attribute.  
+        For such items, the 'typeId' must be structured in the following from: Rochade type + Rochade discriminator attribute + Rochade discriminator attribute value, all separated by dot ('.') character.  
+        
+        __Examples:__  
+        * typeId="DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.table" (for a Table item)  
+        * typeId="DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.view" (for a Table View item)  
+        * typeId="DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.materialized_view" (for a Materialized View item)  
+        * typeId="DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.alias" (for an Alias item)  
+
+    ActiveLanguages:
+      description: Active languages
+      type: object
+      properties:
+        default:
+          description: the default language
+          $ref: '#/components/schemas/Language'
+        others:
+          description: other active languages
+          type: array
+          items:
+            $ref: '#/components/schemas/Language'
+
+    ModelLabels:
+      description: For a contextual language, keys are a type or an attribute and value is its localized label into that language.
+      type: object
+      additionalProperties:
+        type: string
+
+    ModelLabelMapping:
+      description: For a contextual language, mapping between types and attributes, and their localized label into that language.
+      type: object
+      properties:
+        types:
+          $ref: '#/components/schemas/ModelLabels'
+        attributes:
+          $ref: '#/components/schemas/ModelLabels'
+
+    ModelLabelsAllLangs:
+      description: |
+        Labels for types and attributes, dispatched per language
+        Keys are languages in ISO 639-1 format (two-letter codes), OR empty for the default language.  
+        Values are a mapping for types and another for attributes. Each mapping maps a type or an attribute to its localized label into the contextual language.
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/ModelLabelMapping'
+
+    UiTypes:
+      description: |
+        Provides the mapping for Rochade item types and the respective UI type in the user interface.
+      type: object
+      properties:
+        uiTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UiType'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      example:
+        uiTypes:
+          - type: Table
+            typeId: DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.table
+          - type: View
+            typeId: DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.view
+          - type: Glossary
+            typeId: NV
+          - type: Glossary
+            typeId: SAPLE
+
+    UiType:
+      description: |
+        The mapping between a Rochade item type and its respective UI type in the user interface.
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ItemType'
+        typeId:
+          $ref: '#/components/schemas/RochadeItemType'
+        canHaveChildren:
+          description: Indicates whether the rochade type possesses children
+          type: boolean
+
+    ItemCategory:
+      description: What category falls the item in. This is an abstraction for BDI UI based on the type of the item into the Rochade Information Model.
+      type: string
+      enum: [ TECHNICAL, BUSINESS, APPLICATION, INVENTORY, REPORTING ]
+
+    TypeCategories:
+      description: |
+        Provides the mapping for Rochade item types and the respective item categories.
+      type: object
+      properties:
+        typeCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/TypeCategory'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      example:
+        itemCategories:
+          - itemCategory: TECHNICAL
+            typeId: DWR_RDB_DB_SYSTEM
+          - itemCategory: BUSINESS
+            typeId: RBG/BUSINESS-TERM
+          - itemCategory: APPLICATION
+            typeId: NV
+          - itemCategory: INVENTORY
+            typeId: SAPLE
+
+    TypeCategory:
+      description: |
+        The mapping between a Rochade item type and its respective item category.
+      type: object
+      properties:
+        itemCategory:
+          $ref: '#/components/schemas/ItemCategory'
+        typeId:
+          $ref: '#/components/schemas/RochadeItemType'
+
+    Type:
+      description: |
+        Model type
+      type: string
+
+    Types:
+      description: |
+        List of model types
+      type: object
+      properties:
+        types:
+          type: array
+          items:
+            $ref: '#/components/schemas/Type'
+      example:
+        types:
+          - DWR__DESCRIBED_ITEM
+          - DWR__ITEM
+          - EIM__BUSINESS_RELEVANT_ITEM
+          - _ROCHADE_ITEM
+          - RO_TAGGABLE_ITEM
+          - _B3_ORIGIN
+          - EIM__ITEM_WITH_DESIGNATION
+          - DWR__RECONCILED_ITEM
+          - EIM__ANNOTATABLE_ITEM
+          - DWR__ITEM_FUNDAMENTAL
+          - RWF__GOVERNED_CONTEXT
+          - EIM__EDITABLE_ITEM
+          - EIM__BA_BASED_ON
+          - DWR_BUS__CUSTOMIZABLE
+
+    Labels:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/LabelItem"
+
+    LabelItem:
+      type: object
+      additionalProperties:
+        type: string
+        
+    HATEOASLinks:
+      description: HATEOAS links
+      type: array
+      items:
+        $ref: '#/components/schemas/HATEOASLink'
+
+    HATEOASLink:
+      description: HATEOAS link
+      type: object
+      properties:
+        rel:
+          description: the relation between the resource associated with this HATEOAS link and the resource designated by the target href
+          type: string
+        method:
+          description: HTTP method to use when invoking href
+          type: string
+          enum: [ GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH ]
+        href:
+          description: the URL to follow to obtain the related resource
+          type: string
+          format: uri

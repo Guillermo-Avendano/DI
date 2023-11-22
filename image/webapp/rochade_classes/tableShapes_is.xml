@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Search Shape for Table and Tree -->
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<?xml-stylesheet type="text/xsl" href="Resources.xsl"?>
+<ShapeResources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ShapeRes.xsd">
+	<TableColumn Title="%dynMLName" ID="dynIsMLName" Width="1">
+		<ColumnText Key="languages" />
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.table.WAMLNameCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynType" ID="dynIsType">
+		<ColumnText Key="MappedType" />
+	</TableColumn>
+	<TableColumn Title="%dynDef" ID="dynIsMLDefinition" Width="3">
+		<ColumnText Key="DEFINITION" />
+		<ColumnText Key="DEFINITION" Text="DEFINITION"/>
+	</TableColumn>
+	<TableColumn Title="%dynAbsName" ID="dynIsAbsName">
+		<ColumnText Key="AbsName" />
+	</TableColumn>
+
+	<Table ID="IndexSearchList">
+		<TableColumn ref="dynIsMLName" Sort="0" MultiplexML="true" />
+		<TableColumn ref="dynIsType" Sort="1" />
+		<TableColumn ref="dynIsMLDefinition" MultiplexML="true" />
+		<TableColumn ref="dynIsAbsName" />
+		
+		<!-- Enable this to get similar columns as for standard Business Term tables: 
+		<TableColumn ref="dynOwnedBy" Visible="false" Filterable ="false" Object.Use="assoc.dst" />
+ 		<TableColumn ref="dynQualContextName" Visible="false" Filterable="false" Object.Use="assoc.dst" />
+ 		<TableColumn ref="dynDesignatedAttsML" Visible="false" MultiplexML="true" Object.Use="assoc.dst" />
+ 		<TableColumn ref="dynApprovedBy" Visible="false" Filterable ="false" Object.Use="assoc.dst" />
+ 		<TableColumn ref="dynApprovedOn" Visible="false" Filterable="false" Object.Use="assoc.dst" />
+ 		<TableColumn ref="dynVersion" Visible="false" Filterable="false" Object.Use="assoc.dst" />
+ 		 -->
+ 		 
+ 		<!-- Tagging not available before 9.0: -->
+		<TableColumn ref="dynTags" Visible="false" />
+ 		
+		<Property Name="pageSize" Value="*" />
+		<Property Name="lineHeight" Value="1" />
+		<Property Name="indexFieldMap" Value="dynIsMLName=NAME;dynIsType=type;dynIsAbsName=absPath;dynIsMLDefinition=DEFINITION" />
+		
+		<!-- Enable this to add columns for attributes of customized Business Terms: -->
+		<Property Name="baseType" Value="RBG/BUSINESS-TERM" />
+		
+	</Table>
+</ShapeResources>

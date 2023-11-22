@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MG Shape for Table and Tree @author HC, 20.10.2011, created -->
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<?xml-stylesheet type="text/xsl" href="Resources.xsl"?>
+<ShapeResources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ShapeRes.xsd">
+
+  	<TableColumn Title="%dynName" ID="dynRbdNameTooltipAbsName" Width="2">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.CellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynDef" ID="dynRbdDefinition" Width="3">
+		<ColumnText Key="DEFINITION" />
+	</TableColumn>
+	<TableColumn Title="%dynDesc" ID="dynDescription" Width="3">
+		<ColumnText Key="DWR_DESCRIPTION" />
+	</TableColumn>
+	<TableColumn Title="%dynBT" ID="dynRbdRDB_BusinessTermFmERM" Width="2">
+		<ColumnList Direction="backward" ObjectType="RBG/BUSINESS-TERM" AssocType="RBG/REFERENCES">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_UserIdLastUpdate" ID="dynUserIdLastUpdate" >
+		<ColumnText Key="DWR_USER_ID_LAST_UPDATE" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_UserIdCreation" ID="dynUserIdCreation" >
+		<ColumnText Key="DWR_USER_ID_CREATION" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_TimeLastUpdate" ID="dynTimeLastUpdate">
+		<ColumnText Key="DWR_TIME_LAST_UPDATE" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_TimeCreation" ID="dynTimeCreation">
+		<ColumnText Key="DWR_TIME_CREATION" />
+	</TableColumn>
+
+	<TableColumn Title="%dynDWR_Description.HiveDescription" ID="dynDWR_Description.HiveDescription">
+		<ColumnText Key="HiveDescription" />
+	</TableColumn>
+	<TableColumn Title="%dynHiveLocation" ID="dynLocationDB" >
+		<ColumnText Key="LOCATION" />
+	</TableColumn>
+	<TableColumn Title="%dynHiveLocation" ID="dynHiveLocation">
+		<ColumnList Direction="forward" ObjectType="RBD_DIRECTORY" AssocType="DWR_PRO_LOCATED_AT">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.Type" ID="dynRBD_Table.Type">
+		<ColumnList Direction="forward" ObjectType="RBD_TABLE" AssocType="DWR_RDB_ORIGINS_TABLE_OR_VIEW">
+			<ColumnText Key="RBD_TYPE" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.DelimFields" ID="dynRBD_Table.DelimFields">
+		<ColumnList Direction="forward" ObjectType="RBD_TABLE" AssocType="DWR_RDB_ORIGINS_TABLE_OR_VIEW">
+			<ColumnText Key="RBD_DELIMITED-FIELDS" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.hive.DelimitedFieldsRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.SortedBy" ID="dynRBD_Table.SortedBy">
+		<ColumnList Direction="forward" ObjectType="RBD_TABLE" AssocType="DWR_RDB_ORIGINS_TABLE_OR_VIEW">
+			<ColumnText Key="RBD_SORTED-BY"/>
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.hive.SortedByRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.ClusteredBy" ID="dynRBD_Table.ClusteredBy">
+		<ColumnList Direction="forward" ObjectType="RBD_TABLE" AssocType="DWR_RDB_ORIGINS_TABLE_OR_VIEW">
+			<ColumnText Key="RBD_CLUSTERED-BY"/>
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.hive.ClusteredByRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.BuckNumber" ID="dynRBD_Table.BuckNumber">
+		<ColumnList Direction="forward" ObjectType="RBD_TABLE" AssocType="DWR_RDB_ORIGINS_TABLE_OR_VIEW">
+			<ColumnText Key="RBD_BUCKETS-NUMBER" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.hive.BucketsNumberRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.PartitionedBy" ID="dynRBD_Table.PartitionedBy">
+		<ColumnList Direction="forward" ObjectType="RBD_TABLE" AssocType="DWR_RDB_ORIGINS_TABLE_OR_VIEW">
+			<ColumnText Key="RBD_PARTITIONED-BY"/>
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.hive.PartitionedByRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.Partitions" ID="dynRBD_Table.Partitions">
+		<ColumnList Direction="forward" ObjectType="RBD_TABLE" AssocType="DWR_RDB_ORIGINS_TABLE_OR_VIEW">
+			<ColumnText Key="RBD_PARTITION-VALUE"/>
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.hive.PartitionsValuesRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynImportTrans" ID="dynImportTrans">
+	  <ColumnList Direction="backward" AssocType="DWR_TFM_TARGET">
+	   <ColumnText Key="name" />
+	  </ColumnList>
+	  <ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameType" />
+	</TableColumn>
+	<TableColumn Title="%dynExportTrans" ID="dynExportTrans">
+	  <ColumnList Direction="backward" AssocType="DWR_TFM_SOURCE">
+	   <ColumnText Key="name" />
+	  </ColumnList>
+	  <ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameType" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.Cluster" ID="dynRBD_Table.Cluster" >
+		<ColumnList MPath="RBD_GetTableCluster" Mask="cluster" ObjectType="RBD_CLUSTER">
+			<ColumnText Key="name"/>
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameRedoMPATH" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.DefCluster" ID="dynRBD_Table.DefCluster" >
+		<ColumnList MPath="RBD_GetDefTableCluster" Mask="cluster" ObjectType="RBD_CLUSTER">
+			<ColumnText Key="name"/>
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameRedoMPATH" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynETL_BelongsToTask" ID="dynRbdETL_TransBackward.task" Width="2">
+		<ColumnList Direction="backward" ObjectType="DWR_TFM_TASK" AssocType="DWR_TFM_PERFORMS">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_source" ID="dynRbdETL_TransForward.source" Width="2">
+		<ColumnList Direction="forward" AssocType="DWR_TFM_SOURCE">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameType" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_target" ID="dynRbdETL_TransForward.target" Width="2">
+		<ColumnList Direction="forward" AssocType="DWR_TFM_TARGET">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameType" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynIp" ID="dynIpAddress" Width="1">
+		<ColumnText Key="RBD_IP" />
+	</TableColumn>
+	<TableColumn Title="%dynCores" ID="dynCoresNum" Width="1">
+		<ColumnText Key="RBD_CORES-NUM" />
+	</TableColumn>
+	<TableColumn Title="%dynMemory" ID="dynPhysMemory" Width="1">
+		<ColumnText Key="RBD_TOTAL-PHYS-MEM" />
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.cluster.PhysMemRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynHealth" ID="dynHealthSummary" Width="1">
+		<ColumnText Key="RBD_HEALTH-SUMMARY" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynStatus" ID="dynServiceStatus" Width="1">
+		<ColumnText Key="RBD_SERVICE-STATUS" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_ServiceRole.assignedHost" ID="dynRBD_ServiceRole.assignedHost">
+		<ColumnList Direction="forward" ObjectType="RBD_HOST" AssocType="RBD_ASSIGNED-HOST">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynMode" ID="dynMaintMode" Width="1">
+		<ColumnText Key="RBD_MAINTANANCE-MODE" />
+	</TableColumn>
+	<TableColumn Title="%dynRoleState" ID="dynRoleState" Width="1">
+		<ColumnText Key="RBD_ROLE-STATE" />
+	</TableColumn>
+	<TableColumn Title="%dynRoleType" ID="dynRoleType" Width="1">
+		<ColumnText Key="RBD_ROLE-TYPE" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynDWR_TFM_Transformation.Name" ID="dynDWR_TFM_Transformation.Name">
+		<ColumnList Direction="backward" ObjectType="DWR_TFM_TRANSFORMATION" AssocType="DWR_TFM_TARGET">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_DatFile.FlumeFilePrefix" ID="dynRBD_DatFile.FlumeFilePrefix">
+		<ColumnText Key="FlumeFilePrefix" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_DatFile.FlumeFileSuffix" ID="dynRBD_DatFile.FlumeFileSuffix">
+		<ColumnText Key="FlumeFileSuffix" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynFalconSourceTrans" ID="dynFalconSourceTrans">
+	  <ColumnList Direction="backward" AssocType="DWR_TFM_SOURCE">
+	  	<ColumnText Key="name" />
+	  </ColumnList>
+	  <ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameType" />
+	</TableColumn>
+	<TableColumn Title="%dynFalconTargetTrans" ID="dynFalconTargetTrans">
+	  <ColumnList Direction="backward" AssocType="DWR_TFM_TARGET">
+	  	<ColumnText Key="name" />
+	  </ColumnList>
+	  <ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameType" />
+	</TableColumn>
+
+	<TableColumn Title="%dynRDB_Permission" ID="dynRDB_Permission">
+		<ColumnText Key="RBD_PERMISSION" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_ModifiedAt" ID="dynRDB_ModifiedAt">
+		<ColumnText Key="RBD_MODIFIED-AT" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.DateCellRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_CreatedBy" ID="dynRDB_CreatedBy">
+		<ColumnText Key="RBD_CREATED-BY" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_Group" ID="dynRDB_Group">
+		<ColumnText Key="RBD_GROUP" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_Size" ID="dynRDB_Size">
+		<ColumnText Key="RBD_DIR-SIZE" />
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.cluster.DirSizeRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_FilesSize" ID="dynRDB_FilesSize">
+		<ColumnText Key="RBD_FILES-SIZE" />
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.cluster.FileSizeRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_FilesCount" ID="dynRDB_FilesCount">
+		<ColumnText Key="RBD_FILES-COUNT" />
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.NumericComparableRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_SubDirSize" ID="dynRDB_SubDirSize">
+		<ColumnText Key="RBD_SUBDIR-SIZE" />
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.cluster.SubDirSizeRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_SubDirCount" ID="dynRDB_SubDirCount">
+		<ColumnText Key="RBD_SUBDIR-COUNT" />
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.NumericComparableRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Directory.Cluster" ID="dynRBD_Directory.Cluster" >
+		<ColumnList Direction="backward" AssocType="RBD_HAS-DIRECTORIES">
+   			<ColumnText Key="name" />
+  		</ColumnList>
+  		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_FileSize" ID="dynRDB_FileSize">
+		<ColumnText Key="RBD_FILES-SIZE" />
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.cluster.FileSizeRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_MediaType" ID="dynRDB_MediaType">
+		<ColumnText Key="RBD_MIME-TYPE" />
+	</TableColumn>
+	<TableColumn Title="%dynRDB_Directory" ID="dynRDB_Directory">
+		<ColumnList Direction="backward" ObjectType="RBD_DIRECTORY" AssocType="RBD_HAS-FILES">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	
+	<TableColumn Title="%dynTypeName" ID="dynTypeName" Width="2">
+		<ColumnText Key="name" />
+		<ColumnProperty Renderer="com.rochade.bigdata.renderer.hive.actions.TypeNameRenderer" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table.DatTypeDefinition" ID="dynRBD_Table.DatTypeDefinition">
+		<ColumnList Direction="forward" AssocType="DWR_DAT_OF_TYPE">
+			<ColumnText Key="DEFINITION" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynRBD_Table" ID="dynRBD_Table">
+		<ColumnList Direction="backward" ObjectType="DWR_RDB_TABLE_OR_VIEW" AssocType="DWR_RDB_HAS_COLUMN">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_Package" ID="dynDWR_Package">
+		<ColumnList Direction="backward" ObjectType="DWR_DAT_PACKAGE" AssocType="DWR_DAT_HAS_TYPE">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	<TableColumn Title="%dynDWR_RecordType" ID="dynDWR_RecordType">
+		<ColumnList Direction="backward" ObjectType="DWR_DAT_RECORD_TYPE" AssocType="DWR_DAT_HAS_FIELD">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSName" />
+	</TableColumn>
+	
+    <Table ID="RBD_HiveDBList">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" />
+		<TableColumn ref="dynHiveLocation" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<Table ID="RBD_HiveTableStructure">
+		<TableColumn ref="dynTypeName" />
+		<TableColumn ref="dynRBD_Table.DatTypeDefinition" />
+	</Table>
+	<Table ID="RBD_HiveTypesStructure">
+		<TableColumn ref="dynTypeName" />
+		<TableColumn ref="dynRbdDefinition" />
+	</Table>
+	<Table ID="RBD_DataTypesView">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" />
+		<TableColumn ref="dynTags" Visible="false" />
+	</Table>
+	<Table ID="RBD_DataFieldView">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRBD_Table.DatTypeDefinition" />
+		<TableColumn ref="dynDWR_RecordType" />
+		<TableColumn ref="dynTags" Visible="false" />
+	</Table>
+	<Table ID="RBD_DataColumnView">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRBD_Table.DatTypeDefinition" />
+		<TableColumn ref="dynRBD_Table" />
+		<TableColumn ref="dynTags" Visible="false" />
+	</Table>
+	<Table ID="RBD_HiveComplexDataUsageByColumn">
+		<TableColumn ref="dynTypeName" />
+		<TableColumn ref="dynRBD_Table" />
+		<TableColumn ref="dynDWR_Package" />
+	</Table>
+	<Table ID="RBD_HiveComplexDataUsageByField">
+		<TableColumn ref="dynTypeName" />
+		<TableColumn ref="dynRbdDefinition" />
+		<TableColumn ref="dynDWR_Package" />
+	</Table>
+	<Table ID="RBD_HiveDataFieldsByColumns">
+		<TableColumn ref="dynTypeName" />
+		<TableColumn ref="dynRBD_Table.DatTypeDefinition" />
+		<TableColumn ref="dynRBD_Table" />
+	</Table>
+		
+    <Table ID="RBD_HiveTVList">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" Visible="false" />
+		<TableColumn ref="dynHiveLocation" />
+		<TableColumn ref="dynRBD_Table.Type" Visible="false"/>
+		<TableColumn ref="dynRBD_Table.SortedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.SortedBy"/>
+		<TableColumn ref="dynRBD_Table.ClusteredBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.ClusteredBy"/>
+		<TableColumn ref="dynRBD_Table.BuckNumber" Visible="false" Condition="BigData.Hive.TableShapeColumns.BucketsNumber"/>
+		<TableColumn ref="dynRBD_Table.PartitionedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.PartitionedBy"/>
+		<TableColumn ref="dynRBD_Table.Partitions" Condition="BigData.Hive.TableShapeColumns.PartitionValue"/>
+		<TableColumn ref="dynRBD_Table.DelimFields" Condition="BigData.Hive.TableShapeColumns.DelimFields"/>
+		<TableColumn ref="dynImportTrans" Visible="false"/>
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM"/>
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	 <Table ID="RBD_HiveExportTVList">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" Visible="false"/>
+		<TableColumn ref="dynHiveLocation"/>
+		<TableColumn ref="dynRBD_Table.Type" Visible="false"/>
+		<TableColumn ref="dynRBD_Table.SortedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.SortedBy"/>
+		<TableColumn ref="dynRBD_Table.ClusteredBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.ClusteredBy"/>
+		<TableColumn ref="dynRBD_Table.BuckNumber" Visible="false" Condition="BigData.Hive.TableShapeColumns.BucketsNumber"/>
+		<TableColumn ref="dynRBD_Table.PartitionedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.PartitionedBy"/>
+		<TableColumn ref="dynRBD_Table.Partitions" Condition="BigData.Hive.TableShapeColumns.PartitionValue"/>
+		<TableColumn ref="dynRBD_Table.DelimFields" Condition="BigData.Hive.TableShapeColumns.DelimFields"/>
+		<TableColumn ref="dynExportTrans" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	 <Table ID="RBD_HiveImportTVList">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" Visible="false"/>
+		<TableColumn ref="dynHiveLocation"/>
+		<TableColumn ref="dynRBD_Table.Type" Visible="false"/>
+		<TableColumn ref="dynRBD_Table.SortedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.SortedBy"/>
+		<TableColumn ref="dynRBD_Table.ClusteredBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.ClusteredBy"/>
+		<TableColumn ref="dynRBD_Table.BuckNumber" Visible="false" Condition="BigData.Hive.TableShapeColumns.BucketsNumber"/>
+		<TableColumn ref="dynRBD_Table.PartitionedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.PartitionedBy"/>
+		<TableColumn ref="dynRBD_Table.Partitions" Condition="BigData.Hive.TableShapeColumns.PartitionValue"/>
+		<TableColumn ref="dynRBD_Table.DelimFields" Condition="BigData.Hive.TableShapeColumns.DelimFields"/>
+		<TableColumn ref="dynImportTrans" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	 <Table ID="RBD_HiveTVListCommon">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" Visible="false"/>
+		<TableColumn ref="dynHiveLocation"/>
+		<TableColumn ref="dynRBD_Table.Type" Visible="false"/>
+		<TableColumn ref="dynRBD_Table.SortedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.SortedBy"/>
+		<TableColumn ref="dynRBD_Table.ClusteredBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.ClusteredBy"/>
+		<TableColumn ref="dynRBD_Table.BuckNumber" Visible="false" Condition="BigData.Hive.TableShapeColumns.BucketsNumber"/>
+		<TableColumn ref="dynRBD_Table.PartitionedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.PartitionedBy"/>
+		<TableColumn ref="dynRBD_Table.Partitions" Condition="BigData.Hive.TableShapeColumns.PartitionValue"/>
+		<TableColumn ref="dynRBD_Table.DelimFields" Condition="BigData.Hive.TableShapeColumns.DelimFields"/>
+		<TableColumn ref="dynRBD_Table.Cluster" Filterable="false"/>
+		<TableColumn ref="dynImportTrans" Visible="false"/>
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" Visible="false"/>
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	 <Table ID="RBD_DefHiveCommon">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" Visible="false" />
+		<TableColumn ref="dynHiveLocation" />
+		<TableColumn ref="dynRBD_Table.Type" Visible="false"/>
+		<TableColumn ref="dynRBD_Table.SortedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.SortedBy"/>
+		<TableColumn ref="dynRBD_Table.ClusteredBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.ClusteredBy"/>
+		<TableColumn ref="dynRBD_Table.BuckNumber" Visible="false" Condition="BigData.Hive.TableShapeColumns.BucketsNumber"/>
+		<TableColumn ref="dynRBD_Table.PartitionedBy" Visible="false" Condition="BigData.Hive.TableShapeColumns.PartitionedBy"/>
+		<TableColumn ref="dynRBD_Table.Partitions" Condition="BigData.Hive.TableShapeColumns.PartitionValue"/>
+		<TableColumn ref="dynRBD_Table.DelimFields" Condition="BigData.Hive.TableShapeColumns.DelimFields"/>
+		<TableColumn ref="dynRBD_Table.DefCluster" Filterable="false"/>
+		<TableColumn ref="dynImportTrans"  Visible="false"/>
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+    <Table ID="RBD_TfmList">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdETL_TransBackward.task" />
+		<TableColumn ref="dynRbdETL_TransForward.source" />
+		<TableColumn ref="dynRbdETL_TransForward.target" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	 <Table ID="RBD_HostList">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynIpAddress" />
+		<TableColumn ref="dynCoresNum" />
+		<TableColumn ref="dynPhysMemory" />
+		<TableColumn ref="dynHealthSummary" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+		<Table ID="RBD_ServiceList">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynType" />
+		<TableColumn ref="dynServiceStatus" />
+		<TableColumn ref="dynRBD_ServiceRole.assignedHost"/>
+		<TableColumn ref="dynMaintMode" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	
+	<Table ID="Stream_Imported_Data_Table">
+		<TableColumn ref="dynName" Sort="0" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" />
+		<TableColumn ref="dynDWR_TFM_Transformation.Name" />
+		<TableColumn ref="dynRBD_DatFile.FlumeFilePrefix" />
+		<TableColumn ref="dynRBD_DatFile.FlumeFileSuffix" />		
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+
+	<Table ID="Batch_Imported_Data_Table">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition" />
+		<TableColumn ref="dynImportTrans" />
+		<TableColumn ref="dynRBD_Table.Type" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<TableColumn ref="dynTags" Visible="false" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<Table ID="RBD_Flume">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdETL_TransBackward.task" />		
+		<TableColumn ref="dynRbdETL_TransForward.source" />
+		<TableColumn ref="dynRbdETL_TransForward.target" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<Table ID="Data_Lineage_by_Service">
+		<TableColumn ref="dynRbdNameTooltipAbsName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRbdDefinition"/>
+		<TableColumn ref="dynRBD_Table.Type" />
+		<TableColumn ref="dynFalconSourceTrans" />
+		<TableColumn ref="dynFalconTargetTrans" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<Table ID="RBD_Directories">
+		<TableColumn ref="dynName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRDB_Permission" />		
+		<TableColumn ref="dynRDB_ModifiedAt" />
+		<TableColumn ref="dynRDB_CreatedBy" />
+		<TableColumn ref="dynRDB_Group" />
+		<TableColumn ref="dynRDB_Size" />
+		<TableColumn ref="dynRDB_FilesSize" />
+		<TableColumn ref="dynRDB_FilesCount" Visible="false"/>
+		<TableColumn ref="dynRDB_SubDirSize" Visible="false"/>
+		<TableColumn ref="dynRDB_SubDirCount" Visible="false"/>
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<Table ID="RBD_Files">
+		<TableColumn ref="dynName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRDB_Permission" />	
+		<TableColumn ref="dynRDB_MediaType" />
+		<TableColumn ref="dynRDB_FileSize" />
+		<TableColumn ref="dynRDB_Directory" />
+		<TableColumn ref="dynRDB_ModifiedAt" />
+		<TableColumn ref="dynRDB_CreatedBy" />
+		<TableColumn ref="dynRDB_Group" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<Table ID="RBD_ClusterCommon">
+		<TableColumn ref="dynName" />
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" />
+		<TableColumn ref="dynRDB_Permission" />		
+		<TableColumn ref="dynRDB_ModifiedAt" />
+		<TableColumn ref="dynRDB_CreatedBy" />
+		<TableColumn ref="dynRDB_Group" />
+		<TableColumn ref="dynRDB_Size" />
+		<TableColumn ref="dynRDB_FilesSize" />
+		<TableColumn ref="dynRDB_FilesCount" Visible="false"/>
+		<TableColumn ref="dynRDB_SubDirSize" Visible="false"/>
+		<TableColumn ref="dynRDB_SubDirCount" Visible="false"/>
+		<TableColumn ref="dynRBD_Directory.Cluster" />
+		<TableColumn ref="dynRbdRDB_BusinessTermFmERM" />
+		<Property Name="IShapeFiller" Value="com.rochade.vis.srap.model.ColumnShapeFiller" />
+	</Table>
+	<!-- table shapes for view components -->
+	<Table ID="RBD_FilesView">
+		<TableColumn ref="dynRbdNameTooltipAbsName" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynRDB_MediaType" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynRDB_FileSize" Object.Use="assoc.dst"/>	
+		<TableColumn ref="dynRDB_CreatedBy" Object.Use="assoc.dst"/>
+	</Table>
+	<Table ID="RBD_ServiceRolesView">
+		<TableColumn ref="dynRbdNameTooltipAbsName" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynQualifiedNameWidth2" Visible="false" Object.Use="assoc.dst"/>
+		<TableColumn ref="dynRoleType" Object.Use="assoc.dst"/>	
+		<TableColumn ref="dynRoleState" Object.Use="assoc.dst"/>
+	</Table>
+</ShapeResources>

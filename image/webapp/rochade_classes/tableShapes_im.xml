@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<?xml-stylesheet type="text/xsl" href="Resources.xsl"?>
+<ShapeResources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ShapeRes.xsd">
+
+	<TableColumn Title="%dynImIssueId" ID="dynImIssueId" Width="1">
+		<ColumnText Key="name" />
+	</TableColumn>
+
+	<TableColumn Title="%dynImIssueTitle" ID="dynImIssueTitle" Width="3">
+		<ColumnText Key="ISM_TITLE" />
+	</TableColumn>
+
+	<TableColumn Title="%dynImIssueStatus" ID="dynImIssueStatus" Width="1">
+		<ColumnText Key="RBG/STATUS" />
+		<ColumnProperty Renderer="com.rochade.im.cellrenderer.IssueStatusCellrenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynImIssueRequestor" ID="dynImIssueRequestor" Width="1">
+		<ColumnText Key="RBG/LOCKED-BY" />
+	</TableColumn>
+
+	<TableColumn Title="%dynImIssueManagedBy" ID="dynImIssueManagedBy" Width="1">
+		<ColumnList Direction="forward" ObjectType="RBG/USER" AssocType="ISM_MANAGED_BY">
+			<ColumnText Key="DEFINITION" />
+		</ColumnList>
+	</TableColumn>
+
+	<TableColumn Title="%dynImIssueCreationDate" ID="dynImIssueCreationDate" Width="2">
+		<ColumnText Key="ISM_CREATION_DATE" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.DateCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynImIssuePriority" ID="dynImIssuePriority" Width="1">
+		<ColumnText Key="ISM_PRIORITY" />
+		<ColumnProperty Renderer="com.rochade.im.cellrenderer.IssuePriorityCellrenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynImIssueObjectName" ID="dynImIssueObjectName" Width="2">
+		<ColumnList MPath="_DWR_ParentHierarchy" Depth="1" DstType="ISM_ISSUE" Direction="backward">
+			<ColumnText Key="name" />
+		</ColumnList>
+		<ColumnProperty Renderer="com.rochade.wa.view.cellrenderer.HyperlinkCellRendererTooltipABSNameType" />
+	</TableColumn>
+	<TableColumn Title="%dynImIssueObjectAbsName" ID="dynImIssueObjectAbsName" Width="3">
+		<ColumnList MPath="_DWR_ParentHierarchy" Depth="1" DstType="ISM_ISSUE" Direction="backward">
+			<ColumnText Key="AbsName" />
+		</ColumnList>
+	</TableColumn>
+	<TableColumn Title="%dynImIssueObjectType" ID="dynImIssueObjectType" Width="1">
+		<ColumnList MPath="_DWR_ParentHierarchy" Depth="1" DstType="ISM_ISSUE" Direction="backward">
+			<ColumnText Key="MappedType" />
+		</ColumnList>
+	</TableColumn>
+
+	<Table ID="IM_issuesList">
+		<TableColumn ref="dynImIssueId" />
+		<TableColumn ref="dynImIssueTitle" />
+		<TableColumn ref="dynImIssueStatus" />
+		<TableColumn ref="dynImIssueObjectName" />
+		<TableColumn ref="dynImIssueObjectAbsName" Visible="false" />
+		<TableColumn ref="dynImIssueObjectType" />
+		<TableColumn ref="dynImIssueRequestor" />
+		<TableColumn ref="dynImIssueManagedBy" />
+		<TableColumn ref="dynImIssueCreationDate" />
+		<TableColumn ref="dynImIssuePriority" />
+	</Table>
+
+	<Table ID="IM_AssignedItem">
+		<TableColumn ref="dynName" Sort="0" Object.Use="assoc.dst" />
+		<TableColumn ref="dynType" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDefWidth2" Object.Use="assoc.dst" />
+	</Table>
+
+	<TableColumn Title="%dynReferenceDocumentKind" ID="dynImReferenceDocumentKind"   Width="3">
+		<ColumnText Key="RBG/URL" />
+		<ColumnText Key="RBG/DOCUMENT-TITLE" />
+		<ColumnProperty Renderer="com.rochade.mg.cellrenderer.ReferenceDocumentKindCellRenderer" />
+	</TableColumn>
+
+	<TableColumn Title="%dynActionsDoc" ID="dynImActionsDoc" Width="1" isAction="true">
+		<ColumnProperty Renderer="com.rochade.wa.ui.editor.link.RemoveDocumentLinkActionCellRenderer" />
+	</TableColumn>
+	
+	<Table ID="IM_Attachmentsview">
+		<TableColumn ref="dynImActionsDoc" Filterable="false"/>
+		<!-- TableColumn ref="dynMLNameWithIcon" Visible="false" Sort="0" Object.Use="assoc.dst" /-->
+		<TableColumn ref="dynImReferenceDocumentKind" Filterable="false" Object.Use="assoc.dst" />
+		<TableColumn ref="dynDefinition" Object.Use="assoc.dst" />
+		<Property Name="pageSize" Value="5" />
+		<Property Name="lineHeight" Value="1" />
+	</Table>
+</ShapeResources>

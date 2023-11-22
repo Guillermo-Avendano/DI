@@ -1,0 +1,186 @@
+spring:
+  application:
+    name: RochadeServices
+  web:
+    resources:
+      # This is an extension by RocketSoftware to mimic behavior of Tomcat default servlet that falls back on some specific files if resource not found
+      fallback:
+        enabled: true
+        #path-patterns:
+        #  - /**
+        #locations:
+        #  - /
+        files:
+          - index.html
+          #- index.jsp
+      cache:
+        period: 600
+  data:
+    rest:
+      default-media-type: application/json
+      # This is an extension by RocketSoftware, which allows to set the default Accept header that must be used when sending
+      # a request (like REST clients do to call remote services).
+      # This aspect is critical for preserving correct propagation of errors between BDI and RochadeServices layers.
+      default-accept-header: ''
+
+server:
+  port: 8500
+  forward-headers-strategy: FRAMEWORK
+  error:
+    include-message: on-param
+    include-stacktrace: never
+    #include-stacktrace: never
+    include-binding-errors: always
+    include-exception: false
+  servlet:
+    session:
+      # HTTP session time-to-live (if time unit is not specified, seconds is assumed). Take care that Tomcat and embeded web server only support minute precision
+      timeout: 15m
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    org.springframework.beans.factory.support: ERROR
+    org.springframework.boot.web: ERROR
+    de.rochade: ERROR
+    de.rochade.ap.Application: ERROR
+    de.rochade.ds.Package: ERROR
+    com.rochade.services.raas.connect: ERROR
+    com.rochade.services.raas.security: ERROR
+    com.rochade.services.raas.continuation: ERROR
+    com.rochade.services.raas.queries: ERROR
+    com.rochade.services.raas.fts: ERROR
+    com.rochade.diagram.bdi: ERROR
+  #file:
+    #path: ${user.home}/rochade/services/raas/${spring.application.name}/logs
+    #name: ${logging.file.path}/${spring.application.name}.log
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{[%-5level]} %X{CORRELATION_ID} %X{TENANT}:%X{USER} %X{SERVICE} %style{[%t]}{magenta} %style{%c:%M}{cyan} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %X{CORRELATION_ID} %X{TENANT}:%X{USER} [%t] %c:%M - %msg%n'
+
+management:
+  health:
+    ldap:
+      enabled: false
+
+asg:
+  rochade:
+    server:
+      host: _@rochade.server.host@_
+      port: _@rochade.server.port@_
+      database: _@rochade.server.database@_
+      workspace: _@rochade.server.workspace@_
+      dev-workspace: _@rochade.server.devWorkspace@_
+      control-database: _@rochade.server.controlDatabase@_
+      control-workspace: _@rochade.server.controlWorkspace@_
+    continuation-storage:
+      allow-pooled-connections: false
+      max-locked-connections: 5
+      allow-removing-least-recently-used: true
+      time-to-live-in-seconds: 600
+    model:
+      itemTypesMappingFile: itemTypes_compliance.properties
+      custom-types-labels:
+        cache-refresh-time-in-seconds: 60
+    fts:
+      solr-server-url: _@solrServerUrl@_
+      active-search-apps:
+        - search_mg
+        - search_rdb
+        - search_rm
+        - search_ref
+        - search_rds
+        - search_rdi
+        - search_rbi
+        - search_rbd
+        - search_rdq
+        - search_sti
+      cores:
+        search_mg: BusinessTermView
+        search_rdb: DWRView
+        search_rm: Models
+        search_ref: ReferenceData
+        search_rds: DataStructure
+        search_rdi: DataIntegration
+        search_rbi: BusinessIntelligence
+        search_rbd: BigData
+        search_rdq: DataQualityManagement
+        search_sti: Stitching
+      max-hits: 1000
+  security:
+    # ALWAYS enable globally the ASG-services SDK security
+    enabled: true
+    default-tenant: RaaS
+    url-patterns:
+      - /rest/*
+    url-exclusion-patterns:
+      - /rest/login
+      - /rest/login/config
+    trusted-connection:
+      inbound: false
+      #trusted-key: _@trustedConnection.trustedKey@_
+      # if target file is empty, a secret key is generated at first time and saved to that file
+      trusted-key-file: _@trustedConnection.trustedKeyFile@_
+      # CAUTION: url-patterns must be explicitly defined as it it NOT taken from parent (asg.security.url-patterns)
+      url-patterns:
+        - /rest/*
+    rochade:
+      login:
+        enforced: true
+        cookies-allowed: false
+        authentication-revalidation-time-in-seconds: 600
+        logout-once-for-all: false
+      bearer-token:
+        # default time-to-live for bearer token is 24 hours
+        time-to-live-in-minutes: 1440
+        public-key-file: _@bearerToken.publicKeyFile@_
+        private-key-file: _@bearerToken.privateKeyFile@_
+      # one of the two following settings is mandatory for supporting bearer token and/or connection modes requiring support of Rochade Trusted Connection
+      #rochade-server-trusted-key: _@rochadeServerTrustedKey@_
+      rochade-server-trusted-key-file: _@rochadeServerTrustedKeyFile@_
+      static-trusted-connection:
+        enabled: _@staticTrustedConnection.enabled@_
+        inbound: true
+        username: _@staticTrustedConnection.username@_
+        url-patterns:
+          - /rest/*
+        order: 11
+      static-plain:
+        enabled: _@staticPlain.enabled@_
+        inbound: true
+        username: _@staticPlain.username@_
+        password: _@staticPlain.password@_
+        url-patterns:
+          - /rest/*
+        order: 13
+      static-account-utility:
+        enabled: _@staticAccountUtility.enabled@_
+        inbound: true
+        username: _@staticAccountUtility.username@_
+        account-file: _@staticAccountUtility.account@_
+        account-application:
+        url-patterns:
+          - /rest/*
+        order: 12
+      basic-auth:
+        enabled: _@basicAuth.enabled@_
+        inbound: true
+        force-prompting-on-expired-session: false
+        url-patterns:
+          - /rest/*
+        order: 9
+      sso-gssapi-connection:
+        enabled: _@ssoGssapiConnection.enabled@_
+        inbound: true
+        url-patterns:
+          - /rest/*
+        order: 7
+      api-key-connection:
+        enabled: _@apiKeyConnection.enabled@_
+        inbound: true
+        # if target file is empty, a secret key is generated at first time and saved to that file
+        user-agent-api-key-file: _@apiKeyConnection.apiKeyFile@_
+        url-patterns:
+          - /rest/*
+        order: 6

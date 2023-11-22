@@ -1,0 +1,757 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Queries
+  description: Queries swagger definition
+
+security:
+  - BasicAuth: []
+  - BearerAuth: []
+
+servers:
+  - url: '/rest'
+tags:
+  - name: Queries
+
+paths:
+  # TODO: This is a placeholder. You need to change this to work for your service
+  /queries/sdcac:
+    get:
+      tags:
+        - Queries
+      operationId: getSDCACQuery
+      summary: execute SDCAC query
+      description: Search items that fulfill the given SDCAC condition in the Query definition parameter, directly or indirectly from the namespace (children and grandchildren) of the given start items
+      parameters:
+        - name: querySource
+          in: query
+          required: true
+          description: either name of an existing SDCAC query or textual definition of a such query
+          schema:
+            type: string
+            default: 'XNAME * *  ~/ @*'
+        - name: scope
+          in: query
+          required: false
+          allowEmptyValue: true
+          description: Rochade query reference start items
+          # Trick: use 'content' as 'we want this param really been sent as JSON, not as exploded parameter or other stuff
+          # see https://stackoverflow.com/questions/65697906/how-to-declare-query-object-in-the-parameters
+          # see https://swagger.io/docs/specification/describing-parameters/#schema-vs-content
+          # But Swagger codegen does not support such schema, that is why we use OpenAPI generator
+          content:
+            application/json:  # <---- media type indicates how to serialize / deserialize the parameter content
+              schema:
+                type: array
+                nullable: true
+                # work-around another issue in Swagger-UI that goes into javascript error, if trying rest-point letting that complex parameter empty
+                default: []
+                items:
+                  $ref: '#/components/schemas/ItemReference'
+          #schema:
+          #  type: array
+          #  items:
+          #    $ref: '#/components/schemas/ItemReference'
+        - name: offset
+          in: query
+          description: 'Positions the first item in response by specifying the numeric position of the item in the order of overall result set. By default, the value "0" returns first item in the overall result set. Negative value is not allowed.'
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: 'Limits the result to the specified number of entries (zero means unlimited, -1 means value of asg.rochade.query.limit.default parameter from the application configuration)'
+          required: false
+          schema:
+            type: integer
+            default: -1
+        - name: what
+          in: query
+          description: Attributes to return
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default: [id, scopeId, type, name]
+      responses:
+        '200':
+          description: List of items
+          content:
+            application/vnd.rochade-services-resultset.v1+json:
+              schema:
+                $ref: '#/components/schemas/ResultSet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+  /queries/mpath/{queryName}:
+    get:
+      tags:
+        - Queries
+      operationId: getMPathQuery
+      summary: Execute a maskable path query on the given items
+      description: |
+        ___TAKE CARE___ This execution is neither continuable nor interruptable. All the results up to the _limit_ are computed then returned as response to this call.
+        If processing needs to be controlled with continuation or interruption aspect, refer to the [MPath execution](#Queries/startMPathQuery) operation.
+      parameters:
+        - name: queryName
+          in: path
+          required: true
+          description: name of the maskable path query
+          schema:
+            type: string
+        - name: mask
+          in: query
+          description: Identifies a mask to be used for this query
+          required: false
+          schema:
+            type: string
+        - name: seedItems
+          in: query
+          required: true
+          allowEmptyValue: true
+          description: Collection of items to run query on
+          # Trick: use 'content' as 'we want this param really been sent as JSON, not as exploded parameter or other stuff
+          # see https://stackoverflow.com/questions/65697906/how-to-declare-query-object-in-the-parameters
+          # see https://swagger.io/docs/specification/describing-parameters/#schema-vs-content
+          # But Swagger codegen does not support such schema, that is why we use OpenAPI generator
+          content:
+            application/json:  # <---- media type indicates how to serialize / deserialize the parameter content
+              schema:
+                type: array
+                nullable: true
+                # work-around another issue in Swagger-UI that goes into javascript error, if trying rest-point letting that complex parameter empty
+                default: []
+                items:
+                  $ref: '#/components/schemas/ItemReference'
+          #schema:
+          #  type: array
+          #  items:
+          #    $ref: '#/components/schemas/ItemReference'
+        - name: limit
+          in: query
+          description: 'Limits the result to the specified number of entries (zero means unlimited, -1 means value of asg.rochade.query.limit.default parameter from the application configuration)'
+          required: false
+          schema:
+            type: integer
+            default: -1
+        - name: depth
+          in: query
+          description: 'Limit the structural depth to a specified value (-1 means value of asg.rochade.query.depth.default parameter from the application configuration)'
+          required: false
+          schema:
+            type: integer
+            default: -1
+        - name: what
+          in: query
+          description: Attributes to return
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default: [id, scopeId, type, name]
+      responses:
+        '200':
+          description: List of items
+          content:
+            application/vnd.rochade-services-resultset.v1+json:
+              schema:
+                $ref: '#/components/schemas/ResultSet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /queries/mpath/executions/{queryName}:
+    post:
+      tags:
+        - Queries
+      operationId: startMPathQuery
+      summary: Start execution of a maskable path query on the given items
+      description: |
+        This execution cannot be directly limited (no _limit_ parameter) but it is continued until it is interrupted by getting the results computed until there.
+        As soon as the results are retrieved, the execution is definitely stopped and can no more be continued.
+      requestBody:
+        description: Optional, but the parameter values provided in request body have precedence over values for same parameters provided into query.
+        required: false
+        content:
+          #application/json: {}
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MPathQueryExecution'
+      parameters:
+        - name: queryName
+          in: path
+          required: true
+          description: name of the maskable path query
+          schema:
+            type: string
+        - name: mask
+          in: query
+          description: Identifies a mask to be used for this query
+          required: false
+          schema:
+            type: string
+            default: ""
+        - name: seedItems
+          in: query
+          required: true
+          allowEmptyValue: true
+          description: Collection of items to run query on
+          # Trick: use 'content' as 'we want this param really been sent as JSON, not as exploded parameter or other stuff
+          # see https://stackoverflow.com/questions/65697906/how-to-declare-query-object-in-the-parameters
+          # see https://swagger.io/docs/specification/describing-parameters/#schema-vs-content
+          # But Swagger codegen does not support such schema, that is why we use OpenAPI generator
+          content:
+            application/json:  # <---- media type indicates how to serialize / deserialize the parameter content
+              schema:
+                type: array
+                nullable: true
+                # work-around another issue in Swagger-UI that goes into javascript error, if trying rest-point letting that complex parameter empty
+                default: []
+                items:
+                  $ref: '#/components/schemas/ItemReference'
+          #schema:
+          #  type: array
+          #  items:
+          #    $ref: '#/components/schemas/ItemReference'
+        - name: chunkSize
+          in: query
+          description: 'How much results must be computed before pausing for continuation or termination instructions (-1 means value of asg.rochade.query.limit.default parameter from the application configuration, zero has no meaning and is invalid)'
+          required: false
+          schema:
+            type: integer
+            default: -1
+        - name: depth
+          in: query
+          description: 'Limit the structural depth to a specified value (-1 means value of asg.rochade.query.depth.default parameter from the application configuration)'
+          required: false
+          schema:
+            type: integer
+            default: -1
+        - name: what
+          in: query
+          description: Attributes to return
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default: [id, scopeId, type, name]
+        - name: onDemand
+          in: query
+          description: |
+            switch between two execution modes:
+            * if ''true', the query runs for a slice of result (which size is given by _chunkSize_), then the query goes into idle mode waiting for the [continue](#Queries/continueMPathQuery) operation
+            * if 'false', the query is executed in a continuous way, collecting on its own as much as results as it can
+            
+            In both cases the query is run in the background and executed until it faces one of the following conditions:
+            * it is interrupted by the [terminate and get results](#Queries/terminateMPathQuery) operation
+            * there is no more result to collect
+            * it faces an error
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '201':
+          description: |
+            Contains continuation identifier for MPath execution that must be provided to subsequent operations:
+            * [get execution state](#Queries/getStateMPathQuery)
+            * [terminate and get results](#Queries/terminateMPathQuery)
+          content:
+            text/plain:
+              schema:
+                type: string
+          headers:
+            Location:
+              description: URL of the created execution
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /queries/mpath/executions/{executionId}/state:
+    get:
+      tags:
+        - Queries
+      operationId: getStateMPathQuery
+      summary: Retrieve the current state of the execution of a MPath Query
+      description: |
+        This execution must be started using the [start MPath Query execution](#Queries/startMPathQuery) endpoint,
+        then the returned identifier must be provided to this operation to follow the progression of that execution.
+      parameters:
+        - name: executionId
+          in: path
+          required: true
+          description: identifier obtained by starting the execution of a MPath query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: information about the execution of a MPath query (started/running/ended, complete/partial results, number of results)
+          content:
+            application/vnd.rochade-services-mpath-query-execution-sate.v1+json:
+              schema:
+                $ref: '#/components/schemas/MPathQueryExecutionState'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /queries/mpath/executions/{executionId}/continue:
+    patch:
+      tags:
+        - Queries
+      operationId: continueMPathQuery
+      summary: Continue the execution of the MPath query to retrieve more results
+      description: |
+        This operation can only be invoked if the execution has been started with 'true' for the _onDemand_ parameter.
+        See the [start MPath Query execution](#Queries/startMPathQuery) endpoint.
+        Invoking this operation while it is not the case will result in a '412' PreconditionFailed error.
+      parameters:
+        - name: executionId
+          in: path
+          required: true
+          description: identifier obtained by starting the execution of a MPath query
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No content is returned but more results are collected on the server.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /queries/mpath/executions/{executionId}/results:
+    get:
+      tags:
+        - Queries
+      operationId: terminateMPathQuery
+      summary: Terminate the execution of a MPath Query and get the results retrieved so far
+      description: |
+        This execution must be started using the [start MPath Query execution](#Queries/startMPathQuery) endpoint,
+        then the returned identifier must be provided to this operation to terminate that execution and collect available result.
+        As soon as this operation is invoked, it is terminal. The corresponding execution is stopped and the MPath query
+        cannot be continued to get extra results.
+        
+        Invoking again this operation with same execution identifier will result in a '404' NotFound error.
+      parameters:
+        - name: executionId
+          in: path
+          required: true
+          description: identifier obtained by starting the execution of a MPath query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: |
+            Results retrieved so far by the execution of the query.
+            It can be all retrievable results, according to the depth limit,
+            or only some of them if this operation has been invoked before completion of the query.
+            See [get execution state](#Queries/getStateMPathQuery).
+          content:
+            application/vnd.rochade-services-mpath-query-execution-result.v1+json:
+              schema:
+                $ref: '#/components/schemas/MPathQueryExecutionResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+
+####################
+components:
+  securitySchemes:
+    BasicAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+    BearerAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+  responses:
+    BadRequest:
+      description: A bad request was submitted (HTTP 400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unauthorized:
+      description: Unauthorized (HTTP 401)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+    Forbidden:
+      description: You are not authorized to perform this action (HTTP 403)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotFound:
+      description: The specified resource was not found (HTTP 404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+    Conflict:
+      description: A conflict occurred (HTTP 409)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionFailed:
+      description: Condition is not fulfilled (HTTP 412)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionRequired:
+      description: Condition is required (HTTP 428)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    InternalServerError:
+      description: An error occurred on the server (HTTP 500)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotImplemented:
+      description: Method not implemented (HTTP 501)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    ServiceUnavailable:
+      description: Server is not ready to handle the request (HTTP 503)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+
+
+  schemas:
+    # Schema for error response body when Jersey dispatcher triggers the error
+    JerseyError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+
+    # Schema for error response body when ASG-Services-SDK maps automatically one of its standard com.asg.services.common.exceptions into response body
+    SDKError:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^\d{3}$'
+        message:
+          type: string
+        correlationId:
+          type: string
+    
+    ResultSetColumn:
+      description: Description of a column in a ResultSet. Maps any key representing the column name to the column type.
+      type: object
+      # key is free but value is an enum
+      additionalProperties:
+        # if we define the enum inline, openapi-generator fails to generate properly dictionaries that have enum as value
+        # the workaround is to define the enum as a regular schema and then reference it 
+        #type: string
+        #enum:
+        #  - long
+        #  - String
+        #  - boolean
+        #  - ResultSet
+        #  - Blob
+        #  - Date
+        $ref: '#/components/schemas/ResultSetColumnType'
+    
+    ResultSetColumnType:
+      description: Possible types for a ResultSet column.
+      type: string
+      # see SysColTypes
+      enum:
+        - long
+        - String
+        - boolean
+        - ResultSet
+        - Blob
+        - Date
+    
+    ResultSet:
+      description: Rochade ResultSet
+      type: object
+      properties:
+        size:
+          type: integer
+        columns:
+          $ref: '#/components/schemas/ResultSetColumn'
+        result:
+          type: array
+          items:
+            type: object
+    
+    # recursive schemas are badly processed by SwaggerUI
+    # see https://stackoverflow.com/questions/36866035/how-to-refer-to-enclosing-type-definition-recursively-in-openapi-swagger
+    # one proposed workaround is tricking with allOf
+    ItemReference:
+      description: Reference to an item
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          properties:
+            scope:
+              description: Reference of scope item
+              allOf:
+                # Not only Swagger-codegen does not support cycling schemas but also Swagger-UI fails regarding such definition
+                # It is a shame because openapitools-generator manages them very well, so we are restrained just by Swagger-UI 
+                #- $ref: '#/components/schemas/ItemReference'
+                - $ref: '#/components/schemas/Item'
+                  
+    Item:
+      description: identification of an item
+      type: object
+      #required:
+        #- id
+      properties:
+        type:
+          type: string
+          description: Item type
+        name:
+          type: string
+          description: Name of item
+        id:
+          type: integer
+          format: int64
+          description: Item ID
+        nameGroup:
+          type: integer
+          format: int64
+          description: Name group
+        scopeId:
+          type: integer
+          format: int64
+          description: ScopeId of item if known
+        scopeAttribute:
+          type: string
+          description: Name of scope attribute
+
+    MPathQueryExecution:
+      description: parameters to execute a MPath query
+      type: object
+      properties:
+        mask:
+          description: Identifies a mask to be used for this query
+          type: string
+          default: ""
+        seedItems[]:
+          description: Collection of items to run query on
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemReference'
+          nullable: true
+          default: []
+        chunkSize:
+          description: 'How much results must be computed before pausing for continuation or termination instructions (-1 means value of asg.rochade.query.limit.default parameter from the application configuration, zero has no meaning and is invalid)'
+          type: integer
+          default: -1
+        depth:
+          description: 'Limit the structural depth to a specified value (-1 means value of asg.rochade.query.depth.default parameter from the application configuration)'
+          type: integer
+          default: -1
+        what[]:
+          description: Attributes to return
+          type: array
+          items:
+            type: string
+          default: [id, scopeId, type, name]
+        onDemand:
+          description: |
+            switch between two execution modes:
+            * if ''true', the query runs for a slice of result (which size is given by _chunkSize_), then the query goes into idle mode waiting for the [continue](#Queries/continueMPathQuery) operation
+            * if 'false', the query is executed in a continuous way, collecting on its own as much as results as it can
+            
+            In both cases the query is run in the background and executed until it faces one of the following conditions:
+            * it is interrupted by the [terminate and get results](#Queries/terminateMPathQuery) operation
+            * there is no more result to collect
+            * it faces an error
+          type: boolean
+          default: true
+
+    MPathQueryExecutionState:
+      description: information about the interruptible execution of a MPath query (pending/running/idle/ended, complete/partial results, number of results)
+      type: object
+      properties:
+        state:
+          description: indicates if the query is still running or not, or waiting scheduling for execution, or faced an error. Idle applies only if execution is started with onDemand=true.
+          type: string
+          enum:
+            - PENDING
+            - RUNNING
+            - IDLE
+            - ENDED
+            - FAILED
+        completeness:
+          description: indicates if the query has retrieved all the possible results (according to the depth limit) or only some of them
+          type: string
+          enum:
+            - COMPLETE
+            - PARTIAL
+        numberOfResults:
+          description: how much results have been retrieved so far
+          type: integer
+          format: int32
+
+    MPathQueryExecutionResult:
+      description: result of the interruptible execution of a MPath query
+      type: object
+      properties:
+        completeness:
+          description: indicates if the query has retrieved all the possible results (according to the depth limit) or only some of them or none at all (then associated ResultSet can even be null)
+          type: string
+          enum:
+            - NONE
+            - COMPLETE
+            - PARTIAL
+        resultSet:
+          nullable: true
+          $ref: '#/components/schemas/ResultSet'

@@ -1,0 +1,106 @@
+<!-- this file is used in old indexer tool which is no longer supported  -->
+<RocService
+	stylesheet="com/rochade/wa/api/resource/stylesheets/abspathV2.xsl, com.rochade.wa.api.ML.java, com/rochade/wa/api/resource/stylesheets/rsV2.xsl"
+	whatdefault="id, name, scopeId, DEFINITION" what="{$what}">
+	<!-- The parameter what is used to define what information is of interest. 
+		Each keyword specified in what represents a column in the output ResultSet. -->
+
+	<connection
+		class="com.rochade.wa.api.roc.data.source.NonPooledDataSource"
+		solrDefinitions = "{$sD}"
+        physicalDefinitions    ="{$pD}"
+        applicationDefinitions = "{$aD}"
+		id="c2"/>
+	
+	<sorting>
+		<!-- The highest is the boost, the most that attribute will matter for the matching score of the item.
+		Items with higher score are listed first among results (for a given Solr core).
+		 -->
+		 <field name="NAME" boost="10"/>
+		 <field name="DEFINITION" boost="2"/>
+	</sorting>
+	
+	<categories>
+		<category id="BuildIndex">
+
+			<context id="c2" />
+			<category id="CleanupDataQualityManagement">
+				<DeleteSolr coreId="search_rdq" />
+			</category>
+
+			<!-- <category id="InsertDQM_BUSINESS_POLICY" name="Import DQM_BUSINESS_POLICY into Solr ">
+				<context id="c2" />
+				<InsertSolr coreId="search_rdq">
+					<entity
+						query="MGView?category=ListItemsOfType&#038;Type=DQM_BUSINESS_POLICY&#038;_ProjectionLang={$_ProjectionLang}&#038;maxHits={$maxHits}&#038;connectionType=com.rochade.wa.api.roc.data.source.NonPooledDataSource&#038;pD={$pD}&#038;aD={$aD}&#038;sD={$sD}&#038;inheritance={$inheritance}">
+						<field value="93" name="level1" />
+						<field value="94" name="level2" />
+						<field value="search_rdq" name="app_id" />
+						<field column="name" />
+						<field column="DEFINITION" />
+					</entity>
+				</InsertSolr>
+			</category>
+
+			<category id="InsertDQM_BUSINESS_RULE" name="Import DQM_BUSINESS_RULE into Solr ">
+				<context id="c2" />
+				<InsertSolr coreId="search_rdq">
+					<entity
+						query="MGView?category=ListItemsOfType&#038;Type=DQM_BUSINESS_RULE&#038;_ProjectionLang={$_ProjectionLang}&#038;maxHits={$maxHits}&#038;connectionType=com.rochade.wa.api.roc.data.source.NonPooledDataSource&#038;pD={$pD}&#038;aD={$aD}&#038;sD={$sD}&#038;inheritance={$inheritance}">
+						<field value="93" name="level1" />
+						<field value="95" name="level2" />
+						<field value="search_rdq" name="app_id" />
+						<field column="name" />
+						<field column="DEFINITION" />
+					</entity>
+				</InsertSolr>
+			</category>
+
+			<category id="InsertDQM_CRITICAL_DATA_ELEMENT" name="Import DQM_CRITICAL_DATA_ELEMENT into Solr ">
+				<context id="c2" />
+				<InsertSolr coreId="search_rdq">
+					<entity
+						query="MGView?category=ListItemsOfType&#038;Type=DQM_CRITICAL_DATA_ELEMENT&#038;_ProjectionLang={$_ProjectionLang}&#038;maxHits={$maxHits}&#038;connectionType=com.rochade.wa.api.roc.data.source.NonPooledDataSource&#038;pD={$pD}&#038;aD={$aD}&#038;sD={$sD}&#038;inheritance={$inheritance}">
+						<field value="93" name="level1" />
+						<field value="96" name="level2" />
+						<field value="search_rdq" name="app_id" />
+						<field column="name" />
+						<field column="DEFINITION" />
+					</entity>
+				</InsertSolr>
+			</category>
+			 -->
+			<category id="InsertDQM_DATA_QUALITY_MEASURE"
+				name="Import DQM_DATA_QUALITY_MEASURE into Solr ">
+				<context id="c2" />
+				<InsertSolr coreId="search_rdq">
+					<entity
+						query="MGView?category=ListItemsOfType&#038;Type=DQM_DATA_QUALITY_MEASURE&#038;_ProjectionLang={$_ProjectionLang}&#038;maxHits={$maxHits}&#038;connectionType=com.rochade.wa.api.roc.data.source.NonPooledDataSource&#038;pD={$pD}&#038;aD={$aD}&#038;sD={$sD}&#038;inheritance={$inheritance}">
+						<field value="93" name="level1" />
+						<field value="97" name="level2" />
+						<field value="search_rdq" name="app_id" />
+						<field column="name" />
+						<field column="DEFINITION" />
+					</entity>
+				</InsertSolr>
+			</category> 
+			
+			<!-- 
+			<category id="InsertDQM_CRITICAL_QUALITY_MEASURE_RESULT"
+				name="Import DQM_CRITICAL_QUALITY_MEASURE_RESULT into Solr ">
+				<context id="c2" />
+				<InsertSolr coreId="search_rdq">
+					<entity
+						query="MGView?category=ListItemsOfType&#038;Type=DQM_CRITICAL_QUALITY_MEASURE_RESULT&#038;_ProjectionLang={$_ProjectionLang}&#038;maxHits={$maxHits}&#038;connectionType=com.rochade.wa.api.roc.data.source.NonPooledDataSource&#038;pD={$pD}&#038;aD={$aD}&#038;sD={$sD}&#038;inheritance={$inheritance}">
+						<field value="93" name="level1" />
+						<field value="98" name="level2" />
+						<field value="search_rdq" name="app_id" />
+						<field column="name" />
+						<field column="DEFINITION" />
+					</entity>
+				</InsertSolr>
+			</category>
+			-->
+		</category>
+	</categories>
+</RocService>

@@ -1,0 +1,1442 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Full Text Search
+  description: Full Text Search OpenAPI definition
+
+security:
+  - BasicAuth: []
+  - BearerAuth: []
+
+servers:
+  - url: '/rest'
+tags:
+  - name: FullTextSearch
+
+paths:
+  /fts/matching-items:
+    post:
+      tags:
+        - FullTextSearch
+      operationId: getMatchingItems
+      summary: execute Full Text Search
+      description: Search, among the FullTextSearch indexes (aka Solr cores), for items that fulfill the given conditions
+      parameters:
+        - name: expression
+          in: query
+          required: false
+          description: |
+            A set of clauses and conditions that the _searchAttributes_ of an item must satisfy to match.  
+            The format of the search expression itself depends on the _expressionSyntax_ parameter.  
+            If empty or not provided, it means '*' (i.e. everything) and only other conditions (like tags) are considered. 
+          schema:
+            $ref: '#/components/schemas/Expression'
+        - name: expressionSyntax
+          in: query
+          required: false
+          description: |
+            How the search expression must be interpreted:
+            * `EXACT`: item matches if one of its indexed attributes contains exactly the _expression_ as a subsequence (case insensitively). '?'  and '*' characters are processed for themselves, as any other regular character.
+            * `WILDCARD`: item matches if one of its indexed attributes contains the _expression_ as a subsequence (case insensitively) where the '?' wildcard character may replace exactly one character for the match and '*' wilcard character may replace any number of characters. Any Space character is processed for itself, as any other regular character.  
+            * `ADVANCED`: item matches if one of its indexed attributes statisfies the clauses and conditions expressed into the expression. Solr syntax is obeyed, which main guidelines are:
+              * Case insensitivity.
+              * '*' and '?' characters are processed as wildcards and matches respectively exactly one or a sequence of multiple characters.
+              * Any Space (' ') character is processed as an OR condition.
+              * Parenthesis characters ('(' and ')') are processed as grouping operators.
+              * 'AND', 'OR', 'NOT' (in upper case), just as '&&', '+', '||', '!' and '-' are processed as boolean operators. 
+              * ':' is used to specify a clause on a specific attribute of an item
+              * '\' is the escape character so that any following character is processed for itself as a regular character.
+              * '"' is the encloser escape character so that any sequence of character enclosed by two double-quotes is processed for itself.
+              * '{', '}', '[', ']', '~' and '^' are special characters that are used for complex search queries. 
+            * `DUAL` (default): is the combination of a search using _EXACT_ then followed by a search using _ADVANCED_.
+          schema:
+            $ref: '#/components/schemas/ExpressionSyntax'
+        - name: tags
+          in: query
+          required: false
+          description: |
+            A set of tag names. Item matches if it is tagged with at least one of those tags. If empty or not specified, tags does not matter for matching an item.  
+            If the tag name is preceded with '+' character, that tag is mandatory. The item must be tagged with that tag otherwise it will not match (no matter if any other tag matches).  
+            If the tag name is preceded with '-' character, that tag is forbidden. The item cannot be tagged with that tag otherwise it will not match (no matter if any other tag matches).  
+            Use '\' to escape if the tag name itself starts with '+' or '-' characters.
+            
+            Examples
+            --------
+            1. `[tax, declaration]` means items having either 'tax' OR 'declaration' tags (or both) 
+            
+            2. `[+tax, +declaration]` means items having 'tax' AND 'declaration' tags  
+            
+            3. `[-tax, -declaration]` means items having NOT 'tax' AND NOT 'declaration' tags  
+            
+            4. `[+tax, declaration, form]` means items HAVING 'tax' tag AND ('declaration' OR 'form') tags.  
+            The 'tax' tag is mandatory while 'declaration' and 'form' are optional **but**, since they are listed, at least one of them must be present.  
+            _To get items that just have the 'tax' tag without additional constraint, simply use `[+tax]`._  
+            _As en edge case, `[+tax, declaration]` means items HAVING 'tax' tag AND ('declaration') tags; what is the same as `[+tax, +declaration]`._  
+            
+            5. `[-tax, declaration, form]` means items having NOT 'tax' AND ('declaration' OR 'form') tags.  
+            The 'tax' tag is forbidden while 'declaration' and 'form' are optional **but**, since they are listed, at least one of them must be present.
+            It allows sub-filtering items that have 'declaration' or 'form' tags by excluding those that also have the 'tax' tag.  
+            _To get items that do not have the 'tax' tag without additional constraint, simply use `[-tax]`._  
+            _As en edge case, `[-tax, declaration]` means items having NOT 'tax' tag AND ('declaration') tags; what is the same as `[-tax, +declaration]`._  
+          schema:
+            $ref: '#/components/schemas/TagNames'
+          style: form
+          explode: true
+        - name: indexIds
+          in: query
+          required: false
+          description: |
+            A set of index ids (aka Solr core names) to operate the search in.  
+            To obtain information about available index identifiers, see [/fts/indexes](#/FullTextSearch/getIndexes).  
+            If empty or not specified, all accessible indexes are searched for.
+          schema:
+            $ref: '#/components/schemas/IndexIds'
+          style: form
+          explode: true
+        - name: offset
+          in: query
+          required: false
+          description: |
+            Offset for skipping first results.  
+            Negative value is not allowed.
+          schema:
+            $ref: '#/components/schemas/Offset'
+        - name: limit
+          in: query
+          required: false
+          description: |
+            Limits the result to the specified number of entries.  
+            Negative means unlimited.  
+            Zero value means zero matching items are brought back (but the response still contains valuable information like facet tree and number of matching items).  
+            Null/unspecified value means value of asg.rochade.fts.limit.default parameter from the application configuration.
+          schema:
+            $ref: '#/components/schemas/Limit'
+        - name: searchLangs
+          in: query
+          required: false
+          description: |
+            A set of languages in ISO 639-1 format (two-letter codes). If the target index supports multiple languages,
+            each item is searched for a match with the search _expression_ among all the language variances of indexed attributes corresponding to that set.  
+            If empty or not specified, search happens against the language indexed as default (which corresponds to the default language of the target Rochade Subject Area, if MLC, or sole language otherwise).
+          schema:
+            $ref: '#/components/schemas/SearchLangs'
+          style: form
+          explode: true
+        - name: displayLangs
+          in: query
+          required: false
+          description: |
+            A set of languages in ISO 639-1 format (two-letter codes). For matching items, the response will include all the language variances of indexed attributes corresponding to that set.  
+            All the languages specified in _searchLangs_ parameter, and the default indexed language, are automatically appended to this set. It is useless to repeat them.   
+            The purpose of this parameter is to include into the response language-variances of indexed-attributes that are not searched for, but are neverhteless required for output.
+          schema:
+            $ref: '#/components/schemas/FTSDisplayLangs'
+          style: form
+          explode: true
+        - name: searchAttributes
+          in: query
+          required: false
+          description: |
+            A set of attributes (i.e. Text, Link or Namespace attributes of the Rochade Information Model) that must be search for. Those attributes must be among the indexed ones.  
+            If empty, the attributes to search for stored in Rochade along user preferences (MTB_PREFERENCE_ITEM) are used.  
+            Take note that attributes specified in _displayAttributes_ parameter are **not** taken account for the attributes to search for. In other words, they are not combined with the ones specified into this parameter.  
+            Take note also that if tags are specified as matching criteria, the '\_tags\_' virtual Rochade attribute is automatically added to the _searchAttributes_ request parameter.
+          schema:
+            $ref: '#/components/schemas/SearchAttributeNames'
+          style: form
+          explode: true
+        - name: displayAttributes
+          in: query
+          required: false
+          description: |
+            A set of attributes (i.e. Text, Link or Namespace attributes of the Rochade Information Model) that must be returned for each matching item.  
+            If empty, only the indexed-attributes that are searched for according to _searchAttributes_ parameter are returned. Since those last are always included, there is no need to repeat them into this parameter.  
+            _searchLangs_ and _displayLangs_ parameters are taken account, so language-variance for the requested attributes (either searchable or displayable) are returned accordingly.    
+            Take note that the item ID is always returned each matching item no matter if it is specified among _searchAttributes_ or _displayAttributes_ parameters.
+          schema:
+            $ref: '#/components/schemas/DisplayAttributeNames'
+          style: form
+          explode: true
+      requestBody:
+        description: |
+          Additional parameters:  
+
+          ## facets _(optional)_
+          A set of facet ids. Item matches if it is associated with at least one of those facets.  
+          If empty or not specified, facets does not matter for matching an item.  
+          The format is a map where:
+          * key: is a facet name
+          * value: is a array of acceptable values for that facet.
+          If an item has, at least, one facet with such name that itself has one of the provided values, then that item matches.
+          
+          To obtain information about available facet names and values, see [/fts/facets](#/FullTextSearch/getFacets)  
+
+          ## fq _(optional)_
+          A set of 'Filter Query' (FQ) criteria. Item matches if *all* the provided conditions are satisified.  
+          
+          CAUTION: as they are neither pre-processed nor interpreted, the criteria must be provided direclty into the Solr syntax!
+          
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FTSRequestBody'
+      responses:
+        '200':
+          description: Matching items
+          content:
+            application/vnd.raas-services-fts-result.v1+json:
+              schema:
+                $ref: '#/components/schemas/FTSResult'
+#            application/vnd.raas-services-fts-result.DD+json:
+#              schema:
+#                $ref: '#/components/schemas/FTSResultDD'
+#            application/vnd.raas-services-fts-result.Karsten+json:
+#              schema:
+#                $ref: '#/components/schemas/FTSResult2'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+# FUTURE: this is for future usage by EDI products (and probably this endpoint must be renamed /fts/facets/EDI)
+#  /fts/facets/standards:
+#    get:
+#      tags:
+#        - FullTextSearch
+#      operationId: getStandardFacets
+#      summary: Retrieve details about the standard facets
+#      description: |
+#        'Standard facets' are data indexed with the specific purpose of facetting the FullTextSearch results. Any indexed data can be used for facetting, but those ones are the most common and useful for creating a pertinent Facet tree in Data Intelligence. 
+#        List all the supported standard facet names with their possible values and their metadata like display names in each supported language-variance.
+#      responses:
+#        '200':
+#          description: List of all standard facets
+#          content:
+#            application/vnd.raas-services-fts-facets.v1+json:
+#              schema:
+#                $ref: '#/components/schemas/FacetDetails'
+#        '400':
+#          $ref: '#/components/responses/BadRequest'
+#        '401':
+#          $ref: '#/components/responses/Unauthorized'
+#        '403':
+#          $ref: '#/components/responses/Forbidden'
+#        '404':
+#          $ref: '#/components/responses/NotFound'
+#        '409':
+#          $ref: '#/components/responses/Conflict'
+#        '412':
+#          $ref: '#/components/responses/PreconditionFailed'
+#        '428':
+#          $ref: '#/components/responses/PreconditionRequired'
+#        '429':
+#          $ref: '#/components/responses/TooManyRequests'
+#        '500':
+#          $ref: '#/components/responses/InternalServerError'
+#        '501':
+#          $ref: '#/components/responses/NotImplemented'
+#        '503':
+#          $ref: '#/components/responses/ServiceUnavailable'
+#        default:
+#          $ref: '#/components/responses/Unexpected'
+
+  /fts/indexes:
+    get:
+      tags:
+        - FullTextSearch
+      operationId: getIndexes
+      summary: Retrieve details about the existing indexes
+      description: |
+        List ids of all the existing indexes with their metadata like related metaApp.
+      responses:
+        '200':
+          description: List of all available indexes
+          content:
+            application/vnd.raas-services-fts-indexes.v1+json:
+              schema:
+                $ref: '#/components/schemas/Indexes'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /fts/facets/glossaries:
+    get:
+      tags:
+        - FullTextSearch
+      operationId: getGlossaryFacets
+      summary: Retrieve details about the Glossaries facet tree
+      description: |
+        Retrieve the hierarchy of all Glossaries and recursively the contexts/sub-contexts from Rochade.
+      parameters:
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+      responses:
+        '200':
+          description: List of all facets related to glossaries (as hierarchy of contexts)
+          content:
+            application/vnd.raas-services-fts-facets-glossaries.v1+json:
+              schema:
+                $ref: '#/components/schemas/GlossaryFacetTree'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+####################
+components:
+  securitySchemes:
+    BasicAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+    BearerAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+  responses:
+    BadRequest:
+      description: A bad request was submitted (HTTP 400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unauthorized:
+      description: Unauthorized (HTTP 401)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Forbidden:
+      description: You are not authorized to perform this action (HTTP 403)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotFound:
+      description: The specified resource was not found (HTTP 404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Conflict:
+      description: A conflict occurred (HTTP 409)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionFailed:
+      description: Condition is not fulfilled (HTTP 412)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionRequired:
+      description: Condition is required (HTTP 428)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    TooManyRequests:
+      description: Too many requests in a given amount of time, aka "rate limiting" (HTTP 429).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    InternalServerError:
+      description: An error occurred on the server (HTTP 500)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotImplemented:
+      description: Method not implemented (HTTP 501)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    ServiceUnavailable:
+      description: Server is not ready to handle the request (HTTP 503)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    GatewayTimeout:
+      description: Gateway timeout (HTTP 504)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+
+
+####################
+  schemas:
+    # Schema for error response body when Jersey dispatcher triggers the error
+    JerseyError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+
+    # Schema for error response body when ASG-Services-SDK maps automatically one of its standard com.asg.services.common.exceptions into response body
+    SDKError:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^\d{3}$'
+        message:
+          type: string
+        correlationId:
+          type: string
+    
+    ItemId:
+      description: The unique identifier of the item
+      type: integer
+      format: int64
+      example: 1234
+
+    ResultItemAttributes:
+      description: |
+        Attribute values for a Result Item.  
+        Keys are attribute names.  
+        Values are attribute value.  
+        
+        Values of each attribute can be:
+        * numeric (e.g. for id),
+        * text (e.g. for definition),
+        * instants represented in ISO 8601 format (e.g. for history aspects),
+        * arrays of text (e.g. for tags),
+        * arrays of object (e.g. for a link attribute)
+      type: object
+
+    ResultItem:
+      description: |
+        An item with its requested attributes.  
+        The values of MLC attributes are provided in the default language of the Rochade Subject Area (which is **not** necessarily the primary requested language).  
+        All the requested attributes will be present but the ones that do not exist or have no value will be null.
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        scopeId:
+          $ref: '#/components/schemas/ItemId'
+        type:
+          description: Rochade Item type (if requested)
+          type: string
+        name:
+          description: Name of item in the default language (if requested)
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ResultItemAttributes'
+
+    MLResultItem:
+      description: |
+        An item with language variance values for attributes that have multi-languages capability.  
+        The value are provided for all languages specified in the _displayLangs_ request parameter.  
+        If the _displayLangs_ request parameter contains the default language of the Rochade Subject Area, the values for that language are repeated in the _languages_ attribute.  
+        If the _displayLangs_ request parameter is empty or not provided, the _languages_ attribute will be empty.
+      type: object
+      required:
+        - languages
+      allOf:
+        - $ref: '#/components/schemas/ResultItem'
+        - type: object
+          properties:
+            languages:
+              description: |
+                Keys are languages in ISO 639-1 format (two-letter codes), OR empty for the default language.  
+                Values are mapping between a MLC attribute and its value in that language.
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/MLAttributes'
+              nullable: true
+
+    MLAttributes:
+      description: |
+        Attribute values for a specific language variance.  
+        Keys are attribute names.  
+        Values are attribute value in the contextual language.  
+        
+        Values of each attribute can be:
+        * numeric (e.g. for id),
+        * text (e.g. for definition),
+        * instants represented in ISO 8601 format (e.g. for history aspects),
+        * arrays of text (e.g. for tags),
+        * arrays of object (e.g. for a link attribute)  
+        
+        Depending on the language, not all but only some attributes are present. If absent it means the item has no value in the contextual language for that attribute.
+      type: object
+
+#    AbsPath:
+#      description: absPath system attribute of an item
+#      type: array
+#      items:
+#        $ref: '#/components/schemas/AbsPathSegment'
+    
+#    AbsPathSegment:
+#      description: segment of an absPath system attribute
+#      type: object
+#      required:
+#        - id
+#      properties:
+#        id:
+#          $ref: '#/components/schemas/ItemId'
+#        type:
+#          type: string
+#          description: Item type
+#        name:
+#          type: string
+#          description: Name of item in the contextual language
+
+    Expression:
+      type: string
+      default: '*'
+    
+    ExpressionSyntax:
+      type: string
+      enum: [EXACT, WILDCARD, ADVANCED, DUAL]
+      default: 'DUAL'
+    
+    IndexIds:
+      type: array
+      items:
+        type: string
+      example:
+        - BusinessTermView
+        - DWRView
+    
+    Offset:
+      type: integer
+      default: 0
+    
+    Limit:
+      type: integer
+    
+    TagNames:
+      type: array
+      items:
+        type: string
+      example:
+        - Apple
+        - Banana
+
+    Tag:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        name:
+          type: string
+          example: CCAR
+        languages:
+          description: |
+            Keys are languages in ISO 639-1 format (two-letter codes), OR empty for the default language.  
+            Values are mapping between a MLC attribute and its value in that language.
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/MLAttributes'
+          nullable: true
+
+    Tags:
+      description: Tags
+      type: array
+      items:
+        $ref: '#/components/schemas/Tag'
+
+    Language:
+      description: Identifier of language in ISO 639-1 format (two-letter codes)
+      type: string
+      pattern: '^[a-z]{2}$'
+
+    DisplayLangs:
+      type: array
+      items:
+        $ref: '#/components/schemas/Language'
+      example:
+        - en
+        - fr
+
+    SearchLangs:
+      type: array
+      items:
+        $ref: '#/components/schemas/Language'
+      example:
+        - en
+        - fr
+        - de
+
+    # DisplayLangs is a common schema, for FTS matching where the meaning is close but not same, we use a separate schema
+    FTSDisplayLangs:
+      type: array
+      items:
+        $ref: '#/components/schemas/Language'
+      example:
+        - es
+        - pt
+
+    SearchAttributeNames:
+      type: array
+      items:
+        type: string
+      example:
+        - name
+        - DEFINITION
+        - RBG/DESCRIPTION
+        - _technology_
+    
+    DisplayAttributeNames:
+      type: array
+      items:
+        type: string
+      example:
+        - type
+        - RBG/DESIGNATION
+        - upDate
+    
+    Facets:
+      type: object
+      # keys are free but values are array of strings
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      example:
+        level1:
+          - '2'
+        level2:
+          - '24'
+          - '25'
+        level3:
+          - 'RM__TESTGLOSSARY_BASE'
+    
+# FUTURE: this is for future usage by EDI products (and probably this endpoint must be renamed /fts/facets/EDI)
+#    FacetDetails:
+#      description: |
+#        Keys are facet names.  
+#        Values are possible values for that facets, plus metadata about it.
+#      type: object
+#      # keys are free but values are specific objects
+#      additionalProperties:
+#        type: array
+#        items:
+#          $ref: '#/components/schemas/FacetValue'
+#      example:
+#        level1:
+#          - value: '2'
+#            mapping: 'RBG/GLOSSARY'
+#            displayNames:
+#              '': Business Glossary
+#              fr: Glossaire Métier
+#              de: Glossar
+#        level2:
+#          - value: '24'
+#            mapping: DWR_ERM_MODEL
+#            displayNames:
+#              '': ER-Model
+#              fr : Modèle Entité-Relation
+#              de: ER-Modell
+#          - value: '25'
+#            mapping: DWR_ERM_SUBJECT_AREA
+#            displayNames:
+#              '': ER-Subject Area
+#              fr: Application-ER
+#              de: ER-Sachgebiet
+#        level3:
+#          - value: RM__TESTGLOSSARY_BASE
+#            mapping: '79477'
+#            displayNames:
+#              '': RM__TESTGLOSSARY_BASE
+    
+    FacetValue:
+      description: Define a possible value for a given facet name. Also provides metadata associated with that value.
+      type: object
+      properties:
+        value:
+          description: A possible value for the contextual facet name.
+          type: string
+        mapping:
+          description: A technical item which the facet value is associated with.
+          type: string
+        displayNames:
+          description: |
+            Keys are languages in ISO 639-1 format (two-letter codes), OR empty for the default language.  
+            Values are text that can be used to display the facet value in various languages.  
+          type: object
+          additionalProperties:
+            type: string
+
+    GlossaryFacetTree:
+      description: |
+        The glossary facet tree where glossaries at the top, contexts as child, sub-contexts as grand-child and so on.
+      type: object
+      properties:
+        contextIds:
+          description: |
+            The name of the Solr field that must be used to facet according the glossaries criteria.
+          type: array
+          items:
+            $ref: '#/components/schemas/GlossaryFacetItem'
+      example:
+        contextIds:
+          - children:
+              - children:
+                  - value: '3225035'
+                    mapping: RBG/CONTEXT
+                    displayNames:
+                      '': case
+                      en: case
+                value: '3225034'
+                mapping: RBG/CONTEXT
+                displayNames:
+                  '': Business Problem
+                  en: Business Problem
+              - children:
+                  - value: '3225037'
+                    mapping: RBG/CONTEXT
+                    displayNames:
+                      '': case
+                      en: case
+                  - value: '3225057'
+                    mapping: RBG/CONTEXT
+                    displayNames:
+                      '': data source
+                      en: data source
+                  - value: '3225058'
+                    mapping: RBG/CONTEXT
+                    displayNames:
+                      '': data target
+                      en: data target
+                value: '3225036'
+                mapping: RBG/CONTEXT
+                displayNames:
+                  '': Big Data Pilot
+                  en: Big Data Pilot
+            value: '3225033'
+            mapping: RBG/GLOSSARY
+            displayNames:
+              '': Big Data Health Care Campain
+              en: Big Data Health Care Campain
+          - value: '14884831'
+            mapping: RBG/GLOSSARY
+            displayNames:
+              '': my Glossary
+              de: mein Glossar
+              en: my Glossary
+              fr: mon Glossaire
+              es: mi Glosario
+
+    FQ:
+      description: |
+        A Solr 'Filter Query' (FQ) criteria, provided directly into the Solr syntax.
+      type: string
+
+    FQs:
+      description: |
+        A set of 'Filter Query' (FQ) criteria. Item matches if *all* the provided conditions are satisified.  
+        
+        CAUTION: as they are neither pre-processed nor interpreted, the criteria must be provided direclty into the Solr syntax!
+      type: array
+      items:
+        $ref: '#/components/schemas/FQ'
+      example:
+        - 'NOT type:("DWR_RDB_COLUMN" OR "DWR_DAT_FIELD")'
+        - 'last_modified:[2000-11-01 TO 2014-12-01]'
+
+    GlossaryFacetItem:
+      description: |
+        Define a possible value for the facet name related to Glossaries and Context hierarchy. Also provides metadata associated with that value.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/FacetValue'
+      properties:
+        children:
+          type: array
+          description: The list of contexts/sub-contexts available under the current facet item.
+          items:
+            # SWAGGER-UI-OUT-START
+            $ref: '#/components/schemas/GlossaryFacetItem'
+            # SWAGGER-UI-OUT-END
+            # SWAGGER-UI-IN-START
+            #type: object
+            # SWAGGER-UI-IN-END
+
+    FTSRequestBody:
+      description: additional parameters to run the Full Text Search operation
+      type: object
+      properties:
+        facets:
+          $ref: '#/components/schemas/Facets'
+        fqs:
+          $ref: '#/components/schemas/FQs'
+
+    FTSRequest:
+      description: all the requested parameters to run the Full Text Search operation
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/FTSRequestBody'
+      properties:
+        expression:
+          $ref: '#/components/schemas/Expression'
+        expressionSyntax:
+          $ref: '#/components/schemas/ExpressionSyntax'
+        tags:
+          $ref: '#/components/schemas/TagNames'
+        indexIds:
+          $ref: '#/components/schemas/IndexIds'
+        offset:
+          $ref: '#/components/schemas/Offset'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        searchLangs:
+          $ref: '#/components/schemas/SearchLangs'
+        displayLangs:
+          $ref: '#/components/schemas/DisplayLangs'
+        searchAttributes:
+          $ref: '#/components/schemas/SearchAttributeNames'
+        displayAttributes:
+          $ref: '#/components/schemas/DisplayAttributeNames'
+    
+    MessageLevel:
+      description: the level of the message
+      type: string
+      enum: [ERROR, WARNING, INFO]
+
+    FTSMessage:
+      description: |
+        message about an event during the Full Text Search operation
+      type: object
+      properties:
+        text:
+          description: the text of the message
+          type: string
+        level:
+          $ref: '#/components/schemas/MessageLevel'
+
+    FTSResult:
+      description: Full Text Search result
+      type: object
+      properties:
+        with:
+          $ref: '#/components/schemas/FTSRequest'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FTSMessage'
+        numFound:
+          description: How many items are matching in the absolute. All the matching are generally not returned in this result but only a subset according to the _offset_ and _limit_ parameters of the request. The size of that subset is provided by _numRetrieved_.
+          type: integer
+          format: int64
+          default: 0
+          example: 1
+        numFoundExact:
+          description: Indicating if the _numFound_ value is exact or an approximation. If it\'s an approximation, the real number of hits for the query is guaranteed to be greater or equal than _numFound_.
+          type: boolean
+          default: true
+        numRetrieved:
+          description: How many matching items are available in _matches_. This is at maximum equals to the _limit_ parameters of the request.
+          type: integer
+          format: int64
+          default: 0
+          example: 1
+        maxHits:
+          description: |
+            The absolute upper boundary (applied for security reason). This limit is configurable by administrators.    
+            However, the total number of matching results *may be less* than this value.
+            This happens when search criteria lead to filter so many items than the number of items effectively matching
+            becomes less than the _maxHits_ value.  
+            
+            When positive, no more results than this value can be retrieved at maximum.  
+            It means that, even if paging, the last page that can be obtained is governed by the _maxHits_ value.  
+            In other words, matching items ordered after the _maxHits_ index can never be retrieved (no matter what you do).  
+            The recommended way to retrieve items beyonf this limit is to step up the search criteria in order to refine the matching items.  
+            
+            Negative value or zero value means unlimited (This should be avoided to reduce risks of DOS attacks).
+          type: integer
+          format: int64
+          example: 1000
+        matches:
+          type: array
+          items:
+            $ref: '#/components/schemas/MatchingItem'
+        facetTrees:
+          $ref: '#/components/schemas/FacetTrees'
+        highlightingTokens:
+          $ref: '#/components/schemas/HighlightingTokens'
+        highlighting:
+          $ref: '#/components/schemas/Highlighting'
+
+    MatchingItem:
+      description: |
+        An item with language variance values for attributes that have multi-languages capability.  
+        The values are provided for all languages specified in the _searchLangs_ and _displayLangs_ request parameters.  
+        If the _displayLangs_ request parameter contains the default language of the Rochade Subject Area, the values for that language are repeated in the _languages_ property.  
+        If both the _searchLangs_ and _displayLangs_ request parameters are empty or not provided, the _languages_ property will be empty.  
+        The content of the _properties_ property is controlled by the _searchAttributes_ and _displayAttributes_ request parameters.  
+        Except 'id', 'scopeId', 'type' and 'name', all the attributes to search for or to display will be found under the  _properties_ property (for the default language).  
+        For the attributes that have Multi-Language Capability, their corresponding language-variance value will be found under the _languages_ propery.
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/MLResultItem'
+      example:
+        id: 6913845
+        scopeId: 0
+        type: GDP_PERSONAL_INFORMATION
+        name: DemoItem
+        properties:
+          _tags_:
+            - Apple
+            - Strawberry
+          _technology_: Tableau
+          absPath:
+            -
+              id: 5678
+              type: RBG/GLOSSARY
+              name: Personal Information Glossary
+            -
+              id: 1234
+              type: GDP_PERSONAL_INFORMATION
+              name: DemoItem
+          DEFINITION: Sample text defining the item
+          RBG/DESIGNATION: DI
+        languages:
+          fr:
+            name: Objet de démonstration
+            DEFINITION: Exemple de texte décrivant l'objet
+          de:
+            DEFINITION: Beispieltext, der das Element definiert
+            RBG/DESIGNATION: BE
+
+#    MatchingItem:
+#      description: |
+#        A map of item attributes.  
+#        Keys are languages in ISO 639-1 format (two-letter codes), OR empty for the attributes that are not multi-languages (like item id).  
+#        Values are mapping between the attribute names and their values into that language.  
+#        If an attribute name is missing for a given language, it means that attribute has no value for that language,
+#        or that attribute is out of interest regarding the matching with the search expression.
+#      type: object
+#      additionalProperties:
+#        $ref: '#/components/schemas/MatchingItemAttributes'
+#      example:
+#        '':
+#          id: 1234
+#          type: GDP_PERSONAL_INFORMATION
+#          name: DemoItem          
+#          tags:
+#            - Apple
+#            - Peer
+#          absPath:
+#            -
+#              id: 5678
+#              type: RBG/GLOSSARY
+#              name: Personal Information Glossary
+#            -
+#              id: 1234
+#              type: GDP_PERSONAL_INFORMATION
+#              name: DemoItem
+#          RBG/DESIGNATION: DI
+#          DEFINITION: Sample text defining the item
+#        fr:
+#          name: Objet de démonstration
+#          DEFINITION: Exemple de texte décrivant l'objet
+#        de:
+#          RBG/DESIGNATION: BE
+#          DEFINITION: Beispieltext, der das Element definiert
+    
+#    MatchingItemAttributes:
+#      description: |
+#        Attribute values for a specific language variance.  
+#        Keys are attribute names.  
+#        Values are attribute value into the contextual language.  
+#        
+#        Values of each attribute can be:
+#        * numeric (e.g. for id),
+#        * text (e.g. for definition),
+#        * instants represented in ISO 8601 format (e.g. for history aspects),
+#        * arrays of text (e.g. for tags),
+#        * arrays of object (e.g. for a link attribute)  
+#        
+#        Depending on the language, not all but only some attributes are present. If absent it means either the item has no value in the contextual language for that attribute,
+#        or that attribute is out of interest regarding the matching with the search expression and is neither required for languages to display.
+#      type: object
+
+#    FTSResult2:
+#      description: Full Text Search result
+#      type: object
+#      properties:
+#        with:
+#          $ref: '#/components/schemas/FTSRequest'
+#        numFound:
+#          description: How many items are matching in the absolute. All the matching are generally not returned in this result but only a subset according to the _offset_ and _limit_ parameters of the request. The size of that subset is provided by _numRetrieved_.
+#          type: integer
+#          default: 0
+#          example: 1
+#        numFoundExact:
+#          description: Indicating if the _numFound_ value is exact or an approximation. If it\'s an approximation, the real number of hits for the query is guaranteed to be greater or equal _numFound_.
+#          type: boolean
+#          default: true
+#        numRetrieved:
+#          description: How many matching items are available in _matches_. This is at maximum equals to the _limit_ parameters of the request.
+#          type: integer
+#          default: 0
+#          example: 1
+#        matches:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/MatchingItem2'
+#        facetTree:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/FacetTreeItem'
+#        highlightingTokens:
+#          $ref: '#/components/schemas/HighlightingTokens'
+#        highlighting:
+#          $ref: '#/components/schemas/Highlighting'
+#
+#    MatchingItem2:
+#      description: |
+#        A map of item attributes.  
+#        Keys are languages in ISO 639-1 format (two-letter codes), OR empty for the attributes that are not multi-languages (like item id).  
+#        Values are mapping between the attribute names and their values into that language.  
+#        If an attribute name is missing for a given language, it means that attribute has no value for that language,
+#        or that attribute is out of interest regarding the matching with the search expression.
+#      type: object
+#      additionalProperties:
+#        $ref: '#/components/schemas/MatchingItemLangVariance'
+#      example:
+#        '':
+#          id: 1234
+#          type: GDP_PERSONAL_INFORMATION
+#          name: DemoItem          
+#          tags:
+#            - Apple
+#            - Peer
+#          absPath:
+#            -
+#              id: 5678
+#              type: RBG/GLOSSARY
+#              name: Personal Information Glossary
+#            -
+#              id: 1234
+#              type: GDP_PERSONAL_INFORMATION
+#              name: DemoItem
+#          attributes:
+#            RBG/DESIGNATION: DI
+#            DEFINITION: Sample text defining the item
+#        fr:
+#          name: Objet de démonstration
+#          attributes:
+#            DEFINITION: Exemple de texte décrivant l'objet
+#        de:
+#          attributes:
+#            RBG/DESIGNATION: BE
+#            DEFINITION: Beispieltext, der das Element definiert
+    
+#    MatchingItemLangVariance:
+#      description: |
+#        Attribute values for a specific language variance.  
+#        Keys are:  
+#        * any system attribute name  
+#        * or the _'attributes'_ special entry.  
+#        Values are attribute value into the contextual language.  
+#        System attributes that are not multi-languages are only specified into the default/no-language context ('').  
+#      type: object
+#      # id cannot be mandatory because it is NOT provided in other language than ''
+#      #required:
+#      #  - id
+#      properties:
+#        id:
+#          $ref: '#/components/schemas/ItemId'
+#        type:
+#          type: string
+#          description: Item type
+#        name:
+#          type: string
+#          description: Name of item in the contextual language
+#        #nameGroup:
+#        #  type: integer
+#        #  format: int64
+#        #  description: Name group
+#        scopeId:
+#          # SWAGGER-UI-OUT-START
+#          $ref: '#/components/schemas/ItemId'
+#          # SWAGGER-UI-OUT-END
+#          # SWAGGER-UI-IN-START
+#          #description: Identifier of scope item
+#          #allOf:
+#          #  - $ref: '#/components/schemas/ItemId'
+#          # SWAGGER-UI-IN-END
+#        scopeAttribute:
+#          type: string
+#          description: Name of the scope attribute
+#        tags:
+#          $ref: '#/components/schemas/TagNames'
+#        absPath:
+#          $ref: '#/components/schemas/AbsPath'
+#        attributes:
+#          # SWAGGER-UI-OUT-START
+#          $ref: '#/components/schemas/MatchingItemRegularAttributes'
+#          # SWAGGER-UI-OUT-END
+#          # SWAGGER-UI-IN-START
+#          #description: values of regular attributes of the item in the contextual language
+#          #allOf:
+#          #  - $ref: '#/components/schemas/MatchingItemRegularAttributes'
+#          # SWAGGER-UI-IN-END
+    
+#    MatchingItemRegularAttributes:
+#      description: |
+#        Values of the item regular attributes for a specific language variance.  
+#        Keys are regular attribute names (non-system ones).  
+#        Values are attribute values into the contextual language.  
+#        
+#        Values of each attribute can be:
+#        * numeric (e.g. for id),
+#        * text (e.g. for definition),
+#        * instants represented in ISO 8601 format (e.g. for history aspects),
+#        * arrays of text (e.g. for tags),
+#        * arrays of object (e.g. for a link attribute)  
+#        
+#        Depending on the language, not all but only some attributes are present. If absent it means either the item has no value in the contextual language for that attribute,
+#        or that attribute is out of interest regarding the matching with the search expression and is neither required for languages to display.
+#      type: object
+
+#    FTSResultDD:
+#      description: Full Text Search result
+#      type: object
+#      properties:
+#        with:
+#          $ref: '#/components/schemas/FTSRequest'
+#        count:
+#          description: How many items are matching in the absolute. All the matching are generally not returned in this result but only a subset according to the _offset_ and _limit_ parameters of the request. The size of that subset is provided by _numRetrieved_.
+#          type: integer
+#          default: 0
+#          example: 1
+#        results:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/MatchingItemDD'
+#        facetTree:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/FacetTreeItem'
+#        highlightingTokens:
+#          $ref: '#/components/schemas/HighlightingTokens'
+#        highlighting:
+#          $ref: '#/components/schemas/Highlighting'
+#    
+#    MatchingItemDD:
+#      description: |
+#        A map of item attributes.  
+#        Keys are languages in ISO 639-1 format (two-letter codes), OR empty for the attributes that are not multi-languages (like item id).  
+#        Values are mapping between the attribute names and their values into that language.  
+#        If an attribute name is missing for a given language, it means that attribute has no value for that language,
+#        or that attribute is out of interest regarding the matching with the search expression.
+#      type: object
+#      additionalProperties:
+#        $ref: '#/components/schemas/MatchingItemAttributesDD'
+#      example:
+#        '':
+#          id: 1234
+#          type: GDP_PERSONAL_INFORMATION
+#          name: DemoItem          
+#          asg.tagNames:
+#            - Apple
+#            - Peer
+#          asg.parentTypeNamePath:
+#            -
+#              id: 5678
+#              type: RBG/GLOSSARY
+#              name: Personal Information Glossary
+#            -
+#              id: 1234
+#              type: GDP_PERSONAL_INFORMATION
+#              name: DemoItem
+#          RBG/DESIGNATION: DI
+#          DEFINITION: Sample text defining the item
+#        fr:
+#          name: Objet de démonstration
+#          DEFINITION: Exemple de texte décrivant l'objet
+#        de:
+#          RBG/DESIGNATION: BE
+#          DEFINITION: Beispieltext, der das Element definiert
+#    
+#    MatchingItemAttributesDD:
+#      description: |
+#        Attribute values for a specific language variance.  
+#        Keys are attribute names.  
+#        Values are attribute value into the contextual language.  
+#        
+#        Values of each attribute can be:
+#        * numeric (e.g. for id),
+#        * text (e.g. for definition),
+#        * instants represented in ISO 8601 format (e.g. for history aspects),
+#        * arrays of text (e.g. for tags),
+#        * arrays of object (e.g. for a link attribute)  
+#        
+#        Depending on the language, not all but only some attributes are present. If absent it means either the item has no value in the contextual language for that attribute,
+#        or that attribute is out of interest regarding the matching with the search expression and is neither required for languages to display.
+#      type: object    
+
+    FacetTreeItem:
+      description: |
+        Describe one level of a facet tree.  
+        Each tree item contains the facet name, its matching value and the count of item matching that facet with such value.
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        count:
+          type: integer
+        pivot:
+          type: array
+          items:
+            # recursive schemas are badly processed by SwaggerUI
+            # see https://stackoverflow.com/questions/36866035/how-to-refer-to-enclosing-type-definition-recursively-in-openapi-swagger
+            # one proposed workaround is tricking with , but it does not allow to accomplish the real purpose of recursive schema!
+            # Not only Swagger-codegen does not support cycling schemas but also Swagger-UI fails regarding such definition.
+            # It is a shame because openapi-generator manages them very well, so we are restrained just by Swagger-UI.
+            # Solution is to define the proper recursive schema for processing by openapi-generator, and have a web filter
+            # that tweak this file on the fly when Swagger-UI download this resource from server.
+            # This is the purpose of SWAGGER-UI-XXX-YYYY tags. Content in between is added or removed on the fly by 
+            # SWAGGER-UI-OUT-START
+            $ref: '#/components/schemas/FacetTreeItem'
+            # SWAGGER-UI-OUT-END
+            # SWAGGER-UI-IN-START
+            #description: recursive point (=> FacetTreeItem)
+            #type: object
+            # SWAGGER-UI-IN-END
+      example:
+        name: level1
+        value: '2'
+        count: 18
+        pivot:
+          - name: level2
+            value: '24'
+            count: 12
+          - name: level2
+            value: '25'
+            count: 6
+            pivot:
+              - name: level3
+                value: RM__TESTGLOSSARY_BASE
+                count: 45            
+
+    FacetTrees:
+      description: |
+        All the facet trees.  
+        Each key is the pivots used in the tree.
+        Each value is the array of facet items corresponding to the root(s) of this tree.
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          $ref: '#/components/schemas/FacetTreeItem'
+      example:
+        "level1,level2,level3":
+          - name: level1
+            value: '2'
+            count: 18
+            pivot:
+              - name: level2
+                value: '24'
+                count: 12
+              - name: level2
+                value: '25'
+                count: 6
+                pivot:
+                  - name: level3
+                    value: RM__TESTGLOSSARY_BASE
+                    count: 45
+
+    HighlightingTokens:
+      description: The subsequences that are used to enclose the words or characters that are matching inside the attribute of an item.
+      type: object
+      properties:
+        start:
+          type: string
+          default: <hilight_em>
+        end:
+          type: string
+          default: </hilight_em>
+
+    Highlighting:
+      description: |
+        For each matching item, attributes that are matching per language.  
+        Keys are item ids.  
+        Values are maps which the key is a language and the values are mapping between an attribute name and the attribute value highlighted at matching groups.
+        If an item id is missing, it means that highlighting is not available for some technical reasons,
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/HighlightingItem'
+      example:
+        1234: 
+          '':
+            name: <hilight_em>Demo</hilight_em><hilight_em>Item</hilight_em>          
+            DEFINITION: Sample text defining the <hilight_em>item</hilight_em>
+          fr:
+            name: Objet de <hilight_em>démo</hilight_em>nstration
+    
+    HighlightingItem:
+      description: |
+        For a matching item, attributes that are matching per language, with highlighting of the matches.  
+        Keys are languages in ISO 639-1 format (two-letter codes), OR empty for the attributes that are not multi-languages (like item type). Only searched languages can be found among keys. Languages to display are not.  
+        Values are mapping between the attribute name and its highlighted value into that language.  
+        If a language is missing, it means that there is no match into that language, or that language was not among the language to search for.  
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/HighlightingItemAttributes'
+    
+    HighlightingItemAttributes:
+      description: |
+        Highlighted attribute values for a specific language variance.  
+        Keys are attribute names.  
+        Values are attribute value into the contextual language.  
+        If an attribute name is missing for a given language, it means that this attribute has no match into that language, or that language was not among the language to search for.
+      type: object
+    
+    IndexDetails:
+      description: metadata about a Full Text Search index (aka Solr core)
+      type: object
+      properties:
+        metaAppId:
+          type: string
+        searchAppId:
+          type: string
+
+    Indexes:
+      description: |
+        Keys are index ids.  
+        Values are metadata about each index.
+      type: object
+      # keys are free but values are specific objects
+      additionalProperties:
+        $ref: '#/components/schemas/IndexDetails'
+      example:
+        BusinessTermView:
+          metaAppId: mg
+          searchAppId: search_mg
+        DWRView:
+          metaAppId: rdb
+          searchAppId: search_rdb
+        Models:
+          metaAppId: rm
+          searchAppId: ssearch_rm
+        ReferenceData:
+          metaAppId: ref
+          searchAppId: search_ref
+        DataStructure:
+          metaAppId: rds
+          searchAppId: search_rds
+        DataIntegration:
+          metaAppId: rdi
+          searchAppId: search_rdi
+        BusinessIntelligence:
+          metaAppId: rbi
+          searchAppId: search_rbi
+        BigData:
+          metaAppId: rbd
+          searchAppId: search_rbd
+        DataQualityManagement:
+          metaAppId: rdq
+          searchAppId: search_rdq
+        Stitching:
+          metaAppId: sti
+          searchAppId: search_sti
+    

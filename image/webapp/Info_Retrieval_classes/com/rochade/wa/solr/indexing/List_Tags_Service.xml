@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- used by Indexing_Utility_Tool to extract Tags from Rochade (and then indexing them) -->
+<RocService stylesheet="com.rochade.wa.api.ML.java" whatdefault="id" what="{$what}">
+<!-- The parameter what is used to define what information is of interest. Each keyword specified in what represents a column in the output ResultSet. -->
+
+<connection
+	class="{$connectionType}"
+	physicalDefinitions ="{$pD}"
+	applicationDefinitions = "{$aD}"
+	id="c1"/>
+	
+	<categories>
+		<category id="ListTagsJson" name="List Business Terms with Details"
+			stylesheet="com/rochade/wa/api/resource/stylesheets/int_abspathV2.xsl, 
+			com/rochade/wa/api/resource/stylesheets/int_rsmGMDetailsV2.xsl, com.rochade.wa.api.ML.java, com/rochade/wa/api/resource/stylesheets/int_cleanML.xsl, com/rochade/wa/api/resource/stylesheets/int_to_json.xsl">
+			<category id="ListTags"
+				whatMin="id, name, type, scopeId, languages, level, RO_HAS_TAG_POINTER, RO_TAGGED"
+				whatStylesheet="">
+				<context id="c1" />
+				<report 
+					name="TagMapping_from_TaggedItems"
+					version=""
+					timestamp="12/19/2016 15:51:24"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:noNamespaceSchemaLocation="http://schema.asg.com/rochade/query/mpath.xsd">
+					<seeditem id="{$seeItems}"></seeditem>
+					<type id="_0" name="RO_TAGGABLE_ITEM" isstart="true" includeSubTypes="true">
+						<segment dir="to" type="_1">
+							<attribute include="_UNCLASSIFIED_"/>
+						</segment>
+					</type>
+					<type id="_1" name="RO_TAG_POINTER" includeSubTypes="true">
+						<segment dir="to" type="_2" name="DWR_TAG">
+							<attribute include="RO_TAGGED"/>
+						</segment>
+					</type>
+					<type id="_2" name="DWR_TAG" includeSubTypes="true">
+					</type>
+					<!-- we do not want this mask to apply in this context 
+					<mask name="Tags" isdefault="true" depth="3">
+						<type idref="_2"/>
+						<type idref="_0"/>
+					</mask>
+					-->
+				</report>
+			</category>
+		</category>
+	</categories>
+</RocService>

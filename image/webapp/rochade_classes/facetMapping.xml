@@ -1,0 +1,181 @@
+<!-- Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved. -->
+<!-- duplicate of facetMapping.xml in IntegratedSearch -->
+<facetMapping>
+	<!-- The pivots that can be mapped using this mapping. If a pivot is not defined here it is considered as mappable='false'. -->
+	<pivot name="level1" mappable="true"/>
+	<pivot name="level2" mappable="true"/>
+	<pivot name="level3" mappable="false"/>
+	
+	<facet id="0">facet.all</facet>
+	
+	<facet id="1">facet.MG_Types</facet>
+	<facet id="2">RBG/BUSINESS-TERM</facet>
+	<facet id="3">RBG/GLOSSARY</facet>
+	<facet id="4">RBG/CONTEXT</facet>
+	
+	<facet id="5">facet.RDB_Types</facet>
+	<facet id="6">DWR_RDB_COLUMN</facet>
+	<!--facet id="7">DWR_RDB_TABLE</facet--> <!-- This type is no more indexed -->
+	<facet id="8">DWR_RDB_SCHEMA</facet>
+	<facet id="9">DWR_RDB_DATABASE</facet>
+	<facet id="10">DWR_RDB_DB_SYSTEM</facet>
+	<facet id="11">DWR_RDB_TABLE_OR_VIEW</facet>
+	<facet id="12">DWR_RDB_PACKAGE</facet>
+	<facet id="13">DWR_RDB_FUNCTION</facet>
+	<facet id="14">DWR_RDB_PROCEDURE</facet>
+	<facet id="15">DWR_RDB_TRIGGER</facet>
+    <facet id="16">DWR_RDB_INDEX</facet>
+    <facet id="17">DWR_RDB_FOREIGN_KEY</facet>
+
+	<facet id="24">facet.RM_Types</facet>
+	<facet id="25">DWR_ERM_MODEL</facet>
+	<facet id="26">DWR_ERM_SUBJECT_AREA</facet>
+	<facet id="27">DWR_ERM_ENTITY</facet>
+	<facet id="28">DWR_ERM_ATTRIBUTE</facet>
+	<facet id="29">DWR_ERM_RELATIONSHIP</facet>
+	
+	<facet id="35">facet.RDI_Types</facet>
+	<facet id="36">DWR_TFM_ACTIVITY</facet>
+	<facet id="37">DWR_TFM_TASK</facet>
+	<facet id="38">DWR_TFM_TRANSFORMATION</facet>
+	
+	<facet id="68">facet.RBD_Types</facet>
+	<facet id="69">RBD_CLUSTER</facet>
+	<facet id="70">RBD_CLUSTER-SERVICE</facet>
+	<facet id="71">RBD_DIRECTORY</facet>
+	<facet id="72">RBD_HOST</facet>
+	<facet id="73">RBD_CONNECTION</facet>
+	<facet id="74">RBD_CLUSTER-SERVICE-ROLE</facet>
+	<facet id="75">RBD_CONFIG-PARAM</facet>
+	
+	<facet id="76">facet.RBI_Types</facet>
+	<facet id="77">DWR_ANL_OLAP_PACKAGE</facet>
+	<facet id="78">DWR_ANL_OLAP_SCHEMA</facet>
+	<facet id="79">DWR_ANL_CUBE</facet>
+	<facet id="80">DWR_ANL_DIMENSION</facet>
+	<facet id="81">DWR_ANL_DIMENSION_MAP</facet>
+	<facet id="82">DWR_ANL_HIERARCHY</facet>
+	<facet id="83">DWR_ANL_MEMBER</facet>
+	<facet id="84">DWR_ANL_REPORT</facet>
+	<facet id="85">DWR_ANL_RPT_STRUCTURE</facet>
+	<facet id="86">DWR_ANL_RPT_SCHEMA</facet>
+	<facet id="87">DWR_ANL_RPT_FIELD</facet>
+	<facet id="88">DWR_ANL_RPT_MAP</facet>
+	<facet id="89">DWR_ANL_RPT_PACKAGE</facet>
+	
+	<facet id="90">DWR_TFM_SYSTEM</facet>
+	<facet id="91">DWR_TFM_TRANSFORMATION_MAP</facet>
+	<facet id="92">DWR_TFM_TRANSFORMATION_TYPE</facet>
+	
+	<facet id="93">facet.RDQ_Types</facet>
+	<facet id="94">DQM_BUSINESS_POLICY</facet>
+	<facet id="95">DQM_BUSINESS_RULE</facet>
+	<facet id="96">DQM_CRITICAL_DATA_ELEMENT</facet>
+	<facet id="97">DQM_CRITICAL_QUALITY_MEASURE</facet>
+	<facet id="98">DQM_CRITICAL_QUALITY_MEASURE_RESULT</facet>
+	
+	<facet id="99">facet.REF_Types</facet>
+	<facet id="100">MDM_DATA_CONTEXT</facet>
+	<facet id="101">MDM_RDM_REFERENCE_COLLECTION</facet>
+	<facet id="102">MDM_RDM_VALUE_COLLECTION</facet>
+	<!--facet id="103">MDM_RMD_CONCEPTUAL_DOMAIN</facet--> <!-- This type is no more indexed -->
+	<facet id="104">MDM_RMD_DATA_CONCEPT</facet>
+	<!--facet id="105">MDM_RMD_VALUE_DOMAIN</facet--> <!-- This type is no more indexed -->
+	
+	<facet id="106">DWR_ERM_IDENTIFIER</facet>
+	
+	<facet id="107">DWR_TFM_PARAMETER_SET</facet>
+	<facet id="108">DWR_TFM_PARAMETER</facet>
+	<facet id="109">DWR_TFM_LINEAGE_DIMENSION</facet>
+
+	<facet id="111">facet.RDS_Types</facet>
+	<facet id="112">DWR_DAT_PACKAGE</facet>
+	<facet id="113">DWR_DAT_FILE</facet>
+	<facet id="114">DWR_DAT_DATA_TYPE</facet>
+	<facet id="115">DWR_DAT_DOMAIN</facet>
+	<facet id="116">DWR_DAT_FIELD</facet>
+	<facet id="117">DWR_DAT_RECORD_TYPE</facet>
+	<facet id="218">DWR_DAT_FILE_SYSTEM</facet>
+    <facet id="219">DWR_DAT_DIRECTORY</facet>
+	
+	<facet id="118">facet.STI_Types</facet>
+	<facet id="119">STI_CONTAINER</facet>
+	<facet id="120">STI_STRUCTURE_LINK</facet>
+	<facet id="121">STI_FIELD_LINK</facet>
+	
+	<!--facet id="122">facet.BPA_Types</facet--> <!-- Business Package items have been moved into Business Glossary so the usage of this corresponding facet id has been replaced by the one for Business Glossary (#1) -->
+	<facet id="123">BPK_BUSINESS_RULE</facet>
+	<facet id="124">BPK_CRITICAL_DATA_ELEMENT</facet>
+	<facet id="125">BPK_POLICY</facet>
+	<facet id="126">BPK_PROCESS</facet>
+	<facet id="127">BPK_STANDARD</facet>
+	<facet id="128">BPK_CONTEXT</facet>
+	<facet id="129">DWR_ARC_BUSINESS_APPLICATION</facet>
+	<facet id="130">GDP_PERSONAL_INFORMATION</facet>
+	<facet id="131">GDP_PI_STRUCTURE</facet>
+	
+	<facet id="701">DWR_ANL_RPT_PROMPT</facet>
+	<facet id="702">DWR_ANL_RPT_DASHBOARD</facet>
+	<facet id="703">DWR_ANL_RPT_DASHBRD_PAGE</facet>
+	<facet id="704">DWR_DAT_DATA_SOURCE</facet>
+	<facet id="705">DWR_DAT_DS_ELEMENT</facet>
+	
+	<facet id="706">DWR_OOP_PACKAGE</facet>
+	<facet id="707">DWR_OOP_INTERFACE</facet>
+	<facet id="708">DWR_OOP_CLASS</facet>
+	<facet id="709">DWR_OOP_METHOD</facet>
+	<facet id="710">DWR_OOP_ANNOTATION_TYPE</facet>
+	<facet id="711">DWR_OOP_ANNOTATION</facet>
+	<facet id="712">DWR_OOP_ANNOTATION_ELEMENT</facet>
+	<facet id="713">DWR_OOP_GENERIC_TYPE</facet>
+	<facet id="714">DWR_OOP_VARIABLE</facet>
+
+	<facet id="1000">facet.Other_Business_Items</facet>
+	
+	<!-- Support old InfoRetrieval,GlobalSearch facet mapping ids (?Is MGSolrInsertPerf.xml an old implementation?) -->	
+	<!-- The following ones have no equivalent in new facet mapping because those types are no more indexed but they are still in use in MGSolrInsertPerf.xml -->
+	<facet id="45">DWR_ANL_PACKAGE</facet>
+	<facet id="49">DWR_ANL_LEVEL</facet>
+	<facet id="52">DWR_DAT_RECORD</facet>
+	<!-- Kept for memory but those mappings have been replaced by other ids because they were doubles
+	<facet id="20">facet.MG_Types</facet>
+	<facet id="21">RBG/BUSINESS-TERM</facet>
+	<facet id="22">RBG/CONTEXT</facet>
+	<facet id="23">RBG/GLOSSARY</facet>
+	
+	<facet id="30">facet.RDB_Types</facet>
+	<facet id="31">DWR_RDB_DATABASE</facet>
+	<facet id="32">DWR_RDB_SCHEMA</facet>
+	<facet id="33">DWR_RDB_TABLE_OR_VIEW</facet>
+	<facet id="34">DWR_RDB_COLUMN</facet>
+	
+	<facet id="39">facet.RBI_Types</facet>
+	<facet id="40">DWR_ANL_RPT_PACKAGE</facet>
+	<facet id="41">DWR_ANL_RPT_SCHEMA</facet>
+	<facet id="42">DWR_ANL_RPT_STRUCTURE</facet>
+	<facet id="43">DWR_ANL_REPORT</facet>
+	<facet id="44">DWR_ANL_RPT_FIELD</facet>
+	<facet id="46">DWR_ANL_CUBE</facet>
+	<facet id="47">DWR_ANL_DIMENSION</facet>
+	<facet id="48">DWR_ANL_HIERARCHY</facet>
+	<facet id="50">DWR_ANL_MEMBER</facet>
+	
+	<facet id="51">facet.RDS_Types</facet>
+	<facet id="53">DWR_DAT_RECORD_TYPE</facet>
+	<facet id="54">DWR_DAT_DATA_TYPE</facet>
+	<facet id="55">DWR_DAT_FIELD</facet>
+	
+	<facet id="56">facet.MG_Types</facet>
+	<facet id="57">facet.RM_Types</facet>
+	<facet id="58">facet.RDB_Types</facet>
+	<facet id="59">facet.RDI_Types</facet>
+	<facet id="60">facet.RBI_Types</facet>
+	<facet id="61">facet.RDS_Types</facet>
+	<facet id="62">facet.MG_Types</facet>
+	<facet id="63">facet.RM_Types</facet>
+	<facet id="64">facet.RDB_Types</facet>
+	<facet id="65">facet.RDI_Types</facet>
+	<facet id="66">facet.RBI_Types</facet>
+	<facet id="67">facet.RDS_Types</facet>
+	-->
+</facetMapping>

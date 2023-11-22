@@ -1,0 +1,575 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Transformations
+  description: Transformations OpenAPI definition
+
+security:
+  - BasicAuth: []
+  - BearerAuth: []
+
+servers:
+  - url: '/rest'
+tags:
+  - name: Transformations
+
+paths:
+  /transformations/{id}:
+    get:
+      tags:
+        - Transformations
+      operationId: getTransformationSummary
+      summary: Fetches the summary about the transformation item.
+      description: Returns the the summary about the transformation item.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: describe the unique identifier of the transformation.
+          schema:
+            $ref: '#/components/schemas/ItemId'
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+
+      responses:
+        '200':
+          description: |
+            A successful response indicating the transformation item summary has been returned.
+          content:
+            application/vnd.bdi-services-transformations-response.v1+json:
+              schema:
+                $ref: '#/components/schemas/TransformationItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /transformations/{id}/children:
+    get:
+      tags:
+        - Transformations
+      operationId: getTransformationChildren
+      summary: Fetches the children of the specified transformation item.
+      description: Fetches the children of the specified transformation item.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: describe the unique identifier of the transformation.
+          schema:
+            $ref: '#/components/schemas/ItemId'
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+      responses:
+        '200':
+          description: >-
+            A successful response indicating that the children on the requested item are provided.
+          content:
+            application/vnd.bdi-services-transformations-children.v1+json:
+              schema:
+                $ref: '#/components/schemas/TransformationChildInventoryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+####################
+components:
+  securitySchemes:
+    BasicAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+    BearerAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+  responses:
+    BadRequest:
+      description: A bad request was submitted (HTTP 400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unauthorized:
+      description: Unauthorized (HTTP 401)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+    Forbidden:
+      description: You are not authorized to perform this action (HTTP 403)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotFound:
+      description: The specified resource was not found (HTTP 404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+    Conflict:
+      description: A conflict occurred (HTTP 409)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionFailed:
+      description: Condition is not fulfilled (HTTP 412)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionRequired:
+      description: Condition is required (HTTP 428)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    TooManyRequests:
+      description: Too many requests in a given amount of time, aka "rate limiting" (HTTP 429).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    InternalServerError:
+      description: An error occurred on the server (HTTP 500)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotImplemented:
+      description: Method not implemented (HTTP 501)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    ServiceUnavailable:
+      description: Server is not ready to handle the request (HTTP 503)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+
+
+  schemas:
+    # Schema for error response body when Jersey dispatcher triggers the error
+    JerseyError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+
+    # Schema for error response body when ASG-Services-SDK maps automatically one of its standard com.asg.services.common.exceptions into response body
+    SDKError:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^\d{3}$'
+        message:
+          type: string
+        correlationId:
+          type: string
+
+    Language:
+      description: Identifier of language in ISO 639-1 format (two-letter codes)
+      type: string
+      pattern: ^[a-z]{2}$
+
+    ItemId:
+      description: The unique identifier of the transformation item.
+      type: integer
+      format: int64
+      example: 1234
+
+    DisplayLangs:
+      type: array
+      items:
+        $ref: '#/components/schemas/Language'
+      example:
+        - en
+        - fr
+    ResponseLangs:
+      description: The languages for which translations are available into this response.
+      type: object
+      properties:
+        primary:
+          # SWAGGER-UI-OUT-START
+          $ref: '#/components/schemas/Language'
+          # SWAGGER-UI-OUT-END
+          # SWAGGER-UI-IN-START
+          #description: |
+          #  This is the language requested at first position in 'displayLangs' parameter, OR if that last is empty,
+          #  it corresponds to the preferred language of the user as provided by the user preferences item in Rochade server.
+          #  This is also known as the working language, or at least the most important one, for the user agent.
+          #allOf:
+          #  - $ref: '#/components/schemas/Language'
+          # SWAGGER-UI-IN-END
+        default:
+          # SWAGGER-UI-OUT-START
+          $ref: '#/components/schemas/Language'
+          # SWAGGER-UI-OUT-END
+          # SWAGGER-UI-IN-START
+          #description: |
+          #  The default language in ISO 639-1 format (two-letter codes) that is associated with the Rochade database.
+          #allOf:
+          #  - $ref: '#/components/schemas/Language'
+          # SWAGGER-UI-IN-END
+        extras:
+          description: |
+            They are the languages requested in _displayLangs_ parameter after the first position, OR if that last is empty,
+            they correspond to the additional preferred languages of the user as provided by the user preferences item in Rochade server.  
+            They are known as additional languages for which the user agent wants the translations.
+          type: array
+          items:
+            $ref: '#/components/schemas/Language'
+      example:
+        primary: de
+        default: en
+        extras: [ fr,de ]
+
+    Path:
+      description: |
+        The path of container items for the current item. The item itself is **not** included into this path.  
+        For each container item in the path segments, the following BDI attributes are provided:
+        * id
+        * name
+        * type
+        * typeLabel
+        * typeId
+        * translations _(but only for the 'name' and 'typeLabel' attributes, not for other attributes like 'description' or 'technologyLabel')_
+        * links
+      type: array
+      items:
+        $ref: '#/components/schemas/PathSegment'
+      example:
+        - id: 3042670
+          name: System1
+          type: ETL System
+          typeId: DWR_TFM_SYSTEM
+          typeLabel: ETL-System
+          translations:
+            de:
+              typeLabel: ETL-System
+          links:
+            - rel: getTransformationSummary
+              method: GET
+              href: /bdi/rest/transformations/3042670
+            - rel: getTransformationChildren
+              method: GET
+              href: /bdi/rest/transformations/3042670/children
+        - id: 3042694
+          name: Task2
+          type: ETL Task
+          typeId: DWR_TFM_TASK
+          typeLabel: ETL-Task
+          translations:
+            de:
+              typeLabel: ETL-Task
+          links:
+            - rel: getTransformationSummary
+              method: GET
+              href: /bdi/rest/transformations/3042694
+            - rel: getTransformationChildren
+              method: GET
+              href: /bdi/rest/transformations/3042694/children
+
+
+
+    PathSegment:
+      description: |
+        Segments of the path of an item
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        name:
+          description: Name of item, in the 'primary' language
+          type: string
+        type:
+          description: |
+            The UI type of the transformation item.
+            It is used in the user interface to identify which icon must be displayed on an transformation item.
+          type: string
+        typeLabel:
+          description: Label for the item type, in the 'primary' language
+          type: string
+        typeId:
+          description: The unique identifier of the transformation item type in Rochade
+          type: string
+        translations:
+          $ref: '#/components/schemas/Translations'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      required: [ id, name, type, typeLabel, typeId, links ]
+      example:
+        id: 3042695
+        name: TFM1
+        type: Transformation
+        typeId: DWR_TFM_TRANSFORMATION
+        typeLabel: Transformation
+        translations:
+          de:
+            typeLabel: Transformation
+        links:
+          - rel: getTransformationSummary
+            method: GET
+            href: /bdi/rest/transformations/3042695
+          - rel: getTransformationChildren
+            method: GET
+            href: /bdi/rest/transformations/3042695/children
+
+
+    HATEOASLinks:
+      description: HATEOAS links
+      type: array
+      items:
+        $ref: '#/components/schemas/HATEOASLink'
+      example:
+        - rel: getTransformationSummary
+          method: GET
+          href: /bdi/rest/transformations/12345
+        - rel: getTransformationChildren
+          method: GET
+          href: /bdi/rest/transformations/12345/children
+
+    HATEOASLink:
+      description: HATEOAS link
+      type: object
+      properties:
+        rel:
+          description: the relation between the resource associated with this HATEOAS link and the resource designated by the target href
+          type: string
+        method:
+          description: HTTP method to use when invoking href
+          type: string
+          enum: [ GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH ]
+        href:
+          description: the URL to follow to obtain the related resource
+          type: string
+          format: uri
+      example:
+        rel: getTransformationSummary
+        method: GET
+        href: /bdi/rest/transformations/12345
+
+    Tag:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        name:
+          type: string
+          example: CCAR
+        translations:
+          $ref: '#/components/schemas/Translations'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      example:
+        id: 12345
+        name: tag1
+        links:
+          - rel: getItem
+            method: GET
+            href: /bdi/rest/items/12345
+
+
+    Tags:
+      description: Tags
+      type: array
+      items:
+        $ref: '#/components/schemas/Tag'
+
+    Translations:
+      description: |
+        Attribute values in additional languages (other than the 'primary' one).  
+        Keys are languages in ISO 639-1 format (two-letter codes).  
+        Values are mapping between attribute names and their value into that language.  
+        If an attribute is missing, it means that this attribute does not have any value for that item in that language.  
+        A language entry will exist for each requested language, even if the item has no one attribute value into that language.
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/TranslatedAttributes'
+      example:
+        en:
+          name: TFM1
+          definition: Automatically generated
+          typeLabel: Transformation
+        de:
+          name: TFM1
+          definition: Automatisch generiert
+          typeLabel: Transformation
+
+    TranslatedAttributes:
+      description: |
+        Item attributes and their associated value in a contextual language.
+      type: object
+      properties:
+        typeLabel:
+          description: Label for the item type, in the contextual language
+          type: string
+        name:
+          description: Name of item, in the contextual language
+          type: string
+        definition:
+          description: The long description of the item (aka definition), in the contextual language
+          type: string
+
+
+    TransformationItemBase:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        name:
+          description: Name of transformation item, in the 'primary' language
+          type: string
+        type:
+          description: |
+            The UI type of the transformation item.
+            It is used in the user interface to identify which icon must be displayed on an transformation item.
+          type: string
+        typeLabel:
+          description: Label for the transformation item type, in the 'primary' language
+          type: string
+        typeId:
+          description: The unique identifier of the transformation item type in Rochade
+          type: string
+        translations:
+          $ref: '#/components/schemas/Translations'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      required: [ id, name, type, typeLabel, typeId, links ]
+
+    TransformationItem:
+      allOf:
+        - $ref: '#/components/schemas/TransformationItemBase'
+        - type: object
+          properties:
+            path:
+              $ref: '#/components/schemas/Path'
+            definition:
+              description: The long description of the transformation item (aka definition), in the contextual language
+              type: string
+              example: Automatically generated.
+            tags:
+              $ref: '#/components/schemas/Tags'
+            children:
+              type: array
+              items:
+                $ref: '#/components/schemas/TransformationItemBase'
+            code:
+              type: string
+              description: the code associated with the transformation item.
+              example: "select orders,order_id FROM Orders INNER JOIN Customers ON Orders.Customer_id= Customers.Customer_ID"
+          required: [path]
+
+    TransformationChildInventoryItem:
+      allOf:
+        - $ref: '#/components/schemas/TransformationItemBase'
+        - type: object
+          properties:
+            definition:
+              type: string
+              example: >-
+                A loan that, at origination, is secured wholly or
+                substantially by a lien or liens on real property for
+                which the lien or lines are central to the extension of
+                the credit
+            tags:
+              $ref: '#/components/schemas/Tags'
+            links:
+              $ref: '#/components/schemas/HATEOASLinks'
+
+    TransformationChildInventoryResponse:
+      type: object
+      properties:
+        langs:
+          $ref: '#/components/schemas/ResponseLangs'
+        id:
+          $ref: '#/components/schemas/ItemId'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransformationChildInventoryItem'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      required: [ langs, id, children, links ]
+

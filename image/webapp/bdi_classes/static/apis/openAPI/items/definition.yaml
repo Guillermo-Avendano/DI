@@ -1,0 +1,1932 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Items services (Detail Definition part)
+  description: Items API Specification. API to get information about a selected item.
+security:
+  - BasicAuth: []
+  - BearerAuth: []
+servers:
+  - url: /rest
+tags:
+  - name: Items
+
+paths:
+  /items/{id}:
+    get:
+      tags:
+        - Items
+      operationId: getItem
+      summary: Fetches the summary about the item.
+      description: |
+        Returns the information required to display the header of the item and the attributes of an item, as required to display the Details
+        view of the item.
+      parameters:
+        - name: id
+          in: path
+          description: |
+            Unique Identifier of the item to retrieve the details.  
+            _Note: Usually the UI will get this info in the HATEOAS model of the search results._
+          required: true
+          schema:
+            $ref: '#/components/schemas/ItemId'
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+      responses:
+        '200':
+          description: |
+            A successful response indicating the item header and attributes representing the detailed information has been returned.
+          content:
+            application/vnd.bdi-services-item-response.v1+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BusinessItemResponse'
+                  - $ref: '#/components/schemas/TechnicalItemResponse'
+                  - $ref: '#/components/schemas/ApplicationItemResponse'
+                discriminator:
+                  propertyName: itemCategory
+                  mapping:
+                    BUSINESS: '#/components/schemas/BusinessItemResponse'
+                    TECHNICAL: '#/components/schemas/TechnicalItemResponse'
+                    APPLICATION: '#/components/schemas/ApplicationItemResponse'
+              examples:
+                'Business Item':
+                  value: |
+                    {
+                      "langs": {
+                        "primary": "en",
+                        "default": "en",
+                        "extras": ["fr"]
+                      },
+                      "id": 1234,
+                      "itemCategory": "BUSINESS",
+                      "type": "Business Term",
+                      "typeId": "RBG/BUSINESS-TERM",
+                      "typeLabel": "Business Term",
+                      "name": "Real Estate Loans",
+                      "definition": "A loan that, at origination, is secured wholly or substantially by a lien or liens on real property for which the lien or lines are central to the extension of the credit",
+                      "description": "Report the total fair value of loans secured by real estate...",
+                      "linkedToBusinessItem": true,
+                      "translations": {
+                        "fr": {
+                          "name": "Terme Métier - Emprunts Hypothécaires",
+                          "definition": "Un prêt qui, à l'origine, est garanti en totalité ou en grande partie par un privilège ou des privilèges sur un bien immobilier pour lequel le privilège ou les lignes sont essentiels à l'extension du crédit",
+                          "description": "Rapporte la juste valeur totale des emprunts hypothécaires sécurisés...",
+                          "typeLabel": "Terme Métier"
+                        }
+                      },
+                      "tags": [
+                        {
+                          "id": "",
+                          "name": "CCAR",
+                          "translations": {
+                            "fr": {
+                              "name": "CCAR"
+                            }
+                          },
+                          "links": [
+                            {
+                              "rel": "self",
+                              "method": "GET",
+                              "href": "/rest/tags/"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "",
+                          "name": "ROC",
+                          "translations": {
+                            "fr": {
+                              "name": "ROC"
+                            }
+                          },
+                          "links": [
+                            {
+                              "rel": "self",
+                              "method": "GET",
+                              "href": "/rest/tags/"
+                            }
+                          ]
+                        }
+                      ],
+                      "ownership": [
+                        {
+                          "name": "Marketing",
+                          "users": [
+                            {
+                              "name": "George A. Romero",
+                              "email": "zombie@dawnofthedead.com"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Finance",
+                          "users": [
+                            {
+                              "name": "ADMIN"
+                            }
+                          ]
+                        }
+                      ],
+                      "path": [
+                        {
+                          "id": "114947",
+                          "itemCategory": "BUSINESS",
+                          "type": "Application",
+                          "typeLabel": "Application",
+                          "typeId": "DWR_ARC_BUSINESS_APPLICATION",
+                          "name": "Label",
+                          "translations": {
+                            "fr": {
+                              "name": "Étiquette",
+                              "typeLabel": "Application"
+                            }
+                          },
+                          "links": [
+                            {
+                              "rel": "getItem",
+                              "method": "GET",
+                              "href": "/rest/items/114947"
+                            }
+                          ]
+                        }],
+                      "links": [
+                        {
+                          "rel": "self",
+                          "method": "GET",
+                          "href": "/rest/items/1234"
+                        },
+                        {
+                          "rel": "getUpdates",
+                          "method": "GET",
+                          "href": "/rest/items/1234/updates"
+                        },
+                        {
+                          "rel": "getAdditionalInfo",
+                          "method": "GET",
+                          "href": "/rest/items/1234/additional-information"
+                        },
+                        {
+                          "rel": "getLinkedItems",
+                          "method": "GET",
+                          "href": "/rest/items/1234/linked-items"
+                        },
+                        {
+                          "rel": "getChildren",
+                          "method": "GET",
+                          "href": "/rest/items/1234/children"
+                        }
+                      ]
+                    }
+                'Technical Item':
+                  value: |
+                    {
+                      "langs": {
+                        "primary": "en",
+                        "default": "en",
+                        "extras": ["fr"]
+                      },
+                      "id": 8417560,
+                      "itemCategory": "TECHNICAL",
+                      "type": "Column",
+                      "typeLabel": "Column",
+                      "typeId": "DWR_RDB_COLUMN",
+                      "name": "Customer",
+                      "technology": "Android",
+                      "technologyLabel": "Android",
+                      "definition": "",
+                      "description": "",
+                      "linkedToBusinessItem": true,
+                      "translations": {
+                        "fr": {
+                          "name": "Client",
+                          "definition": "",
+                          "description": "",
+                          "typeLabel": "Colonne",
+                          "technologyLabel": "Android"
+                        }
+                      },
+                      "tags": [
+                        {
+                          "id": "",
+                          "name": "CCAR",
+                          "translations": {
+                            "fr": {
+                              "name": "CCAR"
+                            }
+                          },
+                          "links": [
+                            {
+                              "rel": "self",
+                              "method": "GET",
+                              "href": "/rest/tags/"
+                            }
+                          ]
+                        }
+                      ],
+                      "linkedBusinessItems": [
+                        {
+                          "id": "863215",
+                          "itemCategory": "BUSINESS",
+                          "type": "Business Term",
+                          "typeLabel": "Business Term",
+                          "typeId": "DWR_BUS_TERM",
+                          "name": "Order",
+                          "definition": "How to get a furniture",
+                          "description": "A text\nsplit\non multiple lines",
+                          "path": [
+                            {
+                              "id": "336547",
+                              "type": "Context",
+                              "typeLabel": "Context",
+                              "typeId": "RBG/CONTEXT",
+                              "name": "Procurement",
+                              "translations": {
+                                "fr": {
+                                  "name": "Approvisionnement",
+                                  "typeLabel": "Contexte"
+                                }
+                              },
+                              "links": [
+                                {
+                                  "rel": "getItem",
+                                  "method": "GET",
+                                  "href": "/rest/items/336547"
+                                }
+                              ]
+                            },
+                            {
+                              "id": "9512483",
+                              "itemCategory": "BUSINESS",
+                              "type": "Context",
+                              "typeLabel": "Context",
+                              "typeId": "RBG/CONTEXT",
+                              "name": "Procedures",
+                              "translations": {
+                                "fr": {
+                                  "name": "Procédures",
+                                  "typeLabel": "Sous-Contexte"
+                                }
+                              },
+                              "links": [
+                                {
+                                  "rel": "getItem",
+                                  "method": "GET",
+                                  "href": "/rest/items/9512483"
+                                }
+                              ]
+                            }
+                          ],
+                          "tags": [
+                            {
+                              "id": "",
+                              "name": "Ragnarok",
+                              "translations": {
+                                "fr": {
+                                  "name": "Ragnarok"
+                                }
+                              },
+                              "links": [
+                                {
+                                  "rel": "self",
+                                  "method": "GET",
+                                  "href": "/rest/tags/"
+                                }
+                              ]
+                            }
+                          ],
+                          "translations": {
+                            "fr": {
+                              "name": "Commande",
+                              "definition": "Comment obtenir un bien",
+                              "description": "Un texte\nréparti\nsur plusieurs lignes",
+                              "typeLabel": "Terme"
+                            }
+                          },
+                          "links": [
+                            {
+                                "rel": "getItem",
+                                "method": "GET",
+                                "href": "/rest/items/9512483"
+                            }
+                          ]
+                        }
+                      ],
+                      "applications": [
+                        {
+                          "id": "555111",
+                          "itemCategory": "APPLICATION",
+                          "type": "Application",
+                          "typeId": "DWR_ARC_BUSINESS_APPLICATION",
+                          "typeLabel": "Application",
+                          "name": "Sample App",
+                          "translations": {
+                            "fr": {
+                              "name": "Application pour l'exemple"
+                            }
+                          },
+                          "links": [
+                            {
+                                "rel": "getUpdates",
+                                "method": "GET",
+                                "href": "/rest/items/555111"
+                            }
+                          ]
+                        }
+                      ],
+                      "links": [
+                        {
+                          "rel": "self",
+                          "method": "GET",
+                          "href": "/rest/items/8417560"
+                        },
+                        {
+                          "rel": "getUpdates",
+                          "method": "GET",
+                          "href": "/rest/items/8417560/updates"
+                        },
+                        {
+                          "rel": "getAdditionalInfo",
+                          "method": "GET",
+                          "href": "/rest/items/8417560/additional-information"
+                        },
+                        {
+                          "rel": "getLinkedItems",
+                          "method": "GET",
+                          "href": "/rest/items/8417560/linked-items"
+                        },
+                        {
+                          "rel": "getChildren",
+                          "method": "GET",
+                          "href": "/rest/items/8417560/children"
+                        }
+                      ]
+                    }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /items/{id}/updates:
+    get:
+      tags:
+        - Items
+      operationId: getItemUpdates
+      summary: Represents the updates done on the item.
+      description: >-
+        Describes various updates done on this item.
+      parameters:
+        - name: id
+          in: path
+          description: >-
+            Unique Id of the item to retrieve the details of.
+            _Note: Usually the UI will get this info in the HATEOAS model of the
+            search results._
+          required: true
+          schema:
+            $ref: '#/components/schemas/ItemId'
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+      responses:
+        '200':
+          description: >-
+            A successful response indicating that the updates on the requested item provided.
+          content:
+            application/vnd.bdi-services-item-updates.v1+json:
+              schema:
+                $ref: '#/components/schemas/ItemUpdatesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /items/{id}/additional-information:
+    get:
+      tags:
+        - Items
+      operationId: getAdditionalInformation
+      summary: Fetches the additional information about the item.
+      description: Fetches the additional information about the item.
+      parameters:
+        - name: id
+          in: path
+          description: >-
+            Unique Id of the item to retrieve the details of.
+            _Note: Usually the UI will get this info in the HATEOAS model of the
+            search results._
+          required: true
+          schema:
+            $ref: '#/components/schemas/ItemId'
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+      responses:
+        '200':
+          description: >-
+            A successful response indicating that the additional information on the requested item are provided.
+          content:
+            application/vnd.bdi-services-item-additional-information.v1+json:
+              schema:
+                $ref: '#/components/schemas/AdditionalInformationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /items/{id}/linked-items:
+    get:
+      tags:
+        - Items
+      operationId: getLinkedItems
+      summary: Represents the linked business items and linked technical items associated with the item.
+      description: |
+        Represents the linked business items and linked technical items associated with the item.
+        Applicable to items whose _itemCategory_ is `BUSINESS`.
+      parameters:
+        - name: id
+          in: path
+          description: >-
+            Unique Id of the item to retrieve the details of.
+            _Note: Usually the UI will get this info in the HATEOAS model of the
+            search results._
+          required: true
+          schema:
+            $ref: '#/components/schemas/ItemId'
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+      responses:
+        '200':
+          description: >-
+            A successful response indicating that the items linked to the requested item are provided.
+          content:
+            application/vnd.bdi-services-item-linked-items.v1+json:
+              schema:
+                $ref: '#/components/schemas/LinkedItemsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /items/{id}/children:
+    get:
+      tags:
+        - Items
+      operationId: getChildren
+      summary: Fetches the child inventory for the given item.
+      description: Fetches the child inventory for the given item.
+      parameters:
+        - name: id
+          in: path
+          description: >-
+            Unique Id of the item to retrieve the details of.
+            _Note: Usually the UI will get this info in the HATEOAS model of the
+            search results._
+          required: true
+          schema:
+            $ref: '#/components/schemas/ItemId'
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+      responses:
+        '200':
+          description: >-
+            A successful response indicating that the children on the requested item are provided.
+          content:
+            application/vnd.bdi-services-item-children.v1+json:
+              schema:
+                $ref: '#/components/schemas/ChildInventoryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /items/{itemId}/tags:
+    get:
+      tags:
+        - Items
+      operationId: getItemTags
+      summary: return all Tags for an item id existing in the Rochade Server.
+      description: |
+        return all Tags for an item id existing in the Rochade Server.
+      parameters:
+        - name: itemId
+          in: path
+          description: |
+            The Rochade item identifier.
+          required: true
+          schema:
+            $ref: '#/components/schemas/ItemId'
+      responses:
+        '200':
+          description: return all Tags for an item id existing in the Rochade Server.
+          content:
+            application/vnd.bdi-services-items-tags.v1+json:
+              schema:
+                $ref: '#/components/schemas/Tags'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /items/{itemId}/ownership:
+    get:
+      tags:
+        - Items
+      operationId: getItemOwnership
+      summary: Represents the ownership of the item.
+      description: |
+        Describes who owns the item
+      parameters:
+        - name: itemId
+          in: path
+          description: |
+            The Rochade item identifier
+          required: true
+          schema:
+            $ref: '#/components/schemas/ItemId'
+      responses:
+        '200':
+          description: returns the ownership of the item.
+          content:
+            application/vnd.bdi-services-item-ownership.v1+json:
+              schema:
+                $ref: '#/components/schemas/Ownership'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+  /items/{id}/application-linked-items:
+    get:
+      tags:
+        - Items
+      operationId: getLinkedItemsForApplication
+      summary: returns the manually linked applications and linked business items for a given business application item.
+      description: |
+        returns the manually linked applications and linked business items for a given business application item.
+        Applicable to items whose _itemCategory_ is `APPLICATION`.
+      parameters:
+        - name: id
+          in: path
+          description: >-
+            Unique Id of the business application item to retrieve the details of.
+            _Note: Usually the UI will get this info in the HATEOAS model of the
+            search results._
+          required: true
+          schema:
+            $ref: '#/components/schemas/ItemId'
+        - name: displayLangs
+          in: query
+          description: |
+            By convention, the first value corresponds to the primary language. It corresponds to the preferred language of the user, as provided in the user preferences item in the Rochade server.  
+            It is also known as the working language, or at least the most important one, for the user agent.
+            The remaining values correspond to the additional preferred languages of the user as provided by the user preferences item in the Rochade server.
+            They are the additional languages for which the user agent wants the translations.
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisplayLangs'
+      responses:
+        '200':
+          description: >-
+            A successful response indicating that the items linked to the requested item are provided.
+          content:
+            application/vnd.bdi-services-items-application-linked-items.v1+json:
+              schema:
+                $ref: '#/components/schemas/ApplicationLinkedItemsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/Unexpected'
+
+
+####################
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+  responses:
+    BadRequest:
+      description: A bad request was submitted (HTTP 400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unauthorized:
+      description: Unauthorized (HTTP 401)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Forbidden:
+      description: You are not authorized to perform this action (HTTP 403)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotFound:
+      description: The specified resource was not found (HTTP 404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Conflict:
+      description: A conflict occurred (HTTP 409)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionFailed:
+      description: Condition is not fulfilled (HTTP 412)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    PreconditionRequired:
+      description: Condition is required (HTTP 428)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    TooManyRequests:
+      description: >-
+        Too many requests in a given amount of time, aka "rate limiting" (HTTP
+        429).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    InternalServerError:
+      description: An error occurred on the server (HTTP 500)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    NotImplemented:
+      description: Method not implemented (HTTP 501)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    ServiceUnavailable:
+      description: Server is not ready to handle the request (HTTP 503)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SDKError'
+    Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JerseyError'
+
+  ####################
+  schemas:
+
+    ####################
+    # Common schemas
+    ####################
+
+    # Schema for error response body when Jersey dispatcher triggers the error
+    JerseyError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+
+    # Schema for error response body when ASG-Services-SDK maps automatically one of its standard com.asg.services.common.exceptions into response body
+    SDKError:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: ^\d{3}$
+        message:
+          type: string
+        correlationId:
+          type: string
+
+    Language:
+      description: Identifier of language in ISO 639-1 format (two-letter codes)
+      type: string
+      pattern: ^[a-z]{2}$
+
+    ItemId:
+      description: The unique identifier of the item
+      type: integer
+      format: int64
+      example: 1234
+
+    Translations:
+      description: |
+        Attribute values in additional languages (other than the 'primary' one).  
+        Keys are languages in ISO 639-1 format (two-letter codes).  
+        Values are mapping between attribute names and their value into that language.  
+        If an attribute is missing, it means that this attribute does not have any value for that item in that language.  
+        A language entry will exist for each requested language, even if the item has no one attribute value into that language.
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/TranslatedAttributes'
+      example:
+        en:
+          name: DemoItem
+          definition: Sample text defining the item
+          technologyLabel: Mainframe
+        fr:
+          name: Objet de démonstration
+          definition: Exemple de texte décrivant l'objet
+
+    TranslatedAttributes:
+      description: |
+        Item attributes and their associated value in a contextual language.
+      type: object
+      properties:
+        typeLabel:
+          description: Label for the item type, in the contextual language
+          type: string
+        name:
+          description: Name of item, in the contextual language
+          type: string
+        definition:
+          description: The long description of the item (aka definition), in the contextual language
+          type: string
+        description:
+          description: The long description of the item (aka description), in the contextual language
+          type: string
+        technologyLabel:
+          description: The technology associated with the item, in the contextual language
+          type: string
+        relationshipLabel:
+          description: The relationship with another item, in the contextual language
+          type: string
+        roleLabel:
+          description: A stewardship role, in the contextual language
+          type: string
+        attributeLabel:
+          description: Label for the item attribute, in the contextual language
+
+    HATEOASLinks:
+      description: HATEOAS links
+      type: array
+      items:
+        $ref: '#/components/schemas/HATEOASLink'
+
+    HATEOASLink:
+      description: HATEOAS link
+      type: object
+      properties:
+        rel:
+          description: the relation between the resource associated with this HATEOAS link and the resource designated by the target href
+          type: string
+        method:
+          description: HTTP method to use when invoking href
+          type: string
+          enum: [GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH]
+        href:
+          description: the URL to follow to obtain the related resource
+          type: string
+          format: uri
+
+    Tag:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        name:
+          type: string
+          example: CCAR
+        translations:
+          $ref: '#/components/schemas/Translations'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+
+    Tags:
+      description: Tags
+      type: array
+      items:
+        $ref: '#/components/schemas/Tag'
+
+    ItemCategory:
+      description: What category falls the item in. This is an abstraction for BDI UI based on the type of the item into the Rochade Information Model.
+      type: string
+      enum: [TECHNICAL, BUSINESS, APPLICATION, INVENTORY, REPORTING]
+
+    DisplayLangs:
+      type: array
+      items:
+        $ref: '#/components/schemas/Language'
+      example:
+        - en
+        - fr
+
+    ResponseLangs:
+      description: The languages for which translations are available into this response.
+      type: object
+      properties:
+        primary:
+          # SWAGGER-UI-OUT-START
+          $ref: '#/components/schemas/Language'
+          # SWAGGER-UI-OUT-END
+          # SWAGGER-UI-IN-START
+          #description: |
+          #  This is the language requested at first position in 'displayLangs' parameter, OR if that last is empty,
+          #  it corresponds to the preferred language of the user as provided by the user preferences item in Rochade server.
+          #  This is also known as the working language, or at least the most important one, for the user agent.
+          #allOf:
+          #  - $ref: '#/components/schemas/Language'
+          # SWAGGER-UI-IN-END
+        default:
+          # SWAGGER-UI-OUT-START
+          $ref: '#/components/schemas/Language'
+          # SWAGGER-UI-OUT-END
+          # SWAGGER-UI-IN-START
+          #description: |
+          #  The default language in ISO 639-1 format (two-letter codes) that is associated with the Rochade database.
+          #allOf:
+          #  - $ref: '#/components/schemas/Language'
+          # SWAGGER-UI-IN-END
+        extras:
+          description: |
+            They are the languages requested in _displayLangs_ parameter after the first position, OR if that last is empty,
+            they correspond to the additional preferred languages of the user as provided by the user preferences item in Rochade server.  
+            They are known as additional languages for which the user agent wants the translations.
+          type: array
+          items:
+            $ref: '#/components/schemas/Language'
+      example:
+        primary: de
+        default: en
+        extras: [fr,de]
+
+    Path:
+      description: |
+        The path of container items for the current item. The item itself is **not** included into this path.  
+        For each container item in the path segments, the following BDI attributes are provided:
+        * id
+        * name
+        * type
+        * typeLabel
+        * typeId
+        * translations _(but only for the 'name' and 'typeLabel' attributes, not for other attributes like 'description' or 'technologyLabel')_
+        * links
+      type: array
+      items:
+        $ref: '#/components/schemas/PathSegment'
+
+    PathSegment:
+      description: |
+        Segments of the path of an item
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        name:
+          description: Name of item, in the 'primary' language
+          type: string
+        type:
+          $ref: '#/components/schemas/ItemType'
+        typeLabel:
+          description: Label for the item type, in the 'primary' language
+          type: string
+        typeId:
+          $ref: '#/components/schemas/RochadeItemType'
+        translations:
+          $ref: '#/components/schemas/Translations'
+        canHaveChildren:
+          type: boolean
+          description: Set to True only if the item represented by path segment can have children.
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      required: [id, name, type, typeLabel, typeId, links]
+
+    Relationship:
+      description: describes the relation between two items
+      type: string
+      # CAUTION: this list is currently NOT exhaustive and must be extended per needs during implementation
+      # CAUTION: unsure for now if this feature will be a fixed list (enum) or an open one (free text)
+      enum: [RELATES_TO, PROVIDES_DEFINITION, PROVIDES_CONTEXT]
+
+    ItemType:
+      type: string
+      description: |
+        The UI type of the item (mapped from the real Rochade Type, see /model/item-types).  
+        It is used in the user interface to identify which icon must be displayed on an item (plus other usages like selecting the template to display).
+      example: Field
+
+    RochadeItemType:
+      type: string
+      description: |
+        The unique identifier of the item type in Rochade.  
+        For any filtering based on the _itemType_ the _typeId_ value should be used, when sending the request.  
+        
+        CAUTION: for the Rochade types, for which the type name itself is not enough to identify the exact type, the 'typeId' is structured.  
+        
+        For example, the DWR_RDB_TABLE_OR_VIEW type in Rochade can in fact designate either a table, a view, a materialized view or an alias.  
+        To decide which kind is really an item of type DWR_RDB_TABLE_OR_VIEW, it is necessary to look at the value of its DWR_RDB_TABLE_OR_VIEW_TYPE attribute.  
+        For such items, the 'typeId' must be structured in the following from: Rochade type + Rochade discriminator attribute + Rochade discriminator attribute value, all separated by dot ('.') character.  
+        
+        __Examples:__  
+        * typeId="DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.table" (for a Table item)  
+        * typeId="DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.view" (for a Table View item)  
+        * typeId="DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.materialized_view" (for a Materialized View item)  
+        * typeId="DWR_RDB_TABLE_OR_VIEW.DWR_RDB_TABLE_OR_VIEW_TYPE.alias" (for an Alias item)  
+
+    ItemBase:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        itemCategory:
+          $ref: '#/components/schemas/ItemCategory'
+        type:
+          $ref: '#/components/schemas/ItemType'
+        typeLabel:
+          description: Label for the item type, in the 'primary' language
+          type: string
+        typeId:
+          $ref: '#/components/schemas/RochadeItemType'
+        name:
+          description: Name of item, in the 'primary' language
+          type: string
+          example: Business Term - Real Estate Loans
+        translations:
+          $ref: '#/components/schemas/Translations'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      discriminator:
+        propertyName: typeId
+      required: [id, itemCategory, type, typeId, typeLabel, name, links]
+
+    Ownership:
+      description: |
+        Ownership of an item. Allow the users to email the people/departments who owns the item if they have any issues or questions.
+        Ownership depends on the kind of item:
+        
+        * Technical Items not Linked to Business Applications: the owner is the creator of this Technical Item
+        * Technical Items Linked to Business Applications: the owner(s) are the creator of each of those Business Applications (one item may be linked to multiple Business Applications)
+        * Business Items: the owner is the creator the creator of this Business Item
+        * Business Application Items: the owner is the creator of this Application Item
+      type: array
+      items:
+        $ref: '#/components/schemas/UserInformation'
+
+    UserInformation:
+      description: |
+        information about an user containing its name and its email.
+      type: object
+      properties:
+        name:
+          description: the name of the user (generally first name + last name)
+          type: string
+          example: John Legend
+        department:
+          description: the department this user resides to (if available from LDAP. Always null for internal Rochade accounts)
+          type: string
+          nullable: true
+          example: Customer Support
+        email:
+          description: the e-mail of the user (if available)
+          type: string
+          format: email
+          nullable: true
+          example: John.Legend@Rocketsoftware.com
+        title:
+          description: the job title of the user (if available from LDAP. Always null for internal Rochade accounts)
+          type: string
+          nullable: true
+          example: Customer Support Engineer
+
+    LinkedBusinessItem:
+      allOf:
+        - $ref: '#/components/schemas/ItemBase'
+        - type: object
+          properties:
+            definition:
+              type: string
+              example: >-
+                A loan that, at origination, is secured wholly or
+                substantially by a lien or liens on real property for
+                which the lien or lines are central to the extension of
+                the credit
+            description:
+              type: string
+              example: >-
+                Report the total fair value of loans secured by real
+                estate...
+            path:
+              $ref: '#/components/schemas/Path'
+            tags:
+              $ref: '#/components/schemas/Tags'
+          required: [definition, description, path, tags]
+      discriminator:
+        propertyName: typeId
+
+    RelatedBusinessItem:
+      allOf:
+        - $ref: '#/components/schemas/ItemBase'
+        - type: object
+          properties:
+            definition:
+              type: string
+              example: Data archiving rules for Customer data
+            relationship:
+              $ref: '#/components/schemas/Relationship'
+            relationshipLabel:
+              description: label for the relationship, in the contextual language
+              type: string
+              example: Relates to
+          required: [relationship, relationshipLabel]
+      discriminator:
+        propertyName: itemCategory
+
+    RelatedTechnicalItem:
+      allOf:
+        - $ref: '#/components/schemas/ItemBase'
+        - type: object
+          properties:
+            definition:
+              type: string
+              example: Created 20190517 02:49:27 ADMIN
+            relationship:
+              $ref: '#/components/schemas/Relationship'
+            relationshipLabel:
+              description: label for the relationship, in the contextual language
+              type: string
+              example: Provides context
+            technology:
+              type: string
+              example: Tableau
+            technologyLabel:
+              description: Technology of the item, in the 'primary' language
+              type: string
+              example: Tableau
+            applications:
+              type: array
+              description: All the Business applications this item is related to.
+              items:
+                $ref: '#/components/schemas/ItemBase'
+      discriminator:
+        propertyName: itemCategory
+
+    UpdatedBy:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Legend
+        department:
+          description: the department this user resides to (if available from LDAP. Always null for internal Rochade accounts)
+          type: string
+        email:
+          description: the e-mail of the user (if available)
+          type: string
+        title:
+          description: the job title of the user (if available from LDAP. Always null for internal Rochade accounts)
+          type: string
+        translations:
+          $ref: '#/components/schemas/Translations'
+
+    ApprovedBy:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Daniel Martinez
+        translations:
+          $ref: '#/components/schemas/Translations'
+
+    ItemUpdate:
+      type: object
+      properties:
+        updatedOn:
+          type: string
+          format: date-time
+          example: 2017-07-21T17:32:28Z
+        description:
+          description: What happened on the item.
+          type: string
+          example: Created 20190517 02:49:27 ADMIN
+        updatedBy:
+          $ref: '#/components/schemas/UpdatedBy'
+        approvedBy:
+          $ref: '#/components/schemas/ApprovedBy'
+        translations:
+          $ref: '#/components/schemas/Translations'
+      required: [description, updatedOn, updatedBy]
+
+    AdditionalInformationData:
+      type: object
+      properties:
+        value:
+          description: the textual representation of one of the data associated with the extra attribute
+          type: string
+        associatedItem:
+          # SWAGGER-UI-OUT-START
+          $ref: '#/components/schemas/ItemBase'
+          # SWAGGER-UI-OUT-END
+          # SWAGGER-UI-IN-START
+          #description: if existing, the item associated with that data entry (e.g. a target item for Rochade's Link or Namespace Attributes)
+          #allOf:
+          #  - $ref: '#/components/schemas/ItemBase'
+          # SWAGGER-UI-IN-END
+
+    AdditionalInformationAttribute:
+      type: object
+      properties:
+        attribute:
+          description: the name of the extra attribute (it is the name into the Rochade Information Model)
+          type: string
+        attributeLabel:
+          description: the label to use (generally as header) for representing the extra attribute, in 'primary' language
+          type: string
+        attributeType:
+          description: |
+            Describes the type of additional attribute. Possible values are
+            * `TEXT`
+            * `LINK`
+            * `NAMESPACE`
+          type: string
+          enum: [TEXT,LINK,NAMESPACE]
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdditionalInformationData'
+        translations:
+          $ref: '#/components/schemas/Translations'
+      required: [attribute, attributeLabel, values]
+
+    BaseItemDetails:
+      type: object
+      properties:
+        definition:
+          type: string
+          example: >-
+            A loan that, at origination, is secured wholly or
+            substantially by a lien or liens on real property for
+            which the lien or lines are central to the extension of
+            the credit
+        description:
+          type: string
+          example: >-
+            Report the total fair value of loans secured by real
+            estate.
+        tags:
+          $ref: '#/components/schemas/Tags'
+      required: [definition, description, tags]
+
+    TechnicalItemDetails:
+      type: object
+      properties:
+        technology:
+          type: string
+          example: Tableau
+        technologyLabel:
+          description: Technology of the item, in the 'primary' language
+          type: string
+          example: Tableau
+        linkedBusinessItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedBusinessItem'
+        applications:
+          type: array
+          description: All the Business applications this item is related to.
+          items:
+            $ref: '#/components/schemas/ItemBase'
+      required: [technology, technologyLabel, linkedBusinessItems, applications]
+
+    ItemResponse:
+      description: |
+        describes the item object that contains the header and attributes representing the details information.
+      allOf:
+        - $ref: '#/components/schemas/ItemBase'
+        - $ref: '#/components/schemas/BaseItemDetails'
+        - type: object
+          properties:
+            langs:
+              $ref: '#/components/schemas/ResponseLangs'
+            path:
+              $ref: '#/components/schemas/Path'
+            linkedToBusinessItem:
+              description: Indicates if the item is linked to at least one Business item.
+              type: boolean
+            linkedToTechnicalItem:
+              description: |
+                Indicates if the item is linked to at least one Technical item.
+                Applicable only to business items.
+              type: boolean
+            ownership:
+              $ref: '#/components/schemas/Ownership'
+            translations:
+              $ref: '#/components/schemas/Translations'
+            isInventoryOnly:
+              type: boolean
+              description: |
+                * If `itemCategory` is `TECHNICAL` the property is set to _true_ when the item can't have any lineage.
+                * If `itemCategory` is `BUSINESS` the property is set to _true_ when the item is of type Context or a Glossary.
+                * If `itemCategory` is `APPLICATION` the property is always set to _false_.
+                The default value is _false_.
+            canHaveChildren:
+              type: boolean
+              description: Set to True only if the item has children
+          required: [langs, path, linkedToBusinessItem]
+      discriminator:
+        propertyName: itemCategory
+
+    TechnicalItemResponse:
+      allOf:
+        - $ref: '#/components/schemas/ItemResponse'
+        - $ref: '#/components/schemas/TechnicalItemDetails'
+
+    BusinessItemResponse:
+      allOf:
+        - $ref: '#/components/schemas/ItemResponse'
+
+    ApplicationItemResponse:
+      allOf:
+        - $ref: '#/components/schemas/ItemResponse'
+        - type: object
+          properties:
+            lineOfBusiness:
+              type: string
+              description: the application item's line of business.
+              example: Finance
+            location:
+              description: the location of the application item.
+              type: string
+              example: Amsterdam
+            acronym:
+              type: string
+              description: the acronym of the application item.
+              example: Oracle
+
+    ItemUpdatesResponse:
+      type: object
+      properties:
+        langs:
+          $ref: '#/components/schemas/ResponseLangs'
+        id:
+          $ref: '#/components/schemas/ItemId'
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemUpdate'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      required: [langs, id, updates, links]
+      example:
+        langs:
+          primary: "en"
+          default: "en"
+          extras: [ "fr" ]
+        id: "12345"
+        updates:
+          - updatedOn: "2017-07-21T17:32:28Z"
+            description: "Created 20190517 02:49:27 ADMIN"
+            updatedBy:
+              name: "John Legend"
+              role: "Admin"
+              roleLabel: "Admin"
+              translations:
+                "fr":
+                  roleLabel: "Administrateur"
+            approvedBy:
+              name: "Daniel Martinez"
+              role: "Data Steward"
+              roleLabel: "Data Steward"
+              translations:
+                "fr":
+                  roleLabel: "Régisseur aux données"
+            "translations":
+              "fr":
+                description: "Créé le 20190517 02:49:27 par ADMIN"
+
+          - updatedOn: "2017-07-21T17:32:28Z"
+            description: "Edited definition"
+            updatedBy:
+              name: "First Last"
+              role: "Admin"
+              roleLabel: "Admin"
+              translations:
+                "fr":
+                  roleLabel: "Administrateur"
+            approvedBy:
+              name: "Daniel Martinez"
+              role: "Data Steward"
+              roleLabel: "Data Steward"
+              translations:
+                "fr":
+                  roleLabel: "Régisseur aux données"
+            translations:
+              "fr":
+                description: "Définition modifiée"
+        links:
+          - rel: "self"
+            method: "GET"
+            href: "/rest/items/12345/updates"
+          - rel: "getItem"
+            method: "GET"
+            href: "/rest/items/12345"
+
+    AdditionalInformationResponse:
+      type: object
+      properties:
+        langs:
+          $ref: '#/components/schemas/ResponseLangs'
+        id:
+          $ref: '#/components/schemas/ItemId'
+        additionalInformation:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdditionalInformationAttribute'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      required: [langs, id, additionalInformation, links]
+      example:
+        langs:
+          primary: "en"
+          default: "en"
+          extras: [ "fr" ]
+        id: "12345"
+        additionalInformation:
+          - attribute: "Custom_Attribute1"
+            attributeLabel: "My First Custom Attribute"
+            values:
+              - value: "anything that can be converted to text representation"
+                associatedItem:
+                  id: "564522"
+                  itemCategory: "TECHNICAL"
+                  type: "ETL Task"
+                  typeLabel: "ETL Task"
+                  typeId: "DWR_TFM_TASK"
+                  name: "Linked item"
+                  translations:
+                    "fr":
+                      "name": "Objet lié"
+                      "typeLabel": "Language ETL"
+                  links:
+                    - rel: "getItem"
+                      method: "GET"
+                      href: "/rest/items/564522"
+            translations:
+              "fr":
+                attributeLabel: "Mon premier attribut personnalisé"
+        links:
+          - rel: "self"
+            method: "get"
+            href: "/rest/items/12345/additional-information"
+          - rel: "getItem"
+            method: "get"
+            href: "/rest/items/12345"
+
+    LinkedItemsResponse:
+      type: object
+      properties:
+        langs:
+          $ref: '#/components/schemas/ResponseLangs'
+        id:
+          $ref: '#/components/schemas/ItemId'
+        linkedBusinessItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedBusinessItem'
+        linkedTechnicalItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedTechnicalItem'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      required: [langs, id, relatedBusinessItems, relatedTechnicalItems, links]
+      example:
+        langs:
+          primary: "en"
+          default: "en"
+          extras: [ "fr" ]
+        id: "12345"
+        "linkedBusinessItems":
+          - "id": "951847"
+            "itemCategory": "BUSINESS"
+            "type": "Process"
+            "typeLabel": "Process"
+            "typeId": "BPK_PROCESS"
+            "name": "Customer Data Archiving"
+            "definition": "Data archiving rules for Customer data"
+            "relationship": "RELATES_TO"
+            "relationshipLabel": "Relates to"
+            "translations":
+              "fr":
+                "typeLabel": "Processus"
+                "name": "Archivage des données clients"
+                "definition": "Règles d'archivage des données clients"
+                "relationshipLabel": "Relié à"
+            "links":
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/951847"
+
+          - "id": "321987"
+            "itemCategory": "BUSINESS"
+            "type": "PII"
+            "typeLabel": "Personal Identifiable Information "
+            "typeId": "GDP_PERSONAL_INFORMATION"
+            "name": "Customer Id"
+            "definition": "A 10 digit identifier to uniquely identify a customer"
+            "relationship": "PROVIDES_DEFINITION"
+            "relationshipLabel": "Provides Definition"
+            "translations":
+              "fr":
+                "typeLabel": "Domaine"
+                "name": "Identifiant client"
+                "definition": "Un identifiant à 10 chiffres qui identifie de manière untique un client"
+                "relationshipLabel": "Fournit une définition à"
+            "links":
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/321987"
+
+        "linkedTechnicalItems":
+          - "id": "369741"
+            "itemCategory": "TECHNICAL"
+            "type": "REPORT_STRUCTURE"
+            "typeLabel": "Report Structure"
+            "typeId": "DWR_ANL_RPT_STRUCTURE"
+            "name": "Customer Analysis"
+            "definition": "Defines how the report is structured"
+            "relationship": "PROVIDES_CONTEXT"
+            "relationshipLabel": "Provides Context"
+            "technology": "Android"
+            "technologyLabel": "Android"
+            "translations":
+              "fr":
+                "name": "Analyse client"
+                "typeLabel": "Structure de Rapport"
+                "definition": "Définit la manière dont le rapport est structuré"
+                "relationshipLabel": "Fournit un contexte"
+                "technologyLabel": "Android"
+            "applications":
+              - "id": "555111"
+                "itemCategory": "APPLICATION"
+                "type": "APPLICATION"
+                "typeLabel": "Application"
+                "typeId": "DWR_ARC_BUSINESS_APPLICATION"
+                "name": "Sample App"
+                "translations":
+                  "fr":
+                    "name": "Application pour l'exemple"
+                "links":
+                  - "rel": "getUpdates"
+                    "method": "GET"
+                    "href": "/rest/items/555111"
+            "links":
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/369741"
+
+          - "id": "168439"
+            "itemCategory": "TECHNICAL"
+            "type": "COLUMN"
+            "typeLabel": "Column"
+            "typeId": "DWR_RDB_COLUMN"
+            "name": "Customer Id"
+            "definition": "Stores data"
+            "relationship": "PROVIDES_CONTEXT"
+            "relationshipLabel": "Provides Context"
+            "technology": "Android"
+            "technologyLabel": "Android"
+            "translations":
+              "fr":
+                "name": "Identifiant client"
+                "typeLabel": "Colonne"
+                "definition": "Stocke des données"
+                "relationshipLabel": "Fournit un contexte"
+                "technologyLabel": "Android"
+            "links":
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/168439"
+
+          - "id": "2874963"
+            "itemCategory": "TECHNICAL"
+            "type": "FIELD"
+            "typeLabel": "Field"
+            "typeId": "DWR_DAT_FIELD"
+            "name": "Customer Count"
+            "definition": "Keeps data"
+            "relationship": "PROVIDES_CONTEXT"
+            "relationshipLabel": "Provides Context"
+            "technologyLabel": "Android"
+            "translations":
+              "fr":
+                "name": "Nombre de clients"
+                "definition": "Conserve des données"
+                "typeLabel": "Champ"
+                "relationshipLabel": "Fournit un contexte"
+                "technologyLabel": "Android"
+            "links":
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/2874963"
+
+          - "id": "364185"
+            "itemCategory": "TECHNICAL"
+            "type": "FIELD"
+            "typeLabel": "Field"
+            "typeId": "DWR_DAT_FIELD"
+            "name": "Customer Number"
+            "definition": "How to identify a customer"
+            "relationship": "PROVIDES_CONTEXT"
+            "relationshipLabel": "Provides Context"
+            "technologyLabel": "Android"
+            "translations":
+              "fr":
+                "name": "Numéro de client"
+                "definition": "Comment identifier un client"
+                "relationshipLabel": "Fournit un contexte"
+                "technologyLabel": "Android"
+            "links":
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/364185"
+        links:
+          - rel: "self"
+            method: "get"
+            href: "/rest/items/12345/children"
+          - rel: "getItem"
+            method: "get"
+            href: "/rest/items/12345"
+
+    ChildInventoryItem:
+      allOf:
+        - $ref: '#/components/schemas/ItemBase'
+        - type: object
+          properties:
+            definition:
+              type: string
+              example: >-
+                A loan that, at origination, is secured wholly or
+                substantially by a lien or liens on real property for
+                which the lien or lines are central to the extension of
+                the credit
+            tags:
+              $ref: '#/components/schemas/Tags'
+            canHaveChildren:
+              type: boolean
+              description: Set to True only if the item has children
+            links:
+              $ref: '#/components/schemas/HATEOASLinks'
+      discriminator:
+        propertyName: typeId
+
+    ChildInventoryResponse:
+      type: object
+      properties:
+        langs:
+          $ref: '#/components/schemas/ResponseLangs'
+        id:
+          $ref: '#/components/schemas/ItemId'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChildInventoryItem'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      required: [langs, id, children, links]
+      example:
+        langs:
+          primary: "en"
+          default: "en"
+          extras: [ "fr" ]
+        id: "12345"
+        children:
+          - id: "131570082"
+            typeId: "DWR_RDB_DB_SYSTEM"
+            type: "DB_SYSTEM"
+            typeLabel: "DB System"
+            name: "SQLSERVER2\\SQLEXPRESS"
+            definition: "Created by ASG-Rochade Scanner for MS SQL Server"
+            tags:
+              - id: "1"
+                name: "CCAR"
+                translations:
+                  "fr":
+                    "name": "CCAR"
+                links:
+                  - rel: "self"
+                    method: "get"
+                    href: "/rest/items/tags"
+            translations:
+              "de":
+                "name": "SQLSERVER2\\SQLEXPRESS"
+                "definition": "Erstellt von ASG-Rochade Scanner für MS SQL Server"
+                "typeLabel": ""
+              "en":
+                "name": "SQLSERVER2\\SQLEXPRESS"
+                "definition": "Created by ASG-Rochade Scanner for MS SQL Server"
+                "typeLabel": "DB System"
+            links:
+              - rel: "getChildren"
+                method: "get"
+                href: "/rest/items/131570082/children"
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/131570082"
+        links:
+          - rel: "self"
+            method: "get"
+            href: "/rest/items/12345/children"
+          - rel: "getItem"
+            method: "get"
+            href: "/rest/items/12345"
+
+    LinkedApplicationItem:
+      allOf:
+        - $ref: '#/components/schemas/ItemBase'
+        - type: object
+          properties:
+            definition:
+              type: string
+              example: Created 20190517 02:49:27 ADMIN
+            technology:
+              type: string
+              example: Tableau
+            technologyLabel:
+              description: Technology of the item, in the 'primary' language
+              type: string
+              example: Tableau
+
+    ApplicationLinkedItemsResponse:
+      type: object
+      properties:
+        langs:
+          $ref: '#/components/schemas/ResponseLangs'
+        id:
+          $ref: '#/components/schemas/ItemId'
+        linkedApplications:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedApplicationItem'
+        linkedBusinessItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedBusinessItem'
+        links:
+          $ref: '#/components/schemas/HATEOASLinks'
+      example:
+        langs:
+          primary: "en"
+          default: "en"
+          extras: [ "fr" ]
+        id: "12345"
+        "linkedApplications":
+          - "id": "951847"
+            "itemCategory": "APPLICATION"
+            "type": "Application"
+            "typeLabel": "Application"
+            "typeId": "DWR_ARC_BUSINESS_APPLICATION"
+            "name": "CCAR Reporting"
+            "definition": "Automatically generated."
+            "translations":
+              "de":
+                "typeLabel": "Application"
+                "name": "CCAR Berichterstattung"
+                "definition": "Automatisch generiert."
+            "links":
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/951847"
+        "linkedBusinessItems":
+          - "id": "951847"
+            "itemCategory": "BUSINESS"
+            "type": "Process"
+            "typeLabel": "Process"
+            "typeId": "BPK_PROCESS"
+            "name": "Customer Data Archiving"
+            "definition": "Data archiving rules for Customer data"
+            "relationship": "RELATES_TO"
+            "relationshipLabel": "Relates to"
+            "translations":
+              "fr":
+                "typeLabel": "Processus"
+                "name": "Archivage des données clients"
+                "definition": "Règles d'archivage des données clients"
+                "relationshipLabel": "Relié à"
+            "links":
+              - rel: "getItem"
+                method: "get"
+                href: "/rest/items/951847"
