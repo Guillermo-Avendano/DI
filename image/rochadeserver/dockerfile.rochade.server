@@ -5,9 +5,9 @@ FROM rockylinux:8
 
 # Parmeters
 # Rochade License Number
-ARG RO_LICENSE=""
+ARG DI_SERVER_LICENSE_NUMBER=""
 # Rochade License Company
-ARG RO_COMPANY="ASG Internal Use"
+ARG DI_SERVER_LICENSE_COMPANY="ASG Internal Use"
 
 # Java version (default 8, the other option is 11)
 ARG JAVA_VERSION=8
@@ -45,8 +45,8 @@ ENV JAVA_HOME=/usr/lib/jvm/java
 #Adds java to PATH
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-ENV RO_COMPANY="$RO_COMPANY"
-ENV RO_LICENSE=$RO_LICENSE
+ENV DI_SERVER_LICENSE_COMPANY="$DI_SERVER_LICENSE_COMPANY"
+ENV DI_SERVER_LICENSE_NUMBER=$DI_SERVER_LICENSE_NUMBER
 
 ENV PATH=/home/rocket/rochade/sbin:$PATH
 ENV LD_LIBRARY_PATH=/usr/lib64:/home/rocket/rochade/sbin:/home/rocket/rochade/sbin/lib64/openldap:/home/rocket/rochade/sbin/lib64/openssl

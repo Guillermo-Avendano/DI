@@ -13,7 +13,7 @@ replace_tag_in_file() {
     fi
 }
 
-# $RO_LICENSE, $RO_COMPANY are environment variables comming from image's environment variables
+# $DI_SERVER_LICENSE_NUMBER, $DI_SERVER_LICENSE_COMPANY are environment variables comming from image's environment variables
 
 RO_CONF="/home/rocket/rochade/conf"
 RO_APPL="/home/rocket/rochade/appl"
@@ -24,8 +24,8 @@ if [ -z "$(ls -A "$RO_CONF")" ] && [ -z "$(ls -A "$RO_APPL")" ] && [ -z "$(ls -A
    cp /home/rocket/rochade/appl_template/*.* /home/rocket/rochade/appl
 fi
 
-replace_tag_in_file /home/rocket/rochade/appl/server.ini "#RO_LICENSE#" $RO_LICENSE
-replace_tag_in_file /home/rocket/rochade/appl/server.ini "#RO_COMPANY#" "$RO_COMPANY"
+replace_tag_in_file /home/rocket/rochade/appl/server.ini "<DI_SERVER_LICENSE_NUMBER>" $DI_SERVER_LICENSE_NUMBER
+replace_tag_in_file /home/rocket/rochade/appl/server.ini "<DI_SERVER_LICENSE_COMPANY>" "$DI_SERVER_LICENSE_COMPANY"
 
 cd /home/rocket/rochade/sbin
 

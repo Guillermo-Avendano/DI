@@ -23,33 +23,38 @@ fi
 TOMCAT_WEBAPPS=/home/rocket/apache-tomcat-9.0.81/webapps/rochade/WEB-INF/classes/
 
 RDM_SERVICES_FILE=$TOMCAT_WEBAPPS/rdmServices.properties
-replace_tag_in_file $RDM_SERVICES_FILE "#RO_HOST#" $RO_HOST
-replace_tag_in_file $RDM_SERVICES_FILE "#RO_PORT#" $RO_PORT
-replace_tag_in_file $RDM_SERVICES_FILE "#RO_USER#" $RO_USER
-replace_tag_in_file $RDM_SERVICES_FILE "#RO_PASS#" $RO_PASS
+replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
+replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_PORT>" $DI_SERVER_PORT
+replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_USER>" $DI_SERVER_USER
+replace_tag_in_file $RDM_SERVICES_FILE "<DI_SERVER_PASS>" $DI_SERVER_PASS
 
 STARTUP_FILE=$TOMCAT_WEBAPPS/startup.properties
-replace_tag_in_file $STARTUP_FILE "#RO_HOST#" $RO_HOST
-replace_tag_in_file $STARTUP_FILE "#RO_PORT#" $RO_PORT
-replace_tag_in_file $STARTUP_FILE "#RO_USER#" $RO_USER
-replace_tag_in_file $STARTUP_FILE "#RO_PASS#" $RO_PASS
+replace_tag_in_file $STARTUP_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
+replace_tag_in_file $STARTUP_FILE "<DI_SERVER_PORT>" $DI_SERVER_PORT
+replace_tag_in_file $STARTUP_FILE "<DI_SERVER_USER>" $DI_SERVER_USER
+replace_tag_in_file $STARTUP_FILE "<DI_SERVER_PASS>" $DI_SERVER_PASS
 
 WF_FILE=$TOMCAT_WEBAPPS/wf.properties
-replace_tag_in_file $WF_FILE "#RO_HOST#" $RO_HOST
-replace_tag_in_file $WF_FILE "#RO_PORT#" $RO_PORT
-replace_tag_in_file $WF_FILE "#RO_USER#" $RO_USER
-replace_tag_in_file $WF_FILE "#RO_PASS#" $RO_PASS
+replace_tag_in_file $WF_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
+replace_tag_in_file $WF_FILE "<DI_SERVER_PORT>" $DI_SERVER_PORT
+replace_tag_in_file $WF_FILE "<DI_SERVER_USER>" $DI_SERVER_USER
+replace_tag_in_file $WF_FILE "<DI_SERVER_PASS>" $DI_SERVER_PASS
 
 
 APPLICARION_IS_FILE=$TOMCAT_WEBAPPS/application_is.properties
-replace_tag_in_file $APPLICARION_IS_FILE "#RO_SOLR_HOST#" $RO_SOLR_HOST
-replace_tag_in_file $APPLICARION_IS_FILE "#RO_SOLR_PORT#" $RO_SOLR_PORT
+replace_tag_in_file $APPLICARION_IS_FILE "<DI_SOLR_HOST>" $DI_SOLR_HOST
+replace_tag_in_file $APPLICARION_IS_FILE "<DI_SOLR_PORT>" $DI_SOLR_PORT
 
 cd /home/rocket/Index_Update_Service/bin
 
 ./IndexUpdateService.sh
 
-tail -f /home/rocket/Index_Update_Service/log/indexing.log
+INDEX_LOG_FILE="/home/rocket/Index_Update_Service/log/indexing.log"
+if test -f "$INDEX_LOG_FILE"; then
+    tail -f $INDEX_LOG_FILE
+    
+fi
+
 
 
 

@@ -20,13 +20,14 @@ if [ -z "$(ls -A "$RO_SOLR_CONF")" ] ; then
 fi
 
 INDEX_UPDATER_CONFIG_FILE=/home/rocket/Index_Update_Service/conf/indexUpdater.properties
+cp $INDEX_UPDATER_CONFIG_FILE.template $INDEX_UPDATER_CONFIG_FILE
 
-replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "#RO_SOLR_HOST#" $RO_SOLR_HOST
-replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "#RO_SOLR_PORT#" $RO_SOLR_PORT
-replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "#RO_HOST#"      $RO_HOST
-replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "#RO_PORT#"      $RO_PORT
-replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "#RO_USER#"      $RO_USER
-replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "#RO_PASS#"      $RO_PASS
+replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SOLR_HOST>"   $DI_SOLR_HOST
+replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SOLR_PORT>"   $DI_SOLR_PORT
+replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
+replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SERVER_PORT>" $DI_SERVER_PORT
+replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SERVER_USER>" $DI_SERVER_USER
+replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SERVER_PASS>" $DI_SERVER_PASS
 
 cd /home/rocket/Index_Update_Service/bin
 

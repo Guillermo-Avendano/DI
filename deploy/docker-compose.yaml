@@ -15,8 +15,8 @@ services:
     container_name: di-server
     hostname: di-server
     environment:
-      RO_LICENSE: "0374417A-D6E22E0A/06220208-2010D1E4/01D0C41D-D0C429D0/C421D0C4-2DD0C43D/D8C4C108-C0280800/04081814-1D250C01"
-      RO_COMPANY: "ASG Internal Use"
+      DI_SERVER_LICENSE_NUMBER: "0374417A-D6E22E0A/06220208-2010D1E4/01D0C41D-D0C429D0/C421D0C4-2DD0C43D/D8C4C108-C0280800/04081814-1D250C01"
+      DI_SERVER_LICENSE_COMPANY: "ASG Internal Use"
     ports:
       - '8888:8888'
       - '9092:9092'
@@ -39,12 +39,12 @@ services:
     container_name: di-indexupd
     #command: sh -c "sleep 9999999"
     environment:
-       RO_SOLR_HOST: "di-solr"
-       RO_SOLR_PORT: "8983"
-       RO_HOST: "di-server"
-       RO_PORT: 8888
-       RO_USER: "ADMIN"
-       RO_PASS: "rochade"
+       DI_SOLR_HOST: "di-solr"
+       DI_SOLR_PORT: "8983"
+       DI_SERVER_HOST: "di-server"
+       DI_SERVER_PORT: 8888
+       DI_SERVER_USER: "ADMIN"
+       DI_SERVER_PASS: "rochade"
     volumes:
     - ./idxupd_conf:/home/rocket/Index_Update_Service/conf
     - ./idxupd_logs:/home/rocket/Index_Update_Service/logs
