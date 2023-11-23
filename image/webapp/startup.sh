@@ -14,6 +14,23 @@ replace_tag_in_file() {
         sed -i'' -e "s/$search/$replace/g" $filename
     fi
 }
+#Call with filename. Tells if file was recently modified
+function isFileRecentlyModified() {
+  ret="false"
+
+  #if file exists, check if written to in the last 2 minutes
+  if [ -f ${1} ]; then
+     #create a tmp file 2mnins old
+     touch -d"-2min" /home/rocket/.tmp
+     if [ "${1}" -nt "/home/rocket/.tmp" ] ; then
+       ret="true"
+     fi
+  fi
+
+  echo "${ret}"
+}
+
+
 
 # installs graphviz package
 # IMPORTANT NOTE
@@ -52,11 +69,11 @@ fi
 
 declare -A di_folder
 
-di_folder['bdi_classes']="/home/rocket/tomcat/webapps/bdi/WEB-INF/classes/"
-di_folder['rochade_classes']="/home/rocket/tomcat/webapps/rochade/WEB-INF/classes/"
-di_folder['GlobalSearch_classes']="/home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/"
-di_folder['BgWebServices_classes']="/home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/"
-di_folder['RochadeServices_classes']="/home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes/"
+di_folder['bdi_classes']="/home/rocket/tomcat/webapps/bdi/WEB-INF/classes"
+di_folder['rochade_classes']="/home/rocket/tomcat/webapps/rochade/WEB-INF/classes"
+di_folder['GlobalSearch_classes']="/home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes"
+di_folder['BgWebServices_classes']="/home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes"
+di_folder['RochadeServices_classes']="/home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes"
 
 for local_pv in ${!di_folder[@]}; do
     # current directory
@@ -65,13 +82,13 @@ for local_pv in ${!di_folder[@]}; do
     # if the folder exists 
     if [ -d ${curr_dir} ]; then
         # copy & replace configuration files in Di apps
-        cp $DI_PERSISTENT_TOMCAT_CONF/${local_pv}/*.* ${curr_dir}
+        cp $DI_PERSISTENT_TOMCAT_CONF/${local_pv}/* ${curr_dir}
 
         # File pattern to process
         file_pattern="*.template"
 
         # Iterate in $curr_dir for all files with $file_pattern
-        for template_file in "$(ls $curr_dir/$file_pattern)"; do
+        for template_file in "$curr_dir"/$file_pattern; do
 
             # Verify if the file exists
             if [ -f "$template_file" ]; then
@@ -80,6 +97,7 @@ for local_pv in ${!di_folder[@]}; do
                           
                 # it creates a copy of *.xxx.template as *.xxx
                 cp $template_file $config_file
+                
                 echo "Processing: $config_file"   
                 
                 # replace all the possible parameters 
@@ -107,8 +125,36 @@ cd /home/rocket/tomcat/bin
 
 ./startup.sh
 
-if [ ! -f "/home/rocket/tomcat/logs/catalina.out" ]; then
-   tail -f /home/rocket/tomcat/logs/catalina.out
+tomcat_log_dir_path=/home/rocket/tomcat/logs
+
+#Verifying container is completely started or not
+service_started=""
+logFile=$tomcat_log_dir_path/catalina.out
+logRecentlyModified="false"
+numChecks=1
+
+#check if service is started in a loop (max 15tries)
+while [ -z "$service_started" ] && [ ${numChecks} -le 15 ]
+do
+
+ #wait between checks
+ sleep 25
+
+#if has not been modified recenly, check again
+if [ "${logRecentlyModified}" != "true" ] ; then
+   logRecentlyModified=$(isFileRecentlyModified ${logFile})
+fi
+
+#if modified recently since we started, check for startup log entry in last 50 lines
+if [ "${logRecentlyModified}" = "true" ] ; then
+    service_started=$(tail -n 50 ${logFile}|/usr/bin/grep "org.apache.catalina.startup.Catalina.start Server startup in")
+fi
+
+  ((numChecks++))
+done
+
+if [ ! -f "$logFile" ]; then
+   tail -f $logFile
 else
    echo "Tomcat not started. Check the logs directory"   
 fi
