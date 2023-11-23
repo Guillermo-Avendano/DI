@@ -24,8 +24,8 @@ mkdir /home/rocket/graphviz
 cd /home/rocket/graphviz
 zcat /home/rocket/graphviz-2.38.0-linux64.tar.Z| tar -xvf -
 
-# set memory for tomcat
-echo CATALINA_OPTS=\"-Xms1024 -Xmx8192\" > /home/rocket/tomcat/bin/setenv.sh
+# DO NOT WORK!: set memory for tomcat
+# echo CATALINA_OPTS=\"-Xms1024 -Xmx8192\" > /home/rocket/tomcat/bin/setenv.sh
 chmod u+x /home/rocket/tomcat/bin/*.sh
 
 # Copy tomcat configuration files in "/home/rocket/templates" to persistent volume
