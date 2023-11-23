@@ -86,8 +86,11 @@ cd /home/rocket/tomcat/bin
 
 ./startup.sh
 
-tail -f /home/rocket/tomcat/logs/catalina.out
-
+if [ ! -f "/home/rocket/tomcat/logs/catalina.out" ]; then
+   tail -f /home/rocket/tomcat/logs/catalina.out
+else
+   echo "Tomcat not started. Check the logs directory"   
+fi
 
 
 
