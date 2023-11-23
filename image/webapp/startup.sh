@@ -14,36 +14,7 @@ replace_tag_in_file() {
         sed -i'' -e "s/$search/$replace/g" $filename
     fi
 }
-#Call with filename. Tells if file was recently modified
-function isFileRecentlyModified() {
-  ret="false"
 
-  #if file exists, check if written to in the last 2 minutes
-  if [ -f ${1} ]; then
-     #create a tmp file 2mnins old
-     touch -d"-2min" /home/rocket/.tmp
-     if [ "${1}" -nt "/home/rocket/.tmp" ] ; then
-       ret="true"
-     fi
-  fi
-
-  echo "${ret}"
-}
-
-
-
-# installs graphviz package
-# IMPORTANT NOTE
-# do reference in "/home/rocket/tomcat/webapps/rochade/WEB-INF/classes/startup.properties.template"
-# of "/home/rocket/graphviz/dot"
-#
-mkdir /home/rocket/graphviz
-cd /home/rocket/graphviz
-zcat /home/rocket/graphviz-2.38.0-linux64.tar.Z| tar -xvf -
-
-# DO NOT WORK!: set memory for tomcat
-# echo CATALINA_OPTS=\"-Xms1024 -Xmx8192\" > /home/rocket/tomcat/bin/setenv.sh
-chmod u+x /home/rocket/tomcat/bin/*.sh
 
 # Copy tomcat configuration files in "/home/rocket/templates" to persistent volume
 DI_PERSISTENT_TOMCAT_CONF="/home/rocket/conf"
@@ -60,7 +31,7 @@ fi
     # <DI_SERVER_PASS>" rochade server pass, default 'rochade'
 
     # <DI_POSTGRES_HOST>" (workflow) postgres hostname, default 'di-workflow'
-    # <DI_POSTGRES_PORT>" (workflow) postgres port, default: '2102'
+    # <DI_POSTGRES_PORT>" (workflow) postgres port, default: '5432'
     # <DI_POSTGRES_USER>" (workflow) postgres user default 'postgres'
     # <DI_POSTGRES_PASS>" (workflow) postgres password default 'postgres'
 
@@ -127,7 +98,3 @@ done
 cd /home/rocket/tomcat/bin
 
 ./catalina.sh run
-
-
-
-

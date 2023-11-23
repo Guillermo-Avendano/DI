@@ -72,7 +72,7 @@ services:
     image: 'guillermoavendano/di-webapp:10.00.002'
     container_name: di-webapp
     hostname: di-webapp
-    command: sh -c "sleep 9999999"
+    #command: sh -c "sleep 9999999"
     ports:
       - 8080:8080
     environment:

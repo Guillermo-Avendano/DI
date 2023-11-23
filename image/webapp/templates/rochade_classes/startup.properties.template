@@ -60,7 +60,7 @@ session.warningTimeout=1800000
 #diagram.renderer=com.rochade.wa.view.diagram.WAGraphvizRPCRenderer
 
 #--- Mandatory setting for Graphviz diagram: the executable 'dot' 
-diagram.graphviz=/home/rocket/graphviz/dot
+diagram.graphviz=/home/rocket/tomcat/graphviz/dot
 
 #--- Temporary directory for Graphviz. Default is Java default tempdir (or Rochade server tmp/, if Graphviz is running as RPC)
 #diagram.tempdir=c:/tmp

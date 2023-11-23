@@ -25,12 +25,22 @@ RUN dnf -y install java-1.8.0-openjdk;
 RUN useradd -u 3003 -m rocket
 
 COPY ./apache-tomcat-9.0.83.tar.gz /tmp/apache-tomcat-9.0.83.tar.gz
+COPY ./graphviz-2.38.0-linux64.tar.Z /tmp/graphviz-2.38.0-linux64.tar.Z
 
 RUN mkdir /home/rocket/tomcat
+RUN mkdir /home/rocket/tomcat/graphviz
 
-# Download and Installs Apache Tomcat 9.0.81
+# Installs Apache Tomcat 9.0.81
 RUN tar -xzvf /tmp/apache-tomcat-9.0.83.tar.gz -C /home/rocket/tomcat --strip-components=1  \
     && rm /tmp/apache-tomcat-9.0.83.tar.gz
+
+# Installs graphviz
+RUN cd /home/rocket/tomcat/graphviz  \
+    && zcat /tmp/graphviz-2.38.0-linux64.tar.Z| tar -xvf - \
+    && rm /tmp/graphviz-2.38.0-linux64.tar.Z
+
+# copy postgres jdbc driver
+COPY ./postgresql-42.7.0.jar /home/rocket/tomcat/lib/postgresql-42.7.0.jar
 
 # FROM MObius: Tomcat security configuration
 RUN sed -i "s/shutdown=\"SHUTDOWN\"/shutdown=\"KILLTHISSERVER\"/" /home/rocket/tomcat/conf/server.xml
@@ -44,22 +54,16 @@ RUN dnf clean all
 # Copy "rochade" directory to rocket's home directory
 COPY ./webapps /home/rocket/tomcat/webapps/
 
-COPY ./postgresql-42.7.0.jar /home/rocket/tomcat/lib/postgresql-42.7.0.jar
-COPY ./graphviz-2.38.0-linux64.tar.Z /home/rocket/graphviz-2.38.0-linux64.tar.Z
-
-
 # Copy startup.sh script
 COPY ./startup.sh /home/rocket/startup.sh
 
 # Copy templates directory with configuration files for DI web apps
 COPY ./templates /home/rocket/templates/
 
-
 # Change ownership, and execution rights of directories and files copied
 RUN chown 3003:0 -R /home/rocket/templates 
 RUN chown 3003:0 -R /home/rocket/tomcat && chmod +x /home/rocket/tomcat/bin/*.sh
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
-RUN chown 3003:0 /home/rocket/graphviz-2.38.0-linux64.tar.Z
 
 #----------------
 # set rocket as default user
