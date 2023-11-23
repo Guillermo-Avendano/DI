@@ -1,5 +1,5 @@
 # Author: Guilllermo Avendaño
-# Cretion Date: 11/17/2023
+# Cretion Date: 11/21/2023
 # Rocky Linux 8 image
 FROM rockylinux:8
 
@@ -44,7 +44,7 @@ ENV DI_SERVER_USER=${DI_SERVER_USER}
 ENV DI_SERVER_PASS=${DI_SERVER_PASS}
 
 # set JAVA_HOME
-ENV JAVA_HOME /usr/lib/jvm/java
+ENV JAVA_HOME=usr/lib/jvm/jre
 
 #Adds java to PATH
 ENV PATH $JAVA_HOME/bin:$PATH

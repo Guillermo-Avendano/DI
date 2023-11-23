@@ -1,4 +1,6 @@
 #!/bin/bash
+# Author: Guilllermo Avendaño
+# Cretion Date: 11/23/2023
 
 replace_tag_in_file() {
     local filename=$1
@@ -42,24 +44,25 @@ for local_pv in ${!di_folder[@]}; do
     curr_dir=${di_folder[${local_pv}]}
 
     # if the folder exists 
-    if [ ! -d $curr_dir ]; then
+    if [ -d ${curr_dir} ]; then
         # copy & replace configuration files in Di apps
         cp $DI_PERSISTENT_TOMCAT_CONF/${local_pv}/*.* ${curr_dir}
 
         # File pattern to process
-        file_pattern="*.properties.template"
+        file_pattern="*.template"
 
         # Iterate in $curr_dir for all files with $file_pattern
-        for template_file in "$curr_dir/$file_pattern"; do
+        for template_file in "$(ls $curr_dir/$file_pattern)"; do
 
-            # Verify if there are files matching with the pattern
-            if [ -e "$template_file" ]; then
+            # Verify if the file exists
+            if [ -f "$template_file" ]; then
 
                 config_file=${template_file%.template}
-                
+                          
                 # it creates a copy of *.xxx.template as *.xxx
                 cp $template_file $config_file
-
+                echo "Processing: $config_file"   
+                
                 # replace all the possible parameters 
                 replace_tag_in_file $config_file "<DI_SERVER_HOST>" $DI_SERVER_HOST
                 replace_tag_in_file $config_file "<DI_SERVER_PORT>" $DI_SERVER_PORT
@@ -74,7 +77,7 @@ for local_pv in ${!di_folder[@]}; do
                 replace_tag_in_file $config_file "<DI_SOLR_HOST>" $DI_SOLR_HOST
                 replace_tag_in_file $config_file "<DI_SOLR_PORT>" $DI_SOLR_PORT
 
-                echo "Processing: $config_file"
+
             else
                 echo "No files to process in: $curr_dir/$file_pattern"
             fi

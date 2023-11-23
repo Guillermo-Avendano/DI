@@ -1,4 +1,7 @@
 #!/bin/bash
+#!/bin/bash
+# Author: Guilllermo Avendaño
+# Cretion Date: 11/21/2023
 
 replace_tag_in_file() {
     local filename=$1

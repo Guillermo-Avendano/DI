@@ -1,4 +1,7 @@
 
+# Author: Guilllermo Avendaño
+# Cretion Date: 11/23/2023
+# Rocky Linux 8 image
 FROM rockylinux:8
 
 ARG DI_SERVER_HOST=di-server
@@ -41,6 +44,8 @@ COPY ./graphviz-2.38.0-linux64.tar.Z /home/rocket/graphviz-2.38.0-linux64.tar.Z
 
 # Copy startup.sh script
 COPY ./startup.sh /home/rocket/startup.sh
+
+# Copy templates directory with configuration files for DI web apps
 COPY ./templates /home/rocket/templates/
 
 
@@ -68,7 +73,7 @@ ENV DI_SOLR_HOST=$DI_SOLR_HOST
 ENV DI_SOLR_PORT=$DI_SOLR_PORT
 
 # set JAVA_HOME
-ENV JAVA_HOME=/usr/lib/jvm/java
+ENV JAVA_HOME=/usr/lib/jvm/jre
 
 #Adds java to PATH
 ENV PATH=$JAVA_HOME/bin:$PATH
