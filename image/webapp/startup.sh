@@ -128,42 +128,6 @@ cd /home/rocket/tomcat/bin
 
 ./catalina.sh run
 
-tomcat_log_dir_path=/home/rocket/tomcat/logs
-
-#Verifying container is completely started or not
-service_started=""
-logFile=$tomcat_log_dir_path/catalina.out
-logRecentlyModified="false"
-numChecks=1
-
-#check if service is started in a loop (max 15tries)
-while [ -z "$service_started" ] && [ ${numChecks} -le 15 ]
-do
-
- #wait between checks
- echo checking tomcat starting: ${numChecks} of 15  
- sleep 25
-
-#if has not been modified recenly, check again
-if [ "${logRecentlyModified}" != "true" ] ; then
-   logRecentlyModified=$(isFileRecentlyModified ${logFile})
-fi
-
-#if modified recently since we started, check for startup log entry in last 50 lines
-if [ "${logRecentlyModified}" = "true" ] ; then
-    service_started=$(tail -n 50 ${logFile}|/usr/bin/grep "org.apache.catalina.startup.Catalina.start Server startup in")
-fi
-
-  ((numChecks++))
-done
-
-if [ ! -f "$logFile" ]; then
-   tail -f $logFile
-else
-   echo "Tomcat not started. Check the logs directory"   
-fi
-
-
 
 
 
