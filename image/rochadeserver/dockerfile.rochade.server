@@ -36,8 +36,8 @@ USER rocket
 ENV DI_SERVER_LICENSE_COMPANY="$DI_SERVER_LICENSE_COMPANY"
 ENV DI_SERVER_LICENSE_NUMBER=$DI_SERVER_LICENSE_NUMBER
 
-ENV PATH=/home/rocket/rochade/sbin:$PATH
-ENV LD_LIBRARY_PATH=/usr/lib64:/home/rocket/rochade/sbin:/home/rocket/rochade/sbin/lib64/openldap:/home/rocket/rochade/sbin/lib64/openssl
+ENV PATH=/home/rocket/rochade/cbin:PATH=/home/rocket/rochade/sbin:$PATH
+ENV LD_LIBRARY_PATH=/usr/lib64:/home/rocket/rochade/sbin:/home/rocket/rochade/sbin/lib64/openldap:/home/rocket/rochade/sbin/lib64/openssl:/home/rocket/rochade/cbin
 
 # Set rocket's home as working directory
 WORKDIR /home/rocket
