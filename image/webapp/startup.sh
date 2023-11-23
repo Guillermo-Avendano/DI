@@ -16,6 +16,10 @@ replace_tag_in_file() {
 }
 
 # installs graphviz package
+# IMPORTANT NOTE
+# do reference in "/home/rocket/tomcat/webapps/rochade/WEB-INF/classes/startup.properties.template"
+# of "/home/rocket/graphviz/dot"
+#
 mkdir /home/rocket/graphviz
 cd /home/rocket/graphviz
 zcat /home/rocket/graphviz-2.38.0-linux64.tar.Z| tar -xvf -
