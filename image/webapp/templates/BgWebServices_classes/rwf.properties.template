@@ -10,14 +10,14 @@
 #
 # Rochade connection settings
 # Host name or IP address of the Rochade Server
-host=wins2019s
+host=<DI_SERVER_HOST>
 #host=localhost
 
 # Port number of the Rochade Server
-port=8888
+port=<DI_SERVER_PORT>
 # User account to be used for connecting to Rochade; must be an administrator with sufficient permissions
-user=ADMIN
-password=rochade
+user=<DI_SERVER_USER>
+password=<DI_SERVER_PASS>
 # Set true if you want to use the trusted connection feature of Rochade
 # Note: You must enable trusted connections on both the Rochade and the application server side
 useTrustedConnection=false
@@ -44,7 +44,7 @@ appVersion2=PRODUCTION
 #   bg : Business Glossary
 #   wa : WebAccess 
 constructUrlFor=bg
-bg.url=http\://wins2019s\:8080/rochade/
+bg.url=http\://localhost\:8080/rochade/
 
 # If true mails will be sent for notification. 
 # The mail system will be deactivated if this option is set to false
