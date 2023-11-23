@@ -17,7 +17,7 @@ services:
     container_name: di-workflow
     hostname: di-workflow
     ports:
-    - "2102:5432"
+    - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -83,7 +83,7 @@ services:
        DI_SERVER_USER: "ADMIN"
        DI_SERVER_PASS: "rochade"
        DI_POSTGRES_HOST: "di-workflow"
-       DI_POSTGRES_PORT: 2102
+       DI_POSTGRES_PORT: 5432
        DI_POSTGRES_USER: postgres
        DI_POSTGRES_PASS: postgres
     volumes:
