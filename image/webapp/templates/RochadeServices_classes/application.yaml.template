@@ -67,8 +67,8 @@ management:
 asg:
   rochade:
     server:
-      host: wins2019s
-      port: 8888
+      host: <DI_SERVER_HOST>
+      port: <DI_SERVER_PORT>
       database: AP-DATA
       workspace: S|METAAPPS|PRODUCTION
       dev-workspace: S|METAAPPS|DEVELOPMENT
@@ -84,7 +84,7 @@ asg:
       custom-types-labels:
         cache-refresh-time-in-seconds: 60
     fts:
-      solr-server-url: http://wins2019s:8181/solr/
+      solr-server-url: http://<DI_SOLR_HOST>:<DI_SOLR_PORT>/solr/
       active-search-apps:
         - search_mg
         - search_rdb
@@ -140,17 +140,17 @@ asg:
       #rochade-server-trusted-key: _@rochadeServerTrustedKey@_
       rochade-server-trusted-key-file: privatekey
       static-trusted-connection:
-        enabled: true
+        enabled: false
         inbound: true
-        username: ADMIN
+        username: <DI_SERVER_USER>
         url-patterns:
           - /rest/*
         order: 11
       static-plain:
         enabled: false
         inbound: true
-        username: ADMIN
-        password: TRUSTED_CONNECTION
+        username: <DI_SERVER_USER>
+        password: <DI_SERVER_PASS>
         url-patterns:
           - /rest/*
         order: 13
