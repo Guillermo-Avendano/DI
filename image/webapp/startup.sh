@@ -34,7 +34,22 @@ if [ -z "$(ls -A "$DI_PERSISTENT_TOMCAT_CONF")" ] ; then
     cp -r /home/rocket/templates/* $DI_PERSISTENT_TOMCAT_CONF
 fi
 
-# This section copy all the configuration files to DI apps, and process all the ".template" files, and replace parameters 
+# This section copy all the configuration files to DI apps, and process ".template" files, and replace parameters 
+# Each .template file can contain at least one of the following tags (corresponding to environment variables):
+
+    # <DI_SERVER_HOST>" rochade server hostname, default "di-server"
+    # <DI_SERVER_PORT>" rochade server port, default '8888'
+    # <DI_SERVER_USER>" rochade server user, default 'ADMIN' 
+    # <DI_SERVER_PASS>" rochade server pass, default 'rochade'
+
+    # <DI_POSTGRES_HOST>" (workflow) postgres hostname, default 'di-workflow'
+    # <DI_POSTGRES_PORT>" (workflow) postgres port, default: '2102'
+    # <DI_POSTGRES_USER>" (workflow) postgres user default 'postgres'
+    # <DI_POSTGRES_PASS>" (workflow) postgres password default 'postgres'
+
+    # <DI_SOLR_HOST>" solr hostname, default 'di-solr'
+    # <DI_SOLR_PORT>" solr port, default '8983'
+
 declare -A di_folder
 
 di_folder['bdi_classes']="/home/rocket/tomcat/webapps/bdi/WEB-INF/classes/"
@@ -80,7 +95,6 @@ for local_pv in ${!di_folder[@]}; do
 
                 replace_tag_in_file $config_file "<DI_SOLR_HOST>" $DI_SOLR_HOST
                 replace_tag_in_file $config_file "<DI_SOLR_PORT>" $DI_SOLR_PORT
-
 
             else
                 echo "No files to process in: $curr_dir/$file_pattern"

@@ -14,7 +14,7 @@ services:
       - ./tomcat_logs:/home/rocket/tomcat/logs
   di-workflow:
     image: postgres:14-alpine
-    container_name: di-worlflow
+    container_name: di-workflow
     hostname: di-workflow
     ports:
     - "2102:5432"
@@ -84,7 +84,7 @@ services:
        DI_SERVER_PASS: "rochade"
        DI_POSTGRES_HOST: "di-workflow"
        DI_POSTGRES_PORT: 2102
-       DI_POSTGRES_USER: workflow
+       DI_POSTGRES_USER: postgres
        DI_POSTGRES_PASS: postgres
     volumes:
     - ./tomcat_conf:/home/rocket/conf
