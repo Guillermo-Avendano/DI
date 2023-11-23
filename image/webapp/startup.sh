@@ -123,7 +123,7 @@ done
 
 cd /home/rocket/tomcat/bin
 
-./startup.sh
+./catalina.sh run
 
 tomcat_log_dir_path=/home/rocket/tomcat/logs
 
@@ -138,6 +138,7 @@ while [ -z "$service_started" ] && [ ${numChecks} -le 15 ]
 do
 
  #wait between checks
+ echo checking tomcat starting: ${numChecks} of 15  
  sleep 25
 
 #if has not been modified recenly, check again
