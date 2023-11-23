@@ -32,6 +32,12 @@ RUN mkdir /home/rocket/tomcat
 RUN tar -xzvf /tmp/apache-tomcat-9.0.83.tar.gz -C /home/rocket/tomcat --strip-components=1  \
     && rm /tmp/apache-tomcat-9.0.83.tar.gz
 
+# FROM MObius: Tomcat security configuration
+RUN sed -i "s/shutdown=\"SHUTDOWN\"/shutdown=\"KILLTHISSERVER\"/" /home/rocket/tomcat/conf/server.xml
+
+# FROM MObius: Hiding Tomcat details from Tomcat error page and application server error responses
+RUN sed -i '/<Host/ { /<\/Host>/! { N; }; s/\(<Host[^>]*>\)/\1\n    \n<Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false"\/>/; }' /home/rocket/tomcat/conf/server.xml
+
 # Clean up cache to reduce the image size
 RUN dnf clean all
 
