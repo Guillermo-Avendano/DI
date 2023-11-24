@@ -1,5 +1,0 @@
-zookeeperServer=localhost:2181
-numShards=2
-shard1=localhost:8983
-collections=DWRView,BusinessTermView
-shards.tolerant=true

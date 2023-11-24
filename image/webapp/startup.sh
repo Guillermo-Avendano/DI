@@ -39,15 +39,19 @@ fi
     # <DI_SOLR_PORT>" solr port, default '8983'
 
 declare -A di_folder
+di_folder['BgWebServices_classes']="/home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes"
 
-di_folder['bdi_classes']="/home/rocket/tomcat/webapps/bdi/WEB-INF/classes"
-di_folder['rochade_classes']="/home/rocket/tomcat/webapps/rochade/WEB-INF/classes"
 di_folder['GlobalSearch_classes']="/home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes"
 di_folder['GlobalSearch_mg_classes']="/home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/mg"
 di_folder['GlobalSearch_solr_classes']="/home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/solr"
-di_folder['BgWebServices_classes']="/home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes"
-di_folder['RochadeServices_classes']="/home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes"
+
 di_folder['RaaS_classes']="/home/rocket/tomcat/webapps/RaaS/WEB-INF/classes"
+di_folder['RaaS_web']="/home/rocket/tomcat/webapps/RaaS/WEB-INF"
+
+
+di_folder['rochade_classes']="/home/rocket/tomcat/webapps/rochade/WEB-INF/classes"
+
+di_folder['RochadeServices_classes']="/home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes"
 
 for local_pv in ${!di_folder[@]}; do
     # current directory

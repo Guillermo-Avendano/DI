@@ -6,7 +6,7 @@
 #-------------------------------------------------------
 #
 # Work Flow configuration, replace hostname / port with your settings
-bg.webServices=http\://localhost\:8080/BgWebServices
+bg.webServices=http\://<DI_WEBAPP_HOST>\:8080/BgWebServices
 
 # retry interval for asynchronous workflow tasks in minutes (for temporary failures a command will be retried after this duration) (default=10)  
 bg.webServices.retryInterval=10
@@ -77,5 +77,5 @@ camunda.default.workflows=workflows/Default-Approve-Workflow.bpmn workflows/Appr
 # technical parameters for clean up of old notifications 
 #notifications.cleanUp.deleteChunkSize=10000
 #notifications.cleanUp.interval.days=1
-#camunda.h2.host=wins2019s
-#camunda.h2.rpcServiceAvailable=true
+camunda.h2.host=<DI_SERVER_HOST>
+camunda.h2.rpcServiceAvailable=true

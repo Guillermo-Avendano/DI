@@ -11,12 +11,7 @@ ARG DI_SERVER_LICENSE_COMPANY="ASG Internal Use"
 
 
 # Install other tools
-RUN dnf -y install wget procps-ng net-tools numactl
-
-# Intall java by according version
-RUN dnf -y install java-1.8.0-openjdk; 
-    #dnf -y install java-11-openjdk; 
-
+RUN dnf -y install procps-ng net-tools numactl java-1.8.0-openjdk
 
 # Clean up cache to reduce the image size
 RUN dnf clean all

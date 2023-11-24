@@ -109,6 +109,7 @@ services:
        DI_POSTGRES_PORT: 5432
        DI_POSTGRES_USER: ${DI_POSTGRES_USER}
        DI_POSTGRES_PASS: ${DI_POSTGRES_PASS}
+       DI_WEBAPP_HOST: ${DI_WEBAPP_HOST}
     volumes:
     - di_webapp_conf:/home/rocket/conf
     - di_webapp_logs:/home/rocket/tomcat/logs

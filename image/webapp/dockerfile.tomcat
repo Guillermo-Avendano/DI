@@ -17,6 +17,8 @@ ARG DI_POSTGRES_PASS=postgres
 ARG DI_SOLR_HOST=di-solr
 ARG DI_SOLR_PORT=8983
 
+ARG DI_WEBAPP_HOST=di-webapp
+
 # Intall java by according version
 RUN dnf -y install java-1.8.0-openjdk; 
     #dnf -y install java-11-openjdk; 
@@ -81,6 +83,8 @@ ENV DI_POSTGRES_PASS=$DI_POSTGRES_PASS
 
 ENV DI_SOLR_HOST=$DI_SOLR_HOST
 ENV DI_SOLR_PORT=$DI_SOLR_PORT
+
+ENV DI_WEBAPP_HOST=$DI_WEBAPP_HOST
 
 # set JAVA_HOME
 ENV JAVA_HOME=/usr/lib/jvm/jre

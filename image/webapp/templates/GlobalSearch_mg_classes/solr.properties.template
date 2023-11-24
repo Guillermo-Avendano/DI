@@ -14,7 +14,7 @@
 # URL to the Solr server (if the solr index should be used by the search).
 # If the value is empty the Rochade search function is used.
 #########################  
-httpSolrServer=http\://<DI_SOLR_HOST>\:<DI_SOLR_PORT>/solr/
+httpSolrServer=http\://<DI_SOLR_HOST>\:8983/solr/
 
 #########################
 # Active Index Search Applications 

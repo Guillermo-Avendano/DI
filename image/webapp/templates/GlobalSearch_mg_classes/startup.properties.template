@@ -22,7 +22,7 @@
 ## Key is mandatory: Yes.
 ## 
 #########################
-hostName="<DI_SERVER_HOST>"
+hostName=<DI_SERVER_HOST>
 
 #########################
 # 
@@ -31,7 +31,7 @@ hostName="<DI_SERVER_HOST>"
 ## Key is mandatory: Yes.
 #
 #########################
-portNumber=<DI_SERVER_PORT>
+portNumber=8888
 
 #########################
 # 
@@ -52,7 +52,7 @@ tlsCaCertFileJava=
 ## the Rochade server 
 #
 #########################
-mg.ui.URL=http\://localhost\:8080/rochade
+mg.ui.URL=http\://<DI_WEBAPP_HOST>\:8080/rochade
 
 #########################
 # 

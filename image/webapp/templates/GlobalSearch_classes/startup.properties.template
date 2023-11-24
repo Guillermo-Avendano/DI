@@ -22,7 +22,7 @@
 ## Key is mandatory: Yes.
 ## 
 #########################
-hostName=wins2019s
+hostName=<DI_SERVER_HOST>
 
 #########################
 # 
@@ -52,7 +52,7 @@ tlsCaCertFileJava=
 ## the Rochade server 
 #
 #########################
-mg.ui.URL=http\://wins2019s\:8080/rochade
+mg.ui.URL=http\://<DI_WEBAPP_HOST>\:8080/rochade
 
 #########################
 # 

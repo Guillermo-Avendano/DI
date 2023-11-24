@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="RaaS" metadata-complete="true" version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+  <display-name>RaaS</display-name>
+  
+  <session-config>
+    <tracking-mode>COOKIE</tracking-mode>
+  </session-config>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <!-- 
+     This is an example implementation for getting the remote user (SSO)
+     from an http header field. The name of the http header field
+     containing the user name is given as init parameter.
+	<filter>
+      	<filter-name>RemoteUser</filter-name>
+      	<filter-class>com.rochade.wa.servlet.FilterForRemoteUser</filter-class>
+      	<init-param>
+        	<param-name>headername</param-name>
+        	<param-value>iv-user</param-value>
+      	</init-param>
+        <async-supported>true</async-supported>      	
+	</filter>
+    <filter-mapping>
+        <filter-name>RemoteUser</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+     -->
+    <!--
+    This is an example for getting the remote user (SSO) 
+    by Kerberos using spnego.jar. For details see http://http://spnego.sourceforge.net/
+    	
+	<filter>
+	    <filter-name>SpnegoHttpFilter</filter-name>
+	    <filter-class>net.sourceforge.spnego.SpnegoHttpFilter</filter-class>
+	
+	    <init-param>
+	        <param-name>spnego.allow.basic</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.allow.localhost</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.allow.unsecure.basic</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.allow.delegation</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.login.client.module</param-name>
+	        <param-value>spnego-client</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.krb5.conf</param-name>
+	        <param-value>/krb5.conf</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.login.conf</param-name>
+	        <param-value>/login.conf</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.preauth.username</param-name>
+	        <param-value>insert_preauth_username</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.preauth.password</param-name>
+	        <param-value>insert_preauth_passwd</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.login.server.module</param-name>
+	        <param-value>spnego-server</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.prompt.ntlm</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+	    
+	    <init-param>
+	        <param-name>spnego.logger.level</param-name>
+	        <param-value>3</param-value>
+	    </init-param>
+	</filter>
+	
+	<filter-mapping>
+	    <filter-name>SpnegoHttpFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+-->
+
+  <!-- 
+     This is an example implementation of a CorsFilter for Tomcat.
+     Please note that cors.support.credentials cannot be enabled while
+     cors.allowed.origins="*".
+     If you want to enable this, you need to specify a concrete origin.    
+
+	<filter>
+	  <filter-name>CorsFilter</filter-name>
+	  <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+	  <init-param>
+	    <param-name>cors.allowed.origins</param-name>
+	    <param-value>*</param-value>
+	  </init-param>
+	  <init-param>
+	    <param-name>cors.exposed.headers</param-name>
+	    <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+	  </init-param>
+	  <init-param>
+	    <param-name>cors.support.credentials</param-name>
+	    <param-value>true</param-value>
+	  </init-param>
+	</filter>
+	 <filter-mapping>
+	  <filter-name>CorsFilter</filter-name>
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping>
+-->	
+
+  <filter>
+    <filter-name>UrlRewriteFilter</filter-name>
+	    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+	<init-param>
+        <param-name>logLevel</param-name>
+        <param-value>sysout:DEBUG</param-value>
+    </init-param>
+	
+	</filter>
+	<filter-mapping>
+	    <filter-name>UrlRewriteFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	    <dispatcher>REQUEST</dispatcher>
+	    <dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+  
+    <servlet>
+    <servlet-name>Rochade Services Application</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+    <param-name>jersey.config.server.provider.packages</param-name>
+    <param-value>
+    	io.swagger.jaxrs.listing,
+        com.rochade.services
+    </param-value>
+    </init-param>
+	<init-param>
+	    <param-name>jersey.config.server.provider.scanning.recursive</param-name>
+	    <param-value>true</param-value>
+	</init-param>
+    <init-param>
+    	<param-name>jersey.config.server.provider.classnames</param-name>
+    	<param-value>org.glassfish.jersey.filter.LoggingFilter;org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+	</init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
+       <servlet-name>Jersey2Config</servlet-name>
+       <servlet-class>io.swagger.jersey.config.JerseyJaxrsConfig</servlet-class>
+       <init-param>
+           <param-name>api.version</param-name>
+           <param-value>2.0.5</param-value>
+       </init-param>
+       <init-param>
+           <param-name>swagger.api.basepath</param-name>
+           <param-value>/RaaS/raas</param-value>
+       </init-param>
+       <init-param>
+           <param-name>swagger.pretty.print</param-name>
+           <param-value>true</param-value>
+       </init-param>
+       <init-param>
+           <param-name>swagger.api.title</param-name>
+           <param-value>Rochade Services</param-value>
+       </init-param>
+       <load-on-startup>2</load-on-startup>
+    </servlet>
+  <servlet-mapping>
+    <servlet-name>Rochade Services Application</servlet-name>
+    <url-pattern>/raas/*</url-pattern>
+  </servlet-mapping>
+  <!-- Rochade server host name -->
+  <context-param>
+  	<param-name>host</param-name>
+  	<param-value><DI_SERVER_HOST></param-value>
+  </context-param>
+  <!-- Rochade server listening port -->
+  <context-param>
+  	<param-name>port</param-name>
+  	<param-value>8888</param-value>
+  </context-param>
+  <!-- Rochade user to use by default -->
+   <context-param>
+  	<param-name>user</param-name>
+  	<param-value>ADMIN</param-value>
+  </context-param>
+  <!-- Rochade default user password -->
+  <context-param>
+  	<param-name>password</param-name>
+  	<param-value>TRUSTED_CONNECTION</param-value>  	
+  </context-param>
+  
+  <!-- Uncomment the following for the usage of the Trusted connection authentication -->  
+  <!-- 1. Private key in Base64 format for trusted connections (SSO) -->
+  <!--
+  <context-param>
+  	<param-name>trustedKey</param-name>
+  	<param-value></param-value>
+  </context-param>
+  -->
+  <!-- or 2. Private key file path for trusted connections (SSO) -->
+  <!-- This need to be enabled as the installation replaces the value here. -->
+  <!-- Empty parameter disables this option otherwise. -->
+  <context-param>
+    <param-name>trustedKeyFile</param-name>
+    <param-value>WEB-INF/classes/.privatekey</param-value>
+    <!-- <param-value>WEB-INF/classes/.privatekey</param-value> -->
+  </context-param>
+  <!-- Uncomment the following and use Rochade Account Utility for encrypted password authentication-->
+  <!-- 
+  <context-param>
+  	<param-name>accountUtility.application</param-name>
+  	<param-value></param-value>  	
+  </context-param>
+  <context-param>
+  	<param-name>accountUtility.masterPassword</param-name>
+  	<param-value></param-value>  	
+  </context-param>
+  <context-param>
+  	<param-name>accountUtility.accountFile</param-name>
+   	<param-value>WEB-INF/classes/demoAccounts.acc</param-value>  	
+   </context-param> 
+   -->
+
+  <!-- Rochade database name -->
+   <context-param>
+  	<param-name>database</param-name>
+  	<param-value>AP-DATA</param-value>
+  </context-param>
+  <!-- Rochade default workspace (production subject area and version) -->
+  <context-param>
+  	<param-name>workspace</param-name>
+  	<param-value>S|METAAPPS|PRODUCTION</param-value>
+  </context-param>
+  <!-- Rochade dev workspace (development subject area and version for unapproved business items) -->
+  <context-param>
+    <param-name>devworkspace</param-name>
+    <param-value>S|METAAPPS|DEVELOPMENT</param-value>
+  </context-param>
+    <!-- Rochade control database name -->
+   <context-param>
+    <param-name>controlDatabase</param-name>
+    <param-value></param-value>
+  </context-param>
+  <!-- Rochade control workspace (subject are and version) -->
+  <context-param>
+  	<param-name>controlWorkspace</param-name>
+  	<param-value>S|METABILITY|USER</param-value>
+  </context-param>
+  <!-- Rochade Lucene RPC service name -->
+  <context-param>
+  	<param-name>luceneServiceName</param-name>
+  	<param-value>INDEXRPC</param-value>
+  </context-param>
+  <!-- Rochade H2 RPC service name -->
+  <context-param>
+  	<param-name>h2ServiceName</param-name>
+  	<param-value>H2RPCSVC</param-value>
+  </context-param>  
+  <!-- Can a request override the user/password via URL parameters? -->
+  <context-param>
+  	<param-name>overrideUser</param-name>
+  	<param-value>false</param-value>
+  </context-param>
+  <!--  Can a request override the workspace via a URL parameter? -->
+  <context-param>
+  	<param-name>overrideWorkspace</param-name>
+  	<param-value>true</param-value>
+  </context-param>
+  <!-- Cacerts file path or symbolic name for TLS -->
+  <context-param>
+  	<param-name>cacertsFile</param-name>
+  	<param-value></param-value>
+  </context-param>
+  <!-- dot executable path -->
+  <context-param>
+  	<param-name>diagram.dotexe</param-name>
+  	<param-value>/home/rocket/tomcat/graphviz/dot</param-value>
+  </context-param>
+  <!--  fail lineage if the becubic call fails -->
+  <context-param>
+    <param-name>failBecubicLineage</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <!--  Auto configure h2 connection parameters for Camunda database -->
+  <context-param>
+  	<param-name>camundaJdbcUrlAutoConfigure</param-name>
+  	<param-value>true</param-value>
+  </context-param>  
+
+  <!-- Default LIMIT value for mpath/sdcac queries -->
+  <context-param>
+  	<param-name>default_limit</param-name>
+  	<param-value>1000</param-value>
+  </context-param>   
+  
+  <!-- Default DEPTH value for mpath queries -->
+  <context-param>
+  	<param-name>default_depth</param-name>
+  	<param-value>10</param-value>
+  </context-param>   
+
+  <context-param>
+  	<param-name>visibility.filter</param-name>
+  	<param-value>scope:RWF__GOVERNED_ITEM MG_RBG/GLOSSARY MG_RBG/CONTEXT BPK_CONTEXT MDM_DATA_CONTEXT RWF/WIPTRX_CONTEXT</param-value>
+  </context-param>   
+
+  <!-- Optionally specify a URL here to open clicked items in Rochade Browser
+       {item} is the placeholder for replacing the itemId -->
+  
+  <context-param>
+    <param-name>nodeHrefNavigation</param-name>
+<!--    <param-value>#{item}</param-value> -->
+        <param-value>['{item}','_top']</param-value>
+<!--    <param-value>javascript:top.hrefUpdate('{item}', '_top')</param-value> -->
+<!--    <param-value>/rochade/index.zul#item={item}!workspace=$workspace.RBR!component=ObjectArea!navHide=true</param-value> -->
+<!--    <param-value>http://localhost:8080/rochade/index.zul#item={item}!workspace=$workspace.RBR!component=ObjectArea!navHide=true</param-value> -->
+  </context-param>
+  
+    <context-param>
+  	<param-name>lineage</param-name>
+  	<param-value>
+  	<!-- *_detail means Lineage with ETL,  *_high means Lineage without ETL -->
+  	<!-- high level and detailed level projection for the lineage is configured directly in diagarm*.jsp files -->
+endToEnd_detail: 
+  queryName: _DWR_EndToEnd_Lineage
+  lineageName: Backward Lineage,Forward Lineage
+  mask: Complete Lineage
+
+forward_detail: 
+  queryName: _DWR_Forward_Lineage
+  lineageName: Forward Lineage
+  mask: Complete Lineage
+
+backward_detail:
+  queryName: _DWR_Backward_Lineage
+  lineageName: Backward Lineage
+  mask: Complete Lineage
+
+endToEnd_high: 
+  queryName: _DWR_EndToEnd_Lineage
+  lineageName: Backward Lineage,Forward Lineage
+  mask: Overview
+
+forward_high: 
+  queryName: _DWR_Forward_Lineage
+  lineageName: Forward Lineage
+  mask: Overview
+
+backward_high:
+  queryName: _DWR_Backward_Lineage
+  lineageName: Backward Lineage
+  mask: Overview
+  </param-value>
+  </context-param>
+  
+  <!-- detail/map level item types for route definition, Asterisk(*) for sub type expansion -->
+  <context-param>
+    <param-name>lineageRoute_detailTypes</param-name>
+    <param-value>DWR_OOP_VARIABLE*,DWR_TFM_TRANSFORMATION_MAP*,DWR_RDB_COLUMN*,DWR_ANL_RPT_FIELD*,DWR_ANL_RPT_MAP*,DWR_ANL_RPT_PROMPT*,DWR_ANL_RPT_DASHBRD_PAGE*,DWR_DAT_DS_ELEMENT*,DWR_ANL_MEMBER*,DWR_ANL_DIMENSION_MAP*,DWR_DAT_FIELD*,DWR_ERM_ATTRIBUTE*,STI_FIELD_LINK*</param-value>
+  </context-param>
+    
+  <!-- structure level item types for route definition, Asterisk(*) for sub type expansion -->
+  <context-param>
+    <param-name>lineageRoute_structureTypes</param-name>
+    <param-value>DWR_OOP_METHOD*,DWR_OOP_INTERFACE*,DWR_OOP_CLASS*,DWR_TFM_TRANSFORMATION*,DWR_RDB_TABLE_OR_VIEW*,DWR_ANL_RPT_STRUCTURE*,DWR_ANL_REPORT*,DWR_ANL_RPT_DASHBOARD,DWR_DAT_DATA_SOURCE*,DWR_ANL_DIMENSION*,DWR_DAT_FILE*,DWR_DAT_RECORD_TYPE*,DWR_ERM_ENTITY*,STI_STRUCTURE_LINK*</param-value>
+  </context-param>
+  
+<!--   <security-constraint> -->
+<!--   		<web-resource-collection> -->
+<!--    	 		<web-resource-name>ProtectedArea</web-resource-name> -->
+<!--    	 		<url-pattern>/raas/*</url-pattern> -->
+<!--     			<http-method>POST</http-method> -->
+<!--     			<http-method>GET</http-method> -->
+<!--   		</web-resource-collection> -->
+<!--   		<auth-constraint> -->
+<!--     			<role-name>RochadeAdmin</role-name> -->
+<!--   		</auth-constraint> -->
+<!-- 		</security-constraint> -->
+
+<!--  <login-config> -->
+<!--    		<auth-method>BASIC</auth-method> -->
+<!--    		<realm-name>Rochade protected domain</realm-name> -->
+<!--  </login-config> -->
+
+<!--  <security-role> -->
+<!--    	<role-name>RochadeAdmin</role-name> -->
+<!--  </security-role> -->
+  
+  <!--  servlets for stimulsoft reports - start -->
+	<servlet>
+         <servlet-name>StimulsoftResource</servlet-name>
+         <servlet-class>com.stimulsoft.web.servlet.StiWebResourceServlet</servlet-class>
+ 	</servlet>
+<!-- this is deprecated 
+	<servlet>
+         <servlet-name>StimulsoftResource</servlet-name>
+         <servlet-class>com.stimulsoft.webviewer.servlet.StiWebViewerResourceServlet</servlet-class>
+ 	</servlet>
+ --> 	
+ 	<servlet-mapping>
+         <servlet-name>StimulsoftResource</servlet-name>
+         <url-pattern>/stimulsoft_web_resource/*</url-pattern>
+ 	</servlet-mapping>
+ 	<servlet>
+		<servlet-name>StimulsoftAction</servlet-name>
+		<servlet-class>com.stimulsoft.webviewer.servlet.StiWebViewerActionServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>StimulsoftAction</servlet-name>
+		<url-pattern>/stimulsoft_webviewer_action</url-pattern>
+	</servlet-mapping>
+<!--  servlets for stimulsoft reports - end -->
+
+</web-app>

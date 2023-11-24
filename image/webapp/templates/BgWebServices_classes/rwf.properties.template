@@ -11,16 +11,14 @@
 # Rochade connection settings
 # Host name or IP address of the Rochade Server
 host=<DI_SERVER_HOST>
-#host=localhost
-
 # Port number of the Rochade Server
-port=<DI_SERVER_PORT>
+port=8888
 # User account to be used for connecting to Rochade; must be an administrator with sufficient permissions
-user=<DI_SERVER_USER>
-password=<DI_SERVER_PASS>
+user=ADMIN
+password=TRUSTED_CONNECTION
 # Set true if you want to use the trusted connection feature of Rochade
 # Note: You must enable trusted connections on both the Rochade and the application server side
-useTrustedConnection=false
+useTrustedConnection=true
 
 # Uncomment the following settings and use Rochade Account Utility for encrypted password authentication
 # (The accountFile must be placed in the WEB-INF/classes folder.)  
@@ -44,7 +42,7 @@ appVersion2=PRODUCTION
 #   bg : Business Glossary
 #   wa : WebAccess 
 constructUrlFor=bg
-bg.url=http\://localhost\:8080/rochade/
+bg.url=http\://<DI_WEBAPP_HOST>\:8080/rochade/
 
 # If true mails will be sent for notification. 
 # The mail system will be deactivated if this option is set to false
