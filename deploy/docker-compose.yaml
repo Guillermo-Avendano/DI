@@ -13,13 +13,13 @@ volumes:
 services:   
   db1_empty_init:
       image: guillermoavendano/di-db1empty:10.00.002
-      command: sh -c "test -e /home/rocket/rochade/datbas/d1.rodb && cp /root/d1.rodb /home/rocket/rochade/datbas/d1.rodb"
+      command: sh -c "rsync --ignore-existing /root/d1.rodb /home/rocket/rochade/datbas/d1.rodb"
       volumes:
       - di_server_datbas:/home/rocket/rochade/datbas
 
   db2_empty_init:
       image: guillermoavendano/di-db2empty:10.00.002
-      command: sh -c "test -e /home/rocket/rochade/datbas/d2.rodb && cp /root/d2.rodb /home/rocket/rochade/datbas/d2.rodb"
+      command: sh -c "rsync --ignore-existing /root/d2.rodb /home/rocket/rochade/datbas/d2.rodb"
       volumes:
       - di_server_datbas:/home/rocket/rochade/datbas
 
