@@ -1,0 +1,6 @@
+# Author: Guilllermo Avendaño
+# Cretion Date: 11/24/2023
+FROM busybox
+
+COPY ./datbas_empty/d1.rodb /root/d1.rodb 
+
