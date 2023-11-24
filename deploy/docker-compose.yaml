@@ -1,17 +1,26 @@
 version: "3.0"
+      
+volumes:
+  di_solr_data:
+  di-indexupd_logs:
+  di-indexupd_conf:
+  di_server_datbas:
+  di_server_appl:
+  di_workflow_dbdata:
+  di_webapp_conf:
+  di_webapp_logs:
 
 services: 
   datainit:
       image: busybox:latest
-      command: sh -c "chown -R 3003:0 /home/rocket/rochade/conf && chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs && chown -R 3003:0 /home/rocket/conf && chown -R 3003:0 /home/rocket/tomcat/logs"
+      command: sh -c "chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs && chown -R 3003:0 /home/rocket/conf && chown -R 3003:0 /home/rocket/tomcat/logs"
       volumes:
-      - ./conf:/home/rocket/rochade/conf
-      - ./appl:/home/rocket/rochade/appl
-      - ./datbas:/home/rocket/rochade/datbas
-      - ./idxupd_conf:/home/rocket/Index_Update_Service/conf
-      - ./idxupd_logs:/home/rocket/Index_Update_Service/logs
-      - ./tomcat_conf:/home/rocket/conf
-      - ./tomcat_logs:/home/rocket/tomcat/logs
+      - di_server_appl:/home/rocket/rochade/appl
+      - di_server_datbas:/home/rocket/rochade/datbas
+      - di-indexupd_conf:/home/rocket/Index_Update_Service/conf
+      - di-indexupd_logs:/home/rocket/Index_Update_Service/logs
+      - di_webapp_conf:/home/rocket/conf
+      - di_webapp_logs:/home/rocket/tomcat/logs
   di-workflow:
     image: postgres:14-alpine
     container_name: di-workflow
@@ -19,10 +28,10 @@ services:
     ports:
     - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DI_POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${DI_POSTGRES_PASS:-postgres}
     volumes:
-      - "db-data:/var/lib/postgresql/data"
+      - di_workflow_dbdata:/var/lib/postgresql/data"
       - ./create_workflow_db.sh:/docker-entrypoint-initdb.d/create_workflow_db.sh
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
@@ -34,14 +43,13 @@ services:
     container_name: di-server
     hostname: di-server
     environment:
-      DI_SERVER_LICENSE_NUMBER: "0374417A-D6E22E0A/06220208-2010D1E4/01D0C41D-D0C429D0/C421D0C4-2DD0C43D/D8C4C108-C0280800/04081814-1D250C01"
-      DI_SERVER_LICENSE_COMPANY: "ASG Internal Use"
+      DI_SERVER_LICENSE_NUMBER: ${DI_SERVER_LICENSE_NUMBER}
+      DI_SERVER_LICENSE_COMPANY: ${DI_SERVER_LICENSE_COMPANY}
     ports:
       - '8888:8888'
     volumes:
-    - ./datbas:/home/rocket/rochade/datbas
-    - ./conf:/home/rocket/rochade/conf
-    - ./appl:/home/rocket/rochade/appl
+    - di_server_datbas:/home/rocket/rochade/datbas
+    - di_server_appl:/home/rocket/rochade/appl
     depends_on:
       - datainit
   di-solr:
@@ -51,21 +59,21 @@ services:
     ports:
      - "8983:8983"
     volumes:
-      - solr_data:/var/solr
+      - di_solr_data:/var/solr
   di-indexupd:
     image: 'guillermoavendano/di-indexupd:10.00.002'
     container_name: di-indexupd
     command: sh -c "sleep 9999999"
     environment:
-       DI_SOLR_HOST: "di-solr"
-       DI_SOLR_PORT: "8983"
-       DI_SERVER_HOST: "di-server"
+       DI_SOLR_HOST: ${DI_SOLR_HOST}
+       DI_SOLR_PORT: 8983
+       DI_SERVER_HOST: ${DI_SERVER_HOST}
        DI_SERVER_PORT: 8888
-       DI_SERVER_USER: "ADMIN"
-       DI_SERVER_PASS: "rochade"
+       DI_SERVER_USER: ${DI_SERVER_USER}
+       DI_SERVER_PASS: ${DI_SERVER_PASS}
     volumes:
-    - ./idxupd_conf:/home/rocket/Index_Update_Service/conf
-    - ./idxupd_logs:/home/rocket/Index_Update_Service/logs
+    - di-indexupd_conf:/home/rocket/Index_Update_Service/conf
+    - di-indexupd_logs:/home/rocket/Index_Update_Service/logs
     depends_on:
       - datainit
   di-webapp:
@@ -76,22 +84,18 @@ services:
     ports:
       - 8080:8080
     environment:
-       DI_SOLR_HOST: "di-solr"
-       DI_SOLR_PORT: "8983"
-       DI_SERVER_HOST: "di-server"
+       DI_SOLR_HOST: ${DI_SOLR_HOST}
+       DI_SOLR_PORT: 8983
+       DI_SERVER_HOST: ${DI_SERVER_HOST}
        DI_SERVER_PORT: 8888
-       DI_SERVER_USER: "ADMIN"
-       DI_SERVER_PASS: "rochade"
-       DI_POSTGRES_HOST: "di-workflow"
+       DI_SERVER_USER: ${DI_SERVER_USER}
+       DI_SERVER_PASS: ${DI_SERVER_PASS}
+       DI_POSTGRES_HOST: ${DI_POSTGRES_HOST}
        DI_POSTGRES_PORT: 5432
-       DI_POSTGRES_USER: postgres
-       DI_POSTGRES_PASS: postgres
+       DI_POSTGRES_USER: ${DI_POSTGRES_USER}
+       DI_POSTGRES_PASS: ${DI_POSTGRES_PASS}
     volumes:
-    - ./tomcat_conf:/home/rocket/conf
-    - ./tomcat_logs:/home/rocket/tomcat/logs
+    - di_webapp_conf:/home/rocket/conf
+    - di_webapp_logs:/home/rocket/tomcat/logs
     depends_on:
       - datainit
-      
-volumes:
-  solr_data:
-  db-data:
