@@ -19,7 +19,7 @@ replace_tag_in_file() {
 RO_SOLR_CONF="/home/rocket/Index_Update_Service/conf"
 
 if [ -z "$(ls -A "$RO_SOLR_CONF")" ] ; then
-   cp /home/rocket/Index_Update_Service/conf_template/*.* /home/rocket/Index_Update_Service/conf
+   cp /home/rocket/Index_Update_Service/conf_template/* /home/rocket/Index_Update_Service/conf/
 fi
 
 INDEX_UPDATER_CONFIG_FILE=/home/rocket/Index_Update_Service/conf/indexUpdater.properties
@@ -36,7 +36,6 @@ cd /home/rocket/Index_Update_Service/bin
 
 ./IndexUpdateService.sh
 
-tail -f /home/rocket/Index_Update_Service/logs/indexing.log
 
 
 

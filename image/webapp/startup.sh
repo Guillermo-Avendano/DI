@@ -37,6 +37,7 @@ fi
 
     # <DI_SOLR_HOST>" solr hostname, default 'di-solr'
     # <DI_SOLR_PORT>" solr port, default '8983'
+    # <DI_WEBAPP_HOST> webhost internal to docker. default di-webapp
 
 declare -A di_folder
 di_folder['BgWebServices_classes']="/home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes"
@@ -47,7 +48,6 @@ di_folder['GlobalSearch_solr_classes']="/home/rocket/tomcat/webapps/GlobalSearch
 
 di_folder['RaaS_classes']="/home/rocket/tomcat/webapps/RaaS/WEB-INF/classes"
 di_folder['RaaS_web']="/home/rocket/tomcat/webapps/RaaS/WEB-INF"
-
 
 di_folder['rochade_classes']="/home/rocket/tomcat/webapps/rochade/WEB-INF/classes"
 
@@ -91,6 +91,8 @@ for local_pv in ${!di_folder[@]}; do
 
                 replace_tag_in_file $config_file "<DI_SOLR_HOST>" $DI_SOLR_HOST
                 replace_tag_in_file $config_file "<DI_SOLR_PORT>" $DI_SOLR_PORT
+
+                eplace_tag_in_file $config_file "<DI_WEBAPP_HOST>" $DI_WEBAPP_HOST
 
             else
                 echo "No files to process in: $curr_dir/$file_pattern"

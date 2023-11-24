@@ -24,7 +24,7 @@ hostName=<DI_SERVER_HOST>
 # Type of value: Integer.
 # Key is mandatory: Yes.
 # ------------------------------------------------------------------------------------------------
-portNumber=<DI_SERVER_PORT>
+portNumber=8888
 
 # ------------------------------------------------------------------------------------------------
 # The Java keystore parameter (tlsCaCertFileJava) specifies where the client can find the certificate of the trusted root CA. These are the available values for the parameter:
@@ -68,7 +68,7 @@ password=
 # - in the /lib folder (next to the jar files)
 # - or next to the script running the tool (IndexUpdater.cmd or IndexUpdater.sh)
 # ------------------------------------------------------------------------------------------------
-trusted=false
+trusted=true
 
 # ------------------------------------------------------------------------------------------------
 # AccountUtility
@@ -197,7 +197,7 @@ maxWaitTime=60000
 # Key is mandatory: Yes
 # Example: http://localhost:8181/solr/
 # ------------------------------------------------------------------------------------------------
-httpSolrServer=http\://<DI_SOLR_HOST>\:<DI_SOLR_PORT>/solr/
+httpSolrServer=http\://<DI_SOLR_HOST>\:8983/solr/
 
 # ------------------------------------------------------------------------------------------------
 # Active Index Search Applications 

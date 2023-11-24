@@ -16,9 +16,8 @@ replace_tag_in_file() {
 # $DI_SERVER_LICENSE_NUMBER, $DI_SERVER_LICENSE_COMPANY are environment variables comming from image's environment variables
 
 RO_APPL="/home/rocket/rochade/appl"
-RO_DATBAS="/home/rocket/rochade/datbas"
 
-if [ -z "$(ls -A "$RO_APPL")" ] && [ -z "$(ls -A "$RO_DATBAS")" ]; then
+if [ -z "$(ls -A "$RO_APPL")" ]; then
    cp /home/rocket/rochade/appl_template/* /home/rocket/rochade/appl/
 fi
 
