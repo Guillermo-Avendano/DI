@@ -77,5 +77,7 @@ camunda.default.workflows=workflows/Default-Approve-Workflow.bpmn workflows/Appr
 # technical parameters for clean up of old notifications 
 #notifications.cleanUp.deleteChunkSize=10000
 #notifications.cleanUp.interval.days=1
-camunda.h2.host=<DI_SERVER_HOST>
-camunda.h2.rpcServiceAvailable=true
+
+#---- disabled by Guillermo
+#camunda.h2.host=<DI_SERVER_HOST>
+#camunda.h2.rpcServiceAvailable=true
