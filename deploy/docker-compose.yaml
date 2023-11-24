@@ -57,6 +57,7 @@ services:
     image: 'guillermoavendano/di-server:10.00.002'
     container_name: di-server
     hostname: di-server
+    #command: sh -c "sleep 9999999"
     environment:
       DI_SERVER_LICENSE_NUMBER: ${DI_SERVER_LICENSE_NUMBER}
       DI_SERVER_LICENSE_COMPANY: ${DI_SERVER_LICENSE_COMPANY}
@@ -66,7 +67,10 @@ services:
     - di_server_datbas:/home/rocket/rochade/datbas
     - di_server_appl:/home/rocket/rochade/appl
     depends_on:
-      - datainit
+      - datainit      
+      - db1_empty_init
+      - db2_empty_init
+
   di-solr:
     image: solr:8.11.1
     container_name: di-solr
@@ -91,6 +95,8 @@ services:
     - di-indexupd_logs:/home/rocket/Index_Update_Service/logs
     depends_on:
       - datainit
+      - di-solr  
+
   di-webapp:
     image: 'guillermoavendano/di-webapp:10.00.002'
     container_name: di-webapp
@@ -114,4 +120,5 @@ services:
     - di_webapp_conf:/home/rocket/conf
     - di_webapp_logs:/home/rocket/tomcat/logs
     depends_on:
-      - datainit
+      - datainit  
+      - di-server

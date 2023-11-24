@@ -19,7 +19,7 @@ RO_APPL="/home/rocket/rochade/appl"
 RO_DATBAS="/home/rocket/rochade/datbas"
 
 if [ -z "$(ls -A "$RO_APPL")" ] && [ -z "$(ls -A "$RO_DATBAS")" ]; then
-   cp /home/rocket/rochade/appl_template/*.* /home/rocket/rochade/appl
+   cp /home/rocket/rochade/appl_template/* /home/rocket/rochade/appl/
 fi
 
 SERVER_INI=/home/rocket/rochade/appl/server.ini 
