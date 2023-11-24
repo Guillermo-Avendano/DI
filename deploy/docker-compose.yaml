@@ -10,7 +10,19 @@ volumes:
   di_webapp_conf:
   di_webapp_logs:
 
-services: 
+services:   
+  db1_empty_init:
+      image: guillermoavendano/di-db1empty:10.00.002
+      command: sh -c "cp /root/d1.rodb /home/rocket/rochade/datbas/d1.rodb"
+      volumes:
+      - di_server_datbas:/home/rocket/rochade/datbas
+
+  db2_empty_init:
+      image: guillermoavendano/di-db2empty:10.00.002
+      command: sh -c "cp /root/d2.rodb /home/rocket/rochade/datbas/d2.rodb"
+      volumes:
+      - di_server_datbas:/home/rocket/rochade/datbas
+
   datainit:
       image: busybox:latest
       command: sh -c "chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs && chown -R 3003:0 /home/rocket/conf && chown -R 3003:0 /home/rocket/tomcat/logs"
@@ -21,6 +33,9 @@ services:
       - di-indexupd_logs:/home/rocket/Index_Update_Service/logs
       - di_webapp_conf:/home/rocket/conf
       - di_webapp_logs:/home/rocket/tomcat/logs
+      depends_on:
+      - db1_empty_init
+      - db2_empty_init
   di-workflow:
     image: postgres:14-alpine
     container_name: di-workflow
