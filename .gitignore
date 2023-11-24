@@ -1,2 +1,13 @@
 image/rochadedb/datbas_empty/d1.rodb
 image/rochadedb/datbas_empty/d2.rodb
+image/rochadeserver/rochade/ldapsrch/antlr.jar
+image/rochadeserver/rochade/ldapsrch/api-all.jar
+image/rochadeserver/rochade/ldapsrch/commons-lang3.jar
+image/rochadeserver/rochade/ldapsrch/LdapsrcInstall_rpc.log
+image/rochadeserver/rochade/ldapsrch/log4j-api.jar
+image/rochadeserver/rochade/ldapsrch/log4j-core.jar
+image/rochadeserver/rochade/ldapsrch/log4j-slf4j-impl.jar
+image/rochadeserver/rochade/ldapsrch/log4j2.xml
+image/rochadeserver/rochade/ldapsrch/mina-core.jar
+image/rochadeserver/rochade/ldapsrch/rochade.jar
+image/rochadeserver/rochade/ldapsrch/slf4j-api.jar
