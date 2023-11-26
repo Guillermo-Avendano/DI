@@ -2,12 +2,7 @@
 # Cretion Date: 11/27/2023
 FROM solr:8.11.2
 
-ARG DI_SOLR_VERSION=8.11.2
-
-
-ENV DI_SOLR_VERSION=${DI_SOLR_VERSION}
-
-ENV DI_SOLR_CONFIG_DIR=/opt/solr-${DI_SOLR_VERSION}/server/solr/configsets
+ENV DI_SOLR_CONFIG_DIR=/var/solr/data/configsets
 
 COPY ./configsets/BigData_configs          $DI_SOLR_CONFIG_DIR/BigData_configs/        
 COPY ./configsets/DataIntegration_configs  $DI_SOLR_CONFIG_DIR/DataIntegration_configs/
