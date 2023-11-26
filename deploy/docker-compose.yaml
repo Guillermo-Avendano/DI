@@ -95,6 +95,8 @@ services:
        DI_SERVER_PORT: 8888
        DI_SERVER_USER: ${DI_SERVER_USER}
        DI_SERVER_PASS: ${DI_SERVER_PASS}
+       DI_SOLR_TRUSTED: true
+       DI_SOLR_ERROR_LEVEL: "DEBUG"
     volumes:
     - di-indexupd_conf:/home/rocket/Index_Update_Service/conf
     - di-indexupd_logs:/home/rocket/Index_Update_Service/logs
