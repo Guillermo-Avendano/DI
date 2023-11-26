@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+########################################################################
+# This is the default configuration file used by Log4j2.
+# Copyright (c) 1983-2023 Rocket Software, Inc. or its affiliates. All Rights Reserved.
+#
+# Version 10.01.001
+#
+# For the general syntax of XML based configuration files, see the
+# documentation of Log4j2 at https://logging.apache.org/log4j/2.x/manual/configuration.html
+#
+# You can use a different file (or even file format) by specifying a filename
+# with the Java's environment property named 'log4j.configurationFile'.  
+# For example, java -Dlog4j.configurationFile="file:///path\mylog4j2.xml"
+#
+########################################################################
+-->
+<Configuration status="WARN">
+	<Appenders>
+		<Console name="ConsoleAppender" target="SYSTEM_OUT">
+			<!-- see https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout -->
+			<!--PatternLayout disableAnsi="false" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%threadName] - %logger - %msg%n"/-->
+			<PatternLayout disableAnsi="false">
+				<ScriptPatternSelector defaultPattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%threadName] - %logger - %msg%n">
+					<Script name="threadColoring" language="javascript"><![CDATA[
+							var sepIndex = logEvent.getThreadName().indexOf("#");
+							if (sepIndex>=0 && logEvent.getThreadName().length()>sepIndex+1) {
+								try {
+									var threadIndex = parseInt(logEvent.getThreadName().substring(sepIndex+1));
+									if (logEvent.getThreadName().indexOf("SolrPusher")>=0) {
+										"SOLR#"+(threadIndex%5); // return
+									} else {
+										"CORE#"+(threadIndex%5); // return
+									}
+								} catch (err) {
+									"OTHER"; // return
+								}
+							} else {
+								null; // return
+							}
+						]]>
+					</Script>
+					<PatternMatch key="SOLR#0" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bold,reverse,cyan}] - %logger - %msg%n"/>
+					<PatternMatch key="SOLR#1" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bold,reverse,yellow}] - %logger - %msg%n"/>
+					<PatternMatch key="SOLR#2" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bold,reverse,magenta,bg_white}] - %logger - %msg%n"/>
+					<PatternMatch key="SOLR#3" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bold,reverse,green}] - %logger - %msg%n"/>
+					<PatternMatch key="SOLR#4" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bold,reverse,blue,bg_white}] - %logger - %msg%n"/>
+					<PatternMatch key="CORE#0" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bright,bold,cyan}] - %logger - %msg%n"/>
+					<PatternMatch key="CORE#1" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bright,bold,yellow}] - %logger - %msg%n"/>
+					<PatternMatch key="CORE#2" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bright,bold,magenta}] - %logger - %msg%n"/>
+					<PatternMatch key="CORE#3" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bright,bold,green}] - %logger - %msg%n"/>
+					<PatternMatch key="CORE#4" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bright,bold,blue}] - %logger - %msg%n"/>
+					<PatternMatch key="OTHER" pattern="%d{DEFAULT} %highlight{%-5level} IndexUpdateService[%style{%threadName}{bold,reverse,white,dim}] - %logger - %msg%n"/>
+				</ScriptPatternSelector>
+			</PatternLayout>
+		</Console>
+		
+		<!-- Specific appender for telemetry (also output in console) -->
+		<Console name="TelemetryAppender" target="SYSTEM_OUT">
+			<!-- see https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout -->
+			<!--PatternLayout disableAnsi="false" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%threadName] - %msg%n"/-->
+			<PatternLayout disableAnsi="false">
+				<ScriptPatternSelector defaultPattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%threadName] - %msg%n">
+					<Script name="telemetryThreadColoring" language="javascript"><![CDATA[
+							var sepIndex = logEvent.getThreadName().indexOf("#");
+							if (sepIndex>=0 && logEvent.getThreadName().length()>sepIndex+1) {
+								try {
+									var threadIndex = parseInt(logEvent.getThreadName().substring(sepIndex+1));
+									if (logEvent.getThreadName().indexOf("SolrPusher")>=0) {
+										"SOLR#"+(threadIndex%5); // return
+									} else {
+										"CORE#"+(threadIndex%5); // return
+									}
+								} catch (err) {
+									"OTHER"; // return
+								}
+							} else {
+								null; // return
+							}
+						]]>
+					</Script>
+					<PatternMatch key="SOLR#0" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bold,reverse,cyan}] - %msg%n"/>
+					<PatternMatch key="SOLR#1" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bold,reverse,yellow}] - %msg%n"/>
+					<PatternMatch key="SOLR#2" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bold,reverse,magenta,bg_white}] - %msg%n"/>
+					<PatternMatch key="SOLR#3" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bold,reverse,green}] - %msg%n"/>
+					<PatternMatch key="SOLR#4" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bold,reverse,blue,bg_white}] - %msg%n"/>
+					<PatternMatch key="CORE#0" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bright,bold,cyan}] - %msg%n"/>
+					<PatternMatch key="CORE#1" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bright,bold,yellow}] - %msg%n"/>
+					<PatternMatch key="CORE#2" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bright,bold,magenta}] - %msg%n"/>
+					<PatternMatch key="CORE#3" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bright,bold,green}] - %msg%n"/>
+					<PatternMatch key="CORE#4" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bright,bold,blue}] - %msg%n"/>
+					<PatternMatch key="OTHER" pattern="%d{DEFAULT} %style{TELEMETRY}{bright,magenta} IndexUpdateService[%style{%threadName}{bold,reverse,white,dim}] - %msg%n"/>
+				</ScriptPatternSelector>
+			</PatternLayout>
+		</Console>
+	</Appenders>
+	
+	<Loggers>
+		<Logger name="com.rochade.index.update" level="<DI_SOLR_ERROR_LEVEL>">
+		</Logger>
+		
+		<Logger name="com.rochade.search" level="<DI_SOLR_ERROR_LEVEL>">
+		</Logger>
+		
+		<Logger name="com.rochade.wa.common.solr.util.SolrHelper" level="DEBUG">
+		</Logger>
+		
+		<!-- Telemetry logging:
+		Set the logging level of the logger dedicated to telemetry.
+		To hide all the Telemetry data, keep the logging level to OFF.
+		For having some of the Telemetry data, set the logging level to either ERROR/WARN/INFO/DEBUG (less to more verbose). -->
+		<Logger name="com.rochade.wa.common.logging.Telemetry" level="OFF" additivity="false"> <!-- Additivity is false: Do not log into the default root appender -->
+			<AppenderRef ref="TelemetryAppender"/>
+		</Logger>
+		
+		<Logger name="de.rochade" level="WARN">
+		</Logger>
+		
+		<!-- set logging level to ERROR for the specific logger 'de.rochade.ap' used by Rochade core
+		in order to get rid of warnings like 'de.rochade.ap:154 - de.rochade.ds.InvalidTypeException: RBD_CLUSTER' -->
+		<Logger name="de.rochade.ap" level="ERROR">
+		</Logger>
+		
+		<!-- set logging level to ERROR for the specific logger 'de.rochade.ds' used by Rochade core
+		in order to get rid of info entries like 'de.rochade.ds:142 - Default package handler is used' -->
+		<Logger name="de.rochade.ds" level="ERROR">
+		</Logger>
+		
+		<Root level="INFO">
+			<AppenderRef ref="ConsoleAppender"/>
+		</Root>
+	</Loggers>
+</Configuration>

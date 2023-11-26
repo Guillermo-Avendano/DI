@@ -77,7 +77,7 @@ services:
       - db2_empty_init
 
   di-solr:
-    image: solr:8.11.1
+    image: guillermoavendano/di-solr:8.11.2
     container_name: di-solr
     hostname: di-solr
     ports:

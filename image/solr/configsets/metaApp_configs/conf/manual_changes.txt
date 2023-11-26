@@ -1,0 +1,283 @@
+all original files are coming from <solr_official_setup>\server\solr\configsets\_default\conf\
+and copied into our 'metaApp_configs' folder
+then afterwards we apply some changes below to those files
+
+lang folder
+	- no changes!
+
+	
+configoverlay.json
+	- it is all our stuff (that file does not exist into original setup).
+	It declares dynamic configuration that the server must load.
+	That configuration is all about the suggesters (auto-complete functionnality)
+
+
+mapping-FoldToASCII.txt
+	- it is all our stuff (that file does not exist into original setup). Just add it as previous releases.
+
+
+protwords.txt
+	- no changes!
+
+
+solrconfig.xml
+	- add entry for our extension library (for memory because this is deprecated.
+	We do not need that custom extension anymore. It was regarding the suggesters, this is now managed via configoverlay.json)
+		<!-- OPTIONAL again since EDI-9.91SP1 - Contribution with the special request handlers:
+		- com.rochade.wa.common.solr.handlers.RochadeNodeConfigHandler
+		- com.rochade.wa.common.solr.handlers.RochadeConfigHandler
+		This is a more fine-grained solution than using system variable 'solr.sharedLib' of solr.xml
+		(by defining it in solr.in.sh or solr.in.cmd) as sharedLib will make the targeted jars loaded
+		in all cores on the Solr server (not only the ones for EDI's SearchApps.
+		-->
+		<lib dir="${solr.install.dir:../../../..}/contrib/rochade/lib" regex=".*\.jar" />
+	
+	- add entry for our custom requestHandlers (provided into our custom extension library).
+	Note: the RochadeConfigHandler is deprecated since EDI-9.91 (It was related to the suggesters, this is now managed via configoverlay.json).
+	But the RochadeNodeConfigHandler is optional (but better if available) since EDI-9.91SP1.
+		<!-- USELESS since EDI-9.91 - ConfigHandler with special feature for Rochade SearchApps 
+		<requestHandler name="/rochadeAdmin" class="com.rochade.index.common.solr.handlers.RochadeConfigHandler" startup="lazy">
+		</requestHandler>
+		-->
+		<!-- OPTIONAL again since EDI-9.91SP1 - RequestHandler that provides (partial) read access to the configuration of the server node itself.
+		-->
+		<requestHandler name="/rochadeNodeConfig" class="com.rochade.index.common.solr.handlers.RochadeNodeConfigHandler" startup="lazy">
+		</requestHandler>
+	
+	- adapt default values for the queryResultCache
+		<!-- original values not compliant with huge 'roles' fields found at Itau. A cache of 1000 documents already needs hundred megaBytes of RAM.
+		<queryResultCache size="512"
+                      initialSize="512"
+                      autowarmCount="0"/>
+		-->
+		<queryResultCache size="1024"
+                      initialSize="256"
+                      autowarmCount="256"/>
+	
+	- completely remove the sections about
+		- <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
+		- <requestHandler name="/spell" class="solr.SearchHandler" startup="lazy">
+		they will be re-created and re-configured into configoverlay.json
+		<!-- The example spell check from _default solrconfig.xml located here has been removed. The EDI SearchApps suggesters are defined into 'configoverlay.json' -->
+	
+	- into the <updateRequestProcessorChain name="add-unknown-fields-to-the-schema"
+		- disable autoCreateFields
+			<!-- The update.autoCreateFields property can be turned to false to disable schemaless mode -->
+			<!-- Disable autoCreateFields because it is source of problem since fields like RBG/DESCRIPTION__txt
+			are at the end stored as RBG_DESCRIPTION__txt while they should use the *__txt dynamic field -->
+			<updateRequestProcessorChain name="add-unknown-fields-to-the-schema" default="${update.autoCreateFields:false}"
+				processor="uuid,remove-blank,field-name-mutating,parse-boolean,parse-long,parse-double,parse-date,add-schema-fields">
+				<processor class="solr.LogUpdateProcessorFactory"/>
+				<processor class="solr.DistributedUpdateProcessorFactory"/>
+				<processor class="solr.RunUpdateProcessorFactory"/>
+			</updateRequestProcessorChain>
+	
+	- disable the response override for json writer
+	(the override is done by Solr team itself for tutorial purpose, they recommend themselves to disable the override!)
+		<queryResponseWriter name="json" class="solr.JSONResponseWriter">
+			<!-- For the purposes of the tutorial, JSON responses are written as
+			  plain text so that they are easy to read in *any* browser.
+			  If you expect a MIME type of "application/json" just remove this override.
+			-->
+			<!-- SolrJ library expects to receive application/json content type in place of text/plain
+			<str name="content-type">text/plain; charset=UTF-8</str>
+			-->
+		</queryResponseWriter>
+
+
+stopwords.txt
+	- no changes!
+
+
+synonyms.txt
+	- no changes!
+
+
+managed-schema
+	- in <fieldType name="text_en" 
+		deactivate (comment out) the <filter class="solr.PorterStemFilterFactory"/> entry
+		<!-- EDI-9003 - HIGHLIGHTING ISSUE: https://stackoverflow.com/questions/26287321/solr-stemming-breaks-highlighting
+			https://stackoverflow.com/questions/27516556/how-to-correctly-configure-solr-stemming
+			EDI-9110/EDI-8896 - WILDCARD SEARCH ISSUE: The PorterStemFilter is also causing the last character to be removed (depending of the word)
+			so when doing a wildcard search '*word*' with the full word, there is no match
+			because 'wor' is produced by the analyzer ('word' without the last character) at the PorterStemFilter level.
+        <filter class="solr.PorterStemFilterFactory"/>
+		-->
+		
+	- in <fieldType name="text_de"
+		deactivate (comment out) the <filter class="solr.PorterStemFilterFactory"/> entry
+		<!-- EDI-9003 - HIGHLIGHTING ISSUE: https://stackoverflow.com/questions/26287321/solr-stemming-breaks-highlighting
+			https://stackoverflow.com/questions/27516556/how-to-correctly-configure-solr-stemming
+			 EDI-9110/EDI-8896 - WILDCARD SEARCH ISSUE: The PorterStemFilter is also causing the last character to be removed (depending of the word)
+			 so when doing a wildcard search '*word*' with the full word, there is no match
+			 because 'wor' is produced by the analyzer ('word' without the last character) at the PorterStemFilter level.
+        <filter class="solr.GermanLightStemFilterFactory"/>
+		-->
+
+	- add all our stuff at the end of the file
+	
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	<!-- ================ -->
+	<!-- Rochade specific -->
+	<!-- ================ -->
+	<fieldType name="alphaOnlySort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+		<analyzer>
+			<tokenizer class="solr.KeywordTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.TrimFilterFactory"/>
+			<filter class="solr.PatternReplaceFilterFactory" replace="all" replacement="" pattern="([^a-z])"/>
+		</analyzer>
+	</fieldType>
+	<fieldType name="suggest_phrase" class="solr.TextField" positionIncrementGap="100">
+		<analyzer>
+			<tokenizer class="solr.KeywordTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType>
+	<!-- 'text_keyword' is nearly like 'String' field type except that it is case insensitive (String is strictly case senstitive) -->
+	<!-- EDI-10032: do NOT omitNorms (see https://stackoverflow.com/questions/29103155/solr-exact-match-boost-over-text-containing-the-exact-match).
+	We want Solr to bring first the items with values that match the longest -->
+	<fieldType name="text_keyword" class="solr.TextField" positionIncrementGap="100" omitNorms="false">
+		<analyzer type="index">
+			<tokenizer class="solr.KeywordTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.KeywordTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType>
+	<fieldType name="textSpelling" class="solr.TextField" positionIncrementGap="100" omitNorms="true">
+		<analyzer type="index">
+			<tokenizer class="solr.KeywordTokenizerFactory"/>
+			<filter class="solr.WordDelimiterFilterFactory" preserveOriginal="1" generateNumberParts="1" splitOnCaseChange="1" catenateWords="1" generateWordParts="1" catenateAll="0" catenateNumbers="1"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.KeywordTokenizerFactory"/>
+			<!--filter class="solr.WordDelimiterFilterFactory" preserveOriginal="0" generateNumberParts="1" splitOnCaseChange="1" catenateWords="1" generateWordParts="1" catenateAll="0" catenateNumbers="1"/-->
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType>
+	<fieldType name="textSpelling2" class="solr.TextField" positionIncrementGap="1">
+		<analyzer type="index">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.WordDelimiterFilterFactory" generateNumberParts="1" splitOnCaseChange="1" catenateWords="0" generateWordParts="1" catenateAll="0" catenateNumbers="0"/>
+			<filter class="solr.EdgeNGramFilterFactory" maxGramSize="15" minGramSize="2"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.WordDelimiterFilterFactory" generateNumberParts="1" splitOnCaseChange="1" catenateWords="0" generateWordParts="1" catenateAll="0" catenateNumbers="0"/>
+		</analyzer>
+	</fieldType>
+	<fieldType name="text_rochade_old" class="solr.TextField" positionIncrementGap="100">
+		<analyzer type="index">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<!-- splitOnNumerics=0 so LOB1_Application is indexed as 'LOB1_Application', 'LOB1Application', 'Application' and also 'LOB1' but not 'LOB' and '1'-->
+			<filter class="solr.WordDelimiterFilterFactory" preserveOriginal="1" generateNumberParts="1" splitOnNumerics="0" splitOnCaseChange="1" catenateWords="1" generateWordParts="1" catenateAll="1" catenateNumbers="1"/>
+			<filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+			<!--filter class="solr.NGramFilterFactory" minGramSize="1" maxGramSize="25"/-->
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<!--filter class="solr.WordDelimiterFilterFactory" preserveOriginal="0" generateNumberParts="1" splitOnCaseChange="1" catenateWords="1" generateWordParts="1" catenateAll="0" catenateNumbers="1"/-->
+			<!--filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/-->
+			<filter class="solr.SynonymFilterFactory" expand="true" synonyms="synonyms.txt" ignoreCase="true"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType>
+	<fieldType name="text_rochade" class="solr.TextField" positionIncrementGap="100">
+		<analyzer type="index">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+			<!-- splitOnNumerics=0 so LOB1_Application is indexed as 'LOB1_Application', 'LOB1Application', 'Application' and also 'LOB1' but not 'LOB' and '1'-->
+			<filter class="solr.WordDelimiterGraphFilterFactory" preserveOriginal="1" generateNumberParts="1" splitOnNumerics="0" splitOnCaseChange="1" catenateWords="0" generateWordParts="1" catenateAll="0" catenateNumbers="0" stemEnglishPossessive="1"/>
+			<filter class="solr.FlattenGraphFilterFactory"/> <!-- required on index analyzers after graph filters -->
+			<filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+			<!--filter class="solr.ShingleFilterFactory" maxShingleSize="2" outputUnigrams="true" tokenSeparator=""/-->
+			<filter class="solr.WordDelimiterGraphFilterFactory" preserveOriginal="1" generateNumberParts="1" splitOnNumerics="1" splitOnCaseChange="0" catenateWords="1" generateWordParts="1" catenateAll="1" catenateNumbers="1" stemEnglishPossessive="1"/>
+			<filter class="solr.FlattenGraphFilterFactory"/> <!-- required on index analyzers after graph filters -->
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+			<!--filter class="solr.NGramFilterFactory" minGramSize="1" maxGramSize="25"/-->
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+			<!--filter class="solr.WordDelimiterFilterFactory" preserveOriginal="0" generateNumberParts="1" splitOnNumerics="0" splitOnCaseChange="1" catenateWords="1" generateWordParts="1" catenateAll="0" catenateNumbers="1"/-->
+			<!--filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/-->
+			<filter class="solr.SynonymFilterFactory" expand="true" synonyms="synonyms.txt" ignoreCase="true"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType>
+	
+	<charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+	
+	<!-- For releases 8.90 and up -->
+	<field name="suggest_phrase_field" type="suggest_phrase" multiValued="false" indexed="true" stored="true"/>
+	<field name="auto_complete" type="textSpelling" multiValued="false" indexed="true" stored="true"/>
+	<field name="absPath" type="string" multiValued="true" indexed="true" stored="true"/>
+	<field name="app_id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
+	<field name="type" type="string" multiValued="false" indexed="true" stored="true"/>
+	<field name="roles" type="string" multiValued="true" indexed="true" stored="true"/>
+	<field name="SCOPEID" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<field name="GLOSSARYID" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<field name="last_modified" type="pdate" indexed="true" stored="true" docValues="true"/>
+	<field name="level1" type="pint" multiValued="false" indexed="true" required="true" stored="true"/>
+	<field name="level2" type="pint" multiValued="false" indexed="true" required="true" stored="true"/>
+	<field name="level3" type="string" multiValued="false" indexed="true" stored="true"/>
+	<field name="level4" type="string" multiValued="false" indexed="true" stored="true"/>
+	<field name="level5" type="string" multiValued="false" indexed="true" stored="true"/>
+	<field name="level6" type="string" multiValued="false" indexed="true" stored="true"/>
+	<field name="level7" type="string" multiValued="false" indexed="true" stored="true"/>
+	<field name="level8" type="string" multiValued="false" indexed="true" stored="true"/>
+	<field name="level9" type="string" multiValued="false" indexed="true" stored="true"/>
+	<!-- For releases 9.91SP1 and up -->
+	<field name="contextIds" type="string" multiValued="true" indexed="true" stored="true"/>
+	<field name="isGovernedItem" type="string" multiValued="false" indexed="true" stored="true"/>
+	<field name="suggest_context_field" type="string" multiValued="true" indexed="true" stored="true"/>
+	
+	<!-- For releases 8.90 and up -->
+	<dynamicField name="*_sort" type="alphaOnlySort" multiValued="false" indexed="true" required="false" stored="true"/>
+	<dynamicField name="*_keyword" type="text_keyword" multiValued="true" indexed="true" stored="true"/> <!-- CAUTION: keyword fields must be stored too otherwise it will prevent to obtain the highlighting data for exact matches! -->  
+	<dynamicField name="*_tags" type="text_keyword" multiValued="true" indexed="true" stored="true"/>
+	<dynamicField name="*__txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<!-- EDI-9003 - HIGHLIGHTING ISSUE: https://stackoverflow.com/questions/26287321/solr-stemming-breaks-highlighting
+	https://stackoverflow.com/questions/27516556/how-to-correctly-configure-solr-stemming
+	 EDI-9110/EDI-8896 - WILDCARD SEARCH ISSUE: The PorterStemFilter is also causing the last character to be removed (depending of the word)
+	 so when doing a wildcard search '*word*' with the full word, there is no match
+	 because 'wor' is produced by the analyzer ('word' without the last character) at the PorterStemFilter level.
+	 For all those tickets it is better to use text_rochade analyzers in place of specific language analyzers that often come with a 'Stemming' filter that causes us lot of troubles.
+	-->
+	<dynamicField name="*_en_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<dynamicField name="*_de_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<!-- declare indexing rule for most probable languages (in order to avoid as much as possible the need to update this schema on-the-fly... and so lose comments!) -->
+	<dynamicField name="*_fr_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<dynamicField name="*_es_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<dynamicField name="*_pt_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<dynamicField name="*_zh_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<dynamicField name="*_jp_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<dynamicField name="*_ar_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<dynamicField name="*_hi_txt" type="text_rochade" multiValued="false" indexed="true" stored="true"/>
+	<!-- For releases 9.90 and up -->
+	<dynamicField name="*_sorting" type="alphaOnlySort" multiValued="false" indexed="true" required="false" stored="false"/>
+	<!-- For releases 9.91SP1 and up -->
+	<dynamicField name="*_tagPointerIds" type="string" multiValued="true" indexed="true" stored="true"/>
+	
+	<!-- For releases 8.90 and up -->
+	<copyField source="NAME__txt" dest="auto_complete"/>
+	<copyField source="NAME__txt" dest="suggest_phrase_field"/>
+	
+	<!-- For releases 9.91SP1 and up -->
+	<!-- If this is activated, it prevents to do partial update of our indexed documents
+	otherwise duplicate values will be added in keyword fields at each partial update of a Solr document.
+	Is is because we need to store the keyword fields to obtain the highlighting on exact match searches.
+	See https://lucene.apache.org/solr/guide/7_1/updating-parts-of-documents.html
+	<copyField source="*_txt" dest="*_keyword"/>
+	-->
+	<copyField source="roles" dest="suggest_context_field"/>
+	<copyField source="contextIds" dest="suggest_context_field"/>
+	<copyField source="isGovernedItem" dest="suggest_context_field"/>
+	
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

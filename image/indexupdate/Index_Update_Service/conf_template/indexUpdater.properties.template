@@ -50,14 +50,14 @@ databaseName=AP-DATA
 # empty user will enable the remote user access mode (remote user will need to provide credentials)
 # a user must be set when trusted=false
 # ------------------------------------------------------------------------------------------------
-user=IS-IDX-Update
+user=<DI_SERVER_USER>
 
 # ------------------------------------------------------------------------------------------------
 # Password for the user account
 # or specify trusted=true if you want to use the trusted connection feature of Rochade
 # or keep this empty with trusted=false then Account Utilility will be used to retrieve the live password
 # ------------------------------------------------------------------------------------------------
-password=
+password=<DI_SERVER_PASS>
 
 # ------------------------------------------------------------------------------------------------
 # Enable trusted connection by defining the setting 'trusted' to 'true'.
@@ -68,7 +68,7 @@ password=
 # - in the /lib folder (next to the jar files)
 # - or next to the script running the tool (IndexUpdater.cmd or IndexUpdater.sh)
 # ------------------------------------------------------------------------------------------------
-trusted=true
+trusted=<DI_SOLR_TRUSTED>
 
 # ------------------------------------------------------------------------------------------------
 # AccountUtility

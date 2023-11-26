@@ -27,16 +27,17 @@ cp $INDEX_UPDATER_CONFIG_FILE.template $INDEX_UPDATER_CONFIG_FILE
 
 replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SOLR_HOST>"   $DI_SOLR_HOST
 replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SOLR_PORT>"   $DI_SOLR_PORT
+replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SOLR_TRUSTED>"  $DI_SOLR_TRUSTED
 replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SERVER_HOST>" $DI_SERVER_HOST
 replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SERVER_PORT>" $DI_SERVER_PORT
 replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SERVER_USER>" $DI_SERVER_USER
 replace_tag_in_file $INDEX_UPDATER_CONFIG_FILE "<DI_SERVER_PASS>" $DI_SERVER_PASS
 
+
+LOG4J_CONFIG_FILE=/home/rocket/Index_Update_Service/conf/log4j2.xml
+cp $LOG4J_CONFIG_FILE.template $LOG4J_CONFIG_FILE
+replace_tag_in_file $LOG4J_CONFIG_FILE "<DI_SOLR_ERROR_LEVEL>" $DI_SOLR_ERROR_LEVEL
+
 cd /home/rocket/Index_Update_Service/bin
 
 ./IndexUpdateService.sh
-
-
-
-
-
