@@ -4,6 +4,8 @@ FROM solr:8.11.2
 
 ENV DI_SOLR_CONFIG_DIR=/var/solr/data/configsets
 
+COPY ./rochade          $DI_SOLR_CONFIG_DIR/rochade/   
+
 COPY ./configsets/BigData_configs          $DI_SOLR_CONFIG_DIR/BigData_configs/        
 COPY ./configsets/DataIntegration_configs  $DI_SOLR_CONFIG_DIR/DataIntegration_configs/
 COPY ./configsets/Models_configs           $DI_SOLR_CONFIG_DIR/Models_configs/       
