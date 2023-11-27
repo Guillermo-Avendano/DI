@@ -92,7 +92,7 @@ for local_pv in ${!di_folder[@]}; do
                 replace_tag_in_file $config_file "<DI_SOLR_HOST>" $DI_SOLR_HOST
                 replace_tag_in_file $config_file "<DI_SOLR_PORT>" $DI_SOLR_PORT
 
-                eplace_tag_in_file $config_file "<DI_WEBAPP_HOST>" $DI_WEBAPP_HOST
+                replace_tag_in_file $config_file "<DI_WEBAPP_HOST>" $DI_WEBAPP_HOST
 
             else
                 echo "No files to process in: $curr_dir/$file_pattern"
