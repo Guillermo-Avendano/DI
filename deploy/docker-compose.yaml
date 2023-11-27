@@ -25,7 +25,7 @@ services:
 
   datainit:
       image: busybox:latest
-      command: sh -c "chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs && chown -R 3003:0 /home/rocket/conf && chown -R 3003:0 /home/rocket/tomcat/logs"
+      command: sh -c "chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs && chown -R 3003:0 /home/rocket/conf && chown -R 3003:0 /home/rocket/tomcat/logs && chown 8983:0 -R /var/solr/data/configsets"
       volumes:
       - di_server_appl:/home/rocket/rochade/appl
       - di_server_datbas:/home/rocket/rochade/datbas
@@ -33,6 +33,7 @@ services:
       - di-indexupd_logs:/home/rocket/Index_Update_Service/logs
       - di_webapp_conf:/home/rocket/conf
       - di_webapp_logs:/home/rocket/tomcat/logs
+      - di_solr_data:/var/solr
       depends_on:
       - db1_empty_init
       - db2_empty_init
