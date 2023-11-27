@@ -102,4 +102,4 @@ WORKDIR /home/rocket
 EXPOSE 8080
 
 # Inicia Apache Tomcat al ejecutar el contenedor
-CMD ["/home/rocket/startup.sh", "run"]
+CMD ["sh","-c","./startup.sh"]
