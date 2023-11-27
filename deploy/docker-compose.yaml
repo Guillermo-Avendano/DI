@@ -85,9 +85,9 @@ services:
     #command: sh -c "sleep 9999999"
     environment:
        DI_SOLR_HOST: ${DI_SOLR_HOST}
-       DI_SOLR_PORT: 8983
+       DI_SOLR_PORT: "8983"
        DI_SERVER_HOST: ${DI_SERVER_HOST}
-       DI_SERVER_PORT: 8888
+       DI_SERVER_PORT: "8888"
        DI_SERVER_USER: ${DI_SERVER_USER}
        DI_SERVER_PASS: ${DI_SERVER_PASS}
        DI_SOLR_TRUSTED: "false"
@@ -108,13 +108,13 @@ services:
       - 8080:8080
     environment:
        DI_SOLR_HOST: ${DI_SOLR_HOST}
-       DI_SOLR_PORT: 8983
+       DI_SOLR_PORT: "8983"
        DI_SERVER_HOST: ${DI_SERVER_HOST}
-       DI_SERVER_PORT: 8888
+       DI_SERVER_PORT: "8888"
        DI_SERVER_USER: ${DI_SERVER_USER}
        DI_SERVER_PASS: ${DI_SERVER_PASS}
        DI_POSTGRES_HOST: ${DI_POSTGRES_HOST}
-       DI_POSTGRES_PORT: 5432
+       DI_POSTGRES_PORT: "5432"
        DI_POSTGRES_USER: ${DI_POSTGRES_USER}
        DI_POSTGRES_PASS: ${DI_POSTGRES_PASS}
        DI_WEBAPP_HOST: ${DI_WEBAPP_HOST}

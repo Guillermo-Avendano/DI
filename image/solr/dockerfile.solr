@@ -16,3 +16,4 @@ COPY ./configsets/BusinessTermView_configs $DI_SOLR_CONFIG_DIR/BusinessTermView_
 COPY ./configsets/DataStructure_configs    $DI_SOLR_CONFIG_DIR/DataStructure_configs/  
 COPY ./configsets/metaApp_configs          $DI_SOLR_CONFIG_DIR/metaApp_configs/
 
+RUN chown 8983:8983 -R $DI_SOLR_CONFIG_DIR/
