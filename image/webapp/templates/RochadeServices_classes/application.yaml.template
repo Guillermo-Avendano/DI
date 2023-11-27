@@ -7,7 +7,7 @@ spring:
       fallback:
         enabled: true
         #path-patterns:
-        #  - /**
+        #  - /** 
         #locations:
         #  - /
         files:
