@@ -2,8 +2,8 @@ version: "3.0"
       
 volumes:
   di_solr_data:
-  di-indexupd_logs:
-  di-indexupd_conf:
+  di_indexupd_logs:
+  di_indexupd_conf:
   di_server_datbas:
   di_server_appl:
   di_workflow_dbdata:
@@ -29,8 +29,8 @@ services:
       volumes:
       - di_server_appl:/home/rocket/rochade/appl
       - di_server_datbas:/home/rocket/rochade/datbas
-      - di-indexupd_conf:/home/rocket/Index_Update_Service/conf
-      - di-indexupd_logs:/home/rocket/Index_Update_Service/logs
+      - di_indexupd_conf:/home/rocket/Index_Update_Service/conf
+      - di_indexupd_logs:/home/rocket/Index_Update_Service/logs
       - di_webapp_conf:/home/rocket/conf
       - di_webapp_logs:/home/rocket/tomcat/logs
       - di_solr_data:/var/solr
@@ -41,8 +41,8 @@ services:
     image: postgres:14-alpine
     container_name: di-workflow
     hostname: di-workflow
-    ports:
-    - "5432:5432"
+    #ports:
+    #- "5432:5432"
     environment:
       POSTGRES_USER: ${DI_POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${DI_POSTGRES_PASS:-postgres}
@@ -63,7 +63,7 @@ services:
       DI_SERVER_LICENSE_NUMBER: ${DI_SERVER_LICENSE_NUMBER}
       DI_SERVER_LICENSE_COMPANY: ${DI_SERVER_LICENSE_COMPANY}
     ports:
-      - '8888:8888'
+      - '${DI_SERVER_EXTERNAL_PORT}:8888'
     volumes:
     - di_server_datbas:/home/rocket/rochade/datbas
     - di_server_appl:/home/rocket/rochade/appl
@@ -76,8 +76,8 @@ services:
     image: guillermoavendano/di-solr:8.11.2
     container_name: di-solr
     hostname: di-solr
-    ports:
-     - "8983:8983"
+    #ports:
+    # - "8983:8983"
     volumes:
       - di_solr_data:/var/solr
   di-indexupd:
@@ -94,8 +94,8 @@ services:
        DI_SOLR_TRUSTED: "false"
        #DI_SOLR_ERROR_LEVEL: "DEBUG"
     volumes:
-    - di-indexupd_conf:/home/rocket/Index_Update_Service/conf
-    - di-indexupd_logs:/home/rocket/Index_Update_Service/logs
+    - di_indexupd_conf:/home/rocket/Index_Update_Service/conf
+    - di_indexupd_logs:/home/rocket/Index_Update_Service/logs
     depends_on:
       - datainit
       - di-solr  
@@ -106,7 +106,7 @@ services:
     hostname: di-webapp
     #command: sh -c "sleep 9999999"
     ports:
-      - 8080:8080
+      - '${DI_SERVER_EXTERNAL_PORT}:8080'
     environment:
        DI_SOLR_HOST: ${DI_SOLR_HOST}
        DI_SOLR_PORT: "8983"
