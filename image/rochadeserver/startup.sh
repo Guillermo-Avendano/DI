@@ -13,7 +13,26 @@ replace_tag_in_file() {
     fi
 }
 
+replace_key(){
+filename=$1
+key_search=$2
+new_value=$3
+
+while IFS='=' read -r key value || [ -n "$key" ]; do
+    if [ "$key" = "$key_search" ]; then
+        echo "$key=$new_value"
+    else
+        echo "$key=$value"
+    fi
+done < "$filename" > "$filename.new"
+
+mv "$filename.new" "$filename"
+
+
+}
 # $DI_SERVER_LICENSE_NUMBER, $DI_SERVER_LICENSE_COMPANY are environment variables comming from image's environment variables
+
+SERVER_INI=/home/rocket/rochade/appl/server.ini 
 
 RO_APPL="/home/rocket/rochade/appl"
 
@@ -21,12 +40,8 @@ if [ -z "$(ls -A "$RO_APPL")" ]; then
    cp /home/rocket/rochade/appl_template/* /home/rocket/rochade/appl/
 fi
 
-SERVER_INI=/home/rocket/rochade/appl/server.ini 
-
-cp $SERVER_INI.template $SERVER_INI
-
-replace_tag_in_file /home/rocket/rochade/appl/server.ini "<DI_SERVER_LICENSE_NUMBER>" $DI_SERVER_LICENSE_NUMBER
-replace_tag_in_file /home/rocket/rochade/appl/server.ini "<DI_SERVER_LICENSE_COMPANY>" "$DI_SERVER_LICENSE_COMPANY"
+replace_key $SERVER_INI "LICENSE" $DI_SERVER_LICENSE_NUMBER
+replace_key $SERVER_INI "COMPANY" "$DI_SERVER_LICENSE_COMPANY"
 
 cd /home/rocket/rochade/sbin
 
