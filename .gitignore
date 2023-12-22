@@ -11,3 +11,5 @@ image/rochadeserver/rochade/ldapsrch/log4j2.xml
 image/rochadeserver/rochade/ldapsrch/mina-core.jar
 image/rochadeserver/rochade/ldapsrch/rochade.jar
 image/rochadeserver/rochade/ldapsrch/slf4j-api.jar
+image/test/webapp/graphviz-2.38.0-linux64.tar.Z
+image/test/webapp/postgresql-42.7.0.jar

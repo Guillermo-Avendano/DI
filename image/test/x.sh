@@ -91,9 +91,9 @@ DI_POSTGRES_PASS=postgres
 # Not implemented - Internal
 DI_WEBAPP_HOST=di-webapp
 
+TOMCAT_WEBAPPS=/mnt/c/Rocket.Git/di/image/test/webapp
 
-
-rwf_properties="/home/rocket/tomcat/webapps/BgWebServices/WEB-INF/classes/rwf.properties"
+rwf_properties="$TOMCAT_WEBAPPS/BgWebServices/WEB-INF/classes/rwf.properties"
 
 replace_key $rwf_properties "host" $DI_SERVER_HOST
 replace_key $rwf_properties "user" $DI_SERVER_USER
@@ -103,28 +103,28 @@ replace_key $rwf_properties "bg.url" "http\://$DI_WEBAPP_HOST\:8080/rochade/"
 
 #------------------
 # GlobalSearch/WEB-INF/classes
-GlobalSearch_startup_properties="home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/startup.properties"
+GlobalSearch_startup_properties="$TOMCAT_WEBAPPS/GlobalSearch/WEB-INF/classes/startup.properties"
 replace_key $GlobalSearch_startup_properties "hostName" $DI_SERVER_HOST
 replace_key $GlobalSearch_startup_properties "mg.ui.URL" "http\://$DI_WEBAPP_HOST\:8080/rochade"
 
 #------------------
 # GlobalSearch/WEB-INF/classes/mg
 
-GlobalSearch_mg_sorl_properties="home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/mg/sorl.properties"
+GlobalSearch_mg_sorl_properties="$TOMCAT_WEBAPPS/GlobalSearch/WEB-INF/classes/mg/sorl.properties"
 replace_key $GlobalSearch_mg_sorl_properties "httpSolrServer" "http\://$DI_SOLR_HOST\:8983/solr/"
 
-GlobalSearch_mg_startup_properties="home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/mg/startup.properties"
+GlobalSearch_mg_startup_properties="$TOMCAT_WEBAPPS/GlobalSearch/WEB-INF/classes/mg/startup.properties"
 replace_key $GlobalSearch_mg_startup_properties "hostName" $DI_SERVER_HOST
 replace_key $GlobalSearch_mg_startup_properties "mg.ui.URL" "http\://$DI_WEBAPP_HOST\:8080/rochade"
 
 #------------------
 # GlobalSearch/WEB-INF/classes/solr
-GlobalSearch_solr_sorl_properties="home/rocket/tomcat/webapps/GlobalSearch/WEB-INF/classes/solr/sorl.properties"
+GlobalSearch_solr_sorl_properties="$TOMCAT_WEBAPPS/GlobalSearch/WEB-INF/classes/solr/sorl.properties"
 replace_key $GlobalSearch_solr_sorl_properties "httpSolrServer" "http\://$DI_SOLR_HOST\:8983/solr/"
 
 #------------------
 # RaaS/WEB-INF/classes
-RaaS_camunda_cfg_xml="home/rocket/tomcat/webapps/RaaS/WEB-INF/classes/camunda.cfg.xml"
+RaaS_camunda_cfg_xml="$TOMCAT_WEBAPPS/RaaS/WEB-INF/classes/camunda.cfg.xml"
 replace_camunda_xml $RaaS_camunda_cfg_xml "jdbcUrl" "jdbc:postgresql://$DI_POSTGRES_HOST:$DI_POSTGRES_PORT/camunda"
 replace_camunda_xml $RaaS_camunda_cfg_xml "jdbcDriver" "org.postgresql.Driver"
 replace_camunda_xml $RaaS_camunda_cfg_xml "jdbcUsername" "$DI_POSTGRES_USER"
@@ -132,33 +132,31 @@ replace_camunda_xml $RaaS_camunda_cfg_xml "jdbcPassword" "$DI_POSTGRES_PASS"
 
 #------------------
 # RaaS/WEB-INF/
-RaaS_web_xml="home/rocket/tomcat/webapps/RaaS/WEB-INF/web.xml"
+RaaS_web_xml="$TOMCAT_WEBAPPS/RaaS/WEB-INF/web.xml"
 replace_key_web_xml $RaaS_camunda_cfg_xml "host" "$DI_SERVER_HOST"
 
 #------------------
 # rochade/WEB-INF/classes
 
-rochade_application_is_properties="home/rocket/tomcat/webapps/rochade/WEB-INF/classes/application_is.properties"
+rochade_application_is_properties="$TOMCAT_WEBAPPS/rochade/WEB-INF/classes/application_is.properties"
 replace_key $rochade_application_is_properties "httpSolrServer" "http\://$DI_SOLR_HOST\:8983/solr/"
 
-rochade_camunda_cfg_xml="home/rocket/tomcat/webapps/rochade/WEB-INF/classes/camunda.cfg.xml"
+rochade_camunda_cfg_xml="$TOMCAT_WEBAPPS/rochade/WEB-INF/classes/camunda.cfg.xml"
 replace_camunda_xml $RaaS_camunda_cfg_xml "jdbcUrl" "jdbc:postgresql://$DI_POSTGRES_HOST:$DI_POSTGRES_PORT/camunda"
 replace_camunda_xml $RaaS_camunda_cfg_xml "jdbcDriver" "org.postgresql.Driver"
 replace_camunda_xml $RaaS_camunda_cfg_xml "jdbcUsername" "$DI_POSTGRES_USER"
 replace_camunda_xml $RaaS_camunda_cfg_xml "jdbcPassword" "$DI_POSTGRES_PASS"
 
-rochade_rdmServices_properties="home/rocket/tomcat/webapps/rochade/WEB-INF/classes/rdmServices.properties"
+rochade_rdmServices_properties="$TOMCAT_WEBAPPS/rochade/WEB-INF/classes/rdmServices.properties"
 replace_key $rochade_rdmServices_properties "host" "$DI_SERVER_HOST"
 
-rochade_startup_properties="home/rocket/tomcat/webapps/rochade/WEB-INF/classes/startup.properties"
+rochade_startup_properties="$TOMCAT_WEBAPPS/rochade/WEB-INF/classes/startup.properties"
 
 replace_key $rochade_startup_properties "server.User\ connection=host\"" "\"$DI_SERVER_HOST\" port\=\"8888\""
 
-rochade_wf_properties="home/rocket/tomcat/webapps/rochade/WEB-INF/classes/wf.properties"
+rochade_wf_properties="$TOMCAT_WEBAPPS/rochade/WEB-INF/classes/wf.properties"
 replace_key $rochade_wf_properties "bg.webServices" "http\://$DI_WEBAPP_HOST\:8080/BgWebServices"
 replace_tag_in_file $rochade_wf_properties "camunda.h2.host" "#camunda.h2.host"
 replace_tag_in_file $rochade_wf_properties "camunda.h2.rpcServiceAvailable" "#camunda.h2.rpcServiceAvailable"
 
-cd /home/rocket/tomcat/bin
 
-./catalina.sh run

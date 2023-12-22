@@ -166,6 +166,8 @@ asg:
       basic-auth:
         enabled: true
         inbound: true
+        username: <DI_SERVER_USER>
+        password: <DI_SERVER_PASS>
         force-prompting-on-expired-session: false
         url-patterns:
           - /rest/*
