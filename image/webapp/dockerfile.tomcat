@@ -20,8 +20,8 @@ ARG DI_SOLR_PORT=8983
 ARG DI_WEBAPP_HOST=di-webapp
 
 # Intall java by according version
-RUN dnf -y install java-1.8.0-openjdk; 
-    #dnf -y install java-11-openjdk; 
+#RUN dnf -y install java-1.8.0-openjdk; 
+RUN dnf -y install java-11-openjdk; 
 
 # Add "rocket" user with uid=3003
 RUN useradd -u 3003 -m rocket
