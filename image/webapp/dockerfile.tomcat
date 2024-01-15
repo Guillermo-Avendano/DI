@@ -19,6 +19,8 @@ ARG DI_SOLR_PORT=8983
 
 ARG DI_WEBAPP_HOST=di-webapp
 
+ARG TOMCAT_VERSION=10.1.18
+
 # Intall java by according version
 #RUN dnf -y install java-1.8.0-openjdk; 
 RUN dnf -y install java-11-openjdk; 
@@ -26,15 +28,15 @@ RUN dnf -y install java-11-openjdk;
 # Add "rocket" user with uid=3003
 RUN useradd -u 3003 -m rocket
 
-COPY ./apache-tomcat-9.0.84.tar.gz /tmp/apache-tomcat-9.0.84.tar.gz
+COPY ./apache-tomcat-$TOMCAT_VERSION.tar.gz /tmp/apache-tomcat-$TOMCAT_VERSION.tar.gz
 COPY ./graphviz-2.38.0-linux64.tar.Z /tmp/graphviz-2.38.0-linux64.tar.Z
 
 RUN mkdir /home/rocket/tomcat
 RUN mkdir /home/rocket/tomcat/graphviz
 
-# Installs Apache Tomcat 9.0.81
-RUN tar -xzvf /tmp/apache-tomcat-9.0.84.tar.gz -C /home/rocket/tomcat --strip-components=1  \
-    && rm /tmp/apache-tomcat-9.0.84.tar.gz
+# Installs Apache Tomcat $TOMCAT_VERSION
+RUN tar -xzvf /tmp/apache-tomcat-$TOMCAT_VERSION.tar.gz -C /home/rocket/tomcat --strip-components=1  \
+    && rm /tmp/apache-tomcat-$TOMCAT_VERSION.tar.gz
 
 # Installs graphviz
 RUN cd /home/rocket/tomcat/graphviz  \
