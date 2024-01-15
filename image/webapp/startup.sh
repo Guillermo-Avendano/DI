@@ -1,6 +1,7 @@
 #!/bin/bash
 # Author: Guilllermo Avendaño
 # Cretion Date: 11/23/2023
+# 01/15/2024 - Update 
 
 replace_tag_in_file() {
     local filename=$1
@@ -13,6 +14,31 @@ replace_tag_in_file() {
         replace=$(printf '%s\n' "$replace" | sed -e 's/[]\/$*.^[]/\\&/g');
         sed -i'' -e "s/$search/$replace/g" $filename
     fi
+}
+
+
+replace_config() {
+    
+    local config_file=$1
+
+    echo "Processing: $config_file"   
+    
+    # replace all the possible parameters 
+    replace_tag_in_file $config_file "<DI_SERVER_HOST>" $DI_SERVER_HOST
+    replace_tag_in_file $config_file "<DI_SERVER_PORT>" $DI_SERVER_PORT
+    replace_tag_in_file $config_file "<DI_SERVER_USER>" $DI_SERVER_USER
+    replace_tag_in_file $config_file "<DI_SERVER_PASS>" $DI_SERVER_PASS
+
+    replace_tag_in_file $config_file "<DI_POSTGRES_HOST>" $DI_POSTGRES_HOST
+    replace_tag_in_file $config_file "<DI_POSTGRES_PORT>" $DI_POSTGRES_PORT
+    replace_tag_in_file $config_file "<DI_POSTGRES_USER>" $DI_POSTGRES_USER
+    replace_tag_in_file $config_file "<DI_POSTGRES_PASS>" $DI_POSTGRES_PASS
+
+    replace_tag_in_file $config_file "<DI_SOLR_HOST>" $DI_SOLR_HOST
+    replace_tag_in_file $config_file "<DI_SOLR_PORT>" $DI_SOLR_PORT
+
+    replace_tag_in_file $config_file "<DI_WEBAPP_HOST>" $DI_WEBAPP_HOST
+
 }
 
 
@@ -62,42 +88,34 @@ for local_pv in ${!di_folder[@]}; do
         # copy & replace configuration files in Di apps
         cp $DI_PERSISTENT_TOMCAT_CONF/${local_pv}/* ${curr_dir}
 
-        # File pattern to process
-        file_pattern="*.template"
+        cd ${curr_dir} || exit
 
-        # Iterate in $curr_dir for all files with $file_pattern
-        for template_file in "$curr_dir"/$file_pattern; do
+        # Copiar archivos .template.xml a .xml en el directorio de destino
+        if ls "$curr_dir"/*.template.xml 1> /dev/null 2>&1; then
+            for file in *.template.xml; do
+                config_file="${file/.template/}"
+                cp "$file" "$config_file"
+                replace_config $config_file
+            done
+        fi
 
-            # Verify if the file exists
-            if [ -f "$template_file" ]; then
+        # Copiar archivos .template.properties a .properties en el directorio de destino
+        if ls "$curr_dir"/*.template.properties 1> /dev/null 2>&1; then
+            for file in *.template.properties; do         
+                config_file="${file/.template/}"
+                cp "$file" "$config_file"
+                replace_config $config_file
+            done
+        fi
 
-                config_file=${template_file%.template}
-                          
-                # it creates a copy of *.xxx.template as *.xxx
-                cp $template_file $config_file
-                
-                echo "Processing: $config_file"   
-                
-                # replace all the possible parameters 
-                replace_tag_in_file $config_file "<DI_SERVER_HOST>" $DI_SERVER_HOST
-                replace_tag_in_file $config_file "<DI_SERVER_PORT>" $DI_SERVER_PORT
-                replace_tag_in_file $config_file "<DI_SERVER_USER>" $DI_SERVER_USER
-                replace_tag_in_file $config_file "<DI_SERVER_PASS>" $DI_SERVER_PASS
-
-                replace_tag_in_file $config_file "<DI_POSTGRES_HOST>" $DI_POSTGRES_HOST
-                replace_tag_in_file $config_file "<DI_POSTGRES_PORT>" $DI_POSTGRES_PORT
-                replace_tag_in_file $config_file "<DI_POSTGRES_USER>" $DI_POSTGRES_USER
-                replace_tag_in_file $config_file "<DI_POSTGRES_PASS>" $DI_POSTGRES_PASS
-
-                replace_tag_in_file $config_file "<DI_SOLR_HOST>" $DI_SOLR_HOST
-                replace_tag_in_file $config_file "<DI_SOLR_PORT>" $DI_SOLR_PORT
-
-                replace_tag_in_file $config_file "<DI_WEBAPP_HOST>" $DI_WEBAPP_HOST
-
-            else
-                echo "No files to process in: $curr_dir/$file_pattern"
-            fi
-        done
+        # Copiar archivos .template.yaml a .yaml en el directorio de destino
+        if ls "$curr_dir"/*.template.yaml 1> /dev/null 2>&1; then
+            for file in *.template.yaml; do      
+                config_file="${file/.template/}"
+                cp "$file" "$config_file"
+                replace_config $config_file
+            done
+        fi    
     fi # if the folder exists 
 done
 

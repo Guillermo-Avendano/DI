@@ -19,7 +19,7 @@ ARG DI_SOLR_PORT=8983
 
 ARG DI_WEBAPP_HOST=di-webapp
 
-ARG TOMCAT_VERSION=10.1.18
+ARG TOMCAT_VERSION=9.0.85
 
 # Intall java by according version
 #RUN dnf -y install java-1.8.0-openjdk; 

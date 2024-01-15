@@ -7,7 +7,7 @@ spring:
       fallback:
         enabled: true
         #path-patterns:
-        #  - /** 
+        #  - /**
         #locations:
         #  - /
         files:
@@ -142,14 +142,14 @@ asg:
       static-trusted-connection:
         enabled: false
         inbound: true
-        username: IS-IDX-Read
+        username: ADMIN
         url-patterns:
           - /rest/*
         order: 11
       static-plain:
         enabled: false
         inbound: true
-        username: IS-IDX-Read
+        username: ADMIN
         password: 
         url-patterns:
           - /rest/*
@@ -166,8 +166,6 @@ asg:
       basic-auth:
         enabled: true
         inbound: true
-        username: <DI_SERVER_USER>
-        password: <DI_SERVER_PASS>
         force-prompting-on-expired-session: false
         url-patterns:
           - /rest/*
