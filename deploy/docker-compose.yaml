@@ -12,13 +12,13 @@ volumes:
   
 services:   
   db1_empty_init:
-      image: rocketsoftware2024/di-db1empty:10.00.002
+      image: $DI_DB1_IMAGE
       command: sh -c "if [ ! -e /home/rocket/rochade/datbas/d1.rodb ]; then cp /root/d1.rodb /home/rocket/rochade/datbas/d1.rodb; fi"
       volumes:
       - di_server_datbas:/home/rocket/rochade/datbas
 
   db2_empty_init:
-      image: rocketsoftware2024/di-db2empty:10.00.002
+      image: $DI_DB2_IMAGE
       command: sh -c "if [ ! -e /home/rocket/rochade/datbas/d2.rodb ]; then cp /root/d2.rodb /home/rocket/rochade/datbas/d2.rodb; fi"
       volumes:
       - di_server_datbas:/home/rocket/rochade/datbas
@@ -38,7 +38,7 @@ services:
       - db1_empty_init
       - db2_empty_init
   di-workflow:
-    image: postgres:14-alpine
+    image: $DI_WORKFLOW_IMAGE
     container_name: di-workflow
     hostname: di-workflow
     #ports:
@@ -55,7 +55,7 @@ services:
       timeout: 5s
       retries: 5
   di-server:
-    image: 'rocketsoftware2024/di-server:10.00.002'
+    image: $DI_ROCHADE_SERVER_IMAGE
     container_name: di-server
     hostname: di-server
     #command: sh -c "sleep 9999999"
@@ -73,7 +73,7 @@ services:
       - db2_empty_init
 
   di-solr:
-    image: rocketsoftware2024/di-solr:8.11.2
+    image: $DI_SOLR_IMAGE
     container_name: di-solr
     hostname: di-solr
     #ports:
@@ -81,7 +81,7 @@ services:
     volumes:
       - di_solr_data:/var/solr
   di-indexupd:
-    image: 'rocketsoftware2024/di-indexupd:10.00.002'
+    image: $DI_INDEX_UPDATE_IMAGE
     container_name: di-indexupd
     #command: sh -c "sleep 9999999"
     environment:
@@ -101,7 +101,7 @@ services:
       - di-solr  
 
   di-webapp:
-    image: 'rocketsoftware2024/di-webapp:10.00.002'
+    image: DI_APPS_IMAGE
     container_name: di-webapp
     hostname: di-webapp
     #command: sh -c "sleep 9999999"
