@@ -28,21 +28,21 @@ spring:
         simple:
           instances:
             login:
-              - uri: http://<DI_SERVER_HOST>:8080/RochadeServices
+              - uri: http://di-webapp:8080/RochadeServices
             queries:
-              - uri: http://<DI_SERVER_HOST>:8080/RochadeServices
+              - uri: http://di-webapp:8080/RochadeServices
             fts:
-              - uri: http://<DI_SERVER_HOST>:8080/RochadeServices
+              - uri: http://di-webapp:8080/RochadeServices
             model:
-              - uri: http://<DI_SERVER_HOST>:8080/RochadeServices
+              - uri: http://di-webapp:8080/RochadeServices
             items:
-              - uri: http://<DI_SERVER_HOST>:8080/RochadeServices
+              - uri: http://di-webapp:8080/RochadeServices
             icons:
-              - uri: http://<DI_SERVER_HOST>:8080/RochadeServices
+              - uri: http://di-webapp:8080/RochadeServices
             profiles:
-              - uri: http://<DI_SERVER_HOST>:8080/RochadeServices
+              - uri: http://di-webapp:8080/RochadeServices
             tags:
-              - uri: http://<DI_SERVER_HOST>:8080/RochadeServices
+              - uri: http://di-webapp:8080/RochadeServices
               
 server:
   port: 8501
