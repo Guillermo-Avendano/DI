@@ -1,0 +1,334 @@
+spring:
+  application:
+    name: BdiServices
+  web:
+    resources:
+      # This is an extension by RocketSoftware to mimic behavior of Tomcat default servlet that falls back on some specific files if resource not found
+      fallback:
+        enabled: true
+        #path-patterns:
+        #  - /**
+        #locations:
+        #  - /
+        files:
+          - index.html
+          #- index.jsp
+      cache:
+        period: 600
+  data:
+    rest:
+      default-media-type: application/json
+      # This is an extension by RocketSoftware, which allows to set the default Accept header that must be used when sending
+      # a request (like REST clients do to call remote services).
+      # This aspect is critical for preserving correct propagation of errors between BDI and RochadeServices layers.
+      default-accept-header: ''
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            login:
+              - uri: http://<DI_WEBAPP_HOST>:8080/RochadeServices
+            queries:
+              - uri: http://<DI_WEBAPP_HOST>:8080/RochadeServices
+            fts:
+              - uri: http://<DI_WEBAPP_HOST>:8080/RochadeServices
+            model:
+              - uri: http://<DI_WEBAPP_HOST>:8080/RochadeServices
+            items:
+              - uri: http://<DI_WEBAPP_HOST>:8080/RochadeServices
+            icons:
+              - uri: http://<DI_WEBAPP_HOST>:8080/RochadeServices
+            profiles:
+              - uri: http://<DI_WEBAPP_HOST>:8080/RochadeServices
+            tags:
+              - uri: http://<DI_WEBAPP_HOST>:8080/RochadeServices
+              
+server:
+  port: 8501
+  forward-headers-strategy: FRAMEWORK
+  error:
+    include-message: on-param
+    include-stacktrace: never
+    #include-stacktrace: never
+    include-binding-errors: always
+    include-exception: false
+  servlet:
+    session:
+      timeout: 15m
+  compression:
+    # Enable response compression
+    enabled: true
+    # The comma-separated list of mime types that should be compressed
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    # Compress the response only if the response size is at least 1KB
+    min-response-size: 1024
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    org.springframework.beans.factory.support: ERROR
+    org.springframework.boot.web: ERROR
+    de.rochade: ERROR
+    de.rochade.ap.Application: ERROR
+    de.rochade.ds.Package: ERROR
+    com.rochade.services.bdi.security: ERROR
+    com.rochade.services.bdi.pocs: ERROR
+    com.rochade.services.bdi.fts: ERROR
+    com.rochade.services.common.forwarding: ERROR
+    com.rochade.diagram.bdi: ERROR
+  #file:
+    #path: ${user.home}/rochade/services/bdi/${spring.application.name}/logs
+    #name: ${logging.file.path}/${spring.application.name}.log
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{[%-5level]} %X{CORRELATION_ID} %X{TENANT}:%X{USER} %X{SERVICE} %style{[%t]}{magenta} %style{%c:%M}{cyan} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %X{CORRELATION_ID} %X{TENANT}:%X{USER} [%t] %c:%M - %msg%n'
+
+management:
+  health:
+    ldap:
+      enabled: false
+
+asg:
+  rochade:
+    fts:
+      exclude-cores:
+        - Stitching
+      exclude-typeIds:
+        - DWR_TFM_TRANSFORMATION
+        - DWR_TFM_TRANSFORMATION_TYPE
+        - DWR_TFM_TRANSFORMATION_MAP
+        - DWR_TAG
+        - DWR_ANL_RPT_MAP
+        - DWR_ANL_RPT_PROMPT
+        - DWR_ANL_DIMENSION_MAP
+        - DWR_TFM_PARAMETER_SET
+        - DWR_TFM_PARAMETER
+        - DWR_TFM_LINEAGE_DIMENSION
+      #This mapping define mapping between the BDI facet attributes and the Rochade facet attributes
+      facetAttributeMapping:
+        groups: contextIds
+        itemTypes: type
+        applications: applications
+        markers: markers
+    model:
+      uiTypeMappingFile: types_mapping.properties
+      itemCategoryMappingFile: itemCategories_mapping.properties
+    bdi:
+      diagrams:
+        lineage:
+          scopes:
+            NEIGHBORS:
+              name: NEIGHBORS
+              what: name,id,type,scopeId,level,attribute
+              queryName: $query.name.lineage.e2e
+              depth: 10000
+              limit: 10000
+              hopsMode: true
+              condition: seedItemLevel=[element,structure]
+              references:
+                - APPLICATIONS
+            SOURCE_TO_TARGET:
+              name: SOURCE_TO_TARGET
+              what: name,id,type,scopeId,level,attribute
+              queryName: $query.name.lineage.e2e
+              depth: 10000
+              limit: 10000
+              hopsMode: false
+              condition: seedItemLevel=[element,structure]
+              references:
+                - APPLICATIONS
+              hardLimits:
+                shapes: 500
+            BACKWARD:
+              name: BACKWARD
+              what: name,id,type,scopeId,level,attribute
+              queryName: $query.name.lineage.bwd
+              depth: 10000
+              limit: 10000
+              hopsMode: false
+              condition: seedItemLevel=[element,structure]
+              references:
+                - APPLICATIONS
+            FORWARD:
+              name: FORWARD
+              what: name,id,type,scopeId,level,attribute
+              queryName: $query.name.lineage.fwd
+              depth: 10000
+              limit: 10000
+              hopsMode: false
+              condition: seedItemLevel=[element,structure]
+              references:
+                - APPLICATIONS
+            END_TO_END:
+              name: END_TO_END
+              what: name,id,type,scopeId,level,attribute
+              queryName: $query.name.lineage.e2e
+              depth: 10000
+              limit: 10000
+              hopsMode: false
+              condition: seedItemLevel=[element,structure]
+              references:
+                - APPLICATIONS
+          levels:
+            0:
+              name: element
+              label: element
+              condition: seedItemLevel=element
+            1:
+              name: structure
+              label: structure
+            2:
+              name: schema
+              label: schema
+            3:
+              name: system
+              label: system
+            4:
+              name: application
+              label: application
+  
+          maskWithTfm: $query.mask.lineage.withTfm
+          maskWithoutTfm: $query.mask.lineage.withoutTfm
+          edgeLabels: false
+          # when the soft limit is reached, the shapes will be grouped by distance, linked only to level separators
+          softLimits:
+            shapes: 200
+            edges: 200
+          # when the hard limit is reached, the shapes exceeding the limit will be hidden, represented only by a single action shape  
+          hardLimits:
+            shapes: 1000
+          #includeStats: true
+              
+        business-relationship:
+          scopes:
+            ALL_LINKED_ITEMS:
+              name: ALL_LINKED_ITEMS
+              what: name,id,type,scopeId,level,attribute
+              queryName: BDI_EndToEnd_BusinessItems
+              queryMask: Complete
+              depth: 1
+              limit: -1
+              hopsMode: false
+              condition: seedItemType=BPK__BUSINESS_ITEM*
+              references:
+                - APPLICATIONS
+
+            LINKED_BUSINESS_ITEMS:
+              name: LINKED_BUSINESS_ITEMS
+              what: name,id,type,scopeId,level,attribute
+              queryName: BDI_EndToEnd_BusinessItems
+              queryMask: BusinessItems
+              depth: 1
+              limit: -1
+              hopsMode: false
+              condition: seedItemType=BPK__BUSINESS_ITEM*
+              references:
+                - APPLICATIONS
+
+            LINKED_TECHNICAL_ITEMS:
+              name: LINKED_TECHNICAL_ITEMS
+              what: name,id,type,scopeId,level,attribute
+              queryName: BDI_EndToEnd_BusinessItems
+              queryMask: TechnicalItems
+              depth: 1
+              limit: -1
+              hopsMode: false
+              condition: seedItemType=BPK__BUSINESS_ITEM*
+              references:
+                - APPLICATIONS
+
+          edgeLabels: true
+
+        application-relationship:
+          scopes:
+            APPLICATION_DEPENDENCIES:
+              name: APPLICATION_DEPENDENCIES
+              what: name,id,type,scopeId,level,DWR_ARC_USES_IMAGE_KEY
+              queryName: _DWR_EndToEnd_BusAppl
+              queryMask: 
+              depth: 10000
+              limit: 100000
+              hopsMode: false
+              condition: seedItemType=DWR_ARC_BUSINESS_APPLICATION*
+              references:
+
+          edgeLabels: false
+
+  forwarding:
+    enabled: true
+    rules:
+      -
+        from-path: /rest/profiles
+        to-service-id: profiles
+        to-path: /rest/profiles
+        modify-headers:
+          request:
+            Accept: "application/vnd.raas-services-user-profile.v1+json"
+          response:
+            Content-Type: "application/vnd.bdi-services-user-profile.v1+json"
+
+  security:
+    # ALWAYS enable globally the ASG-services SDK security
+    enabled: true
+    default-tenant: RaaS
+    url-patterns:
+      - /rest/*
+    url-exclusion-patterns:
+      - /rest/login
+      - /rest/login/config
+    trusted-connection:
+      outbound: true
+      #trusted-key: _@trustedConnection.trustedKey@_
+      # if target file is empty, a secret key is generated at first time and saved to that file
+      trusted-key-file: trustedKey
+      # CAUTION: url-patterns must be explicitly defined as it it NOT taken from parent (asg.security.url-patterns)
+      url-patterns:
+        - /rest/*
+    extract-request-headers:
+      enabled: true
+      headers:
+        # if available forward Basic or Bearer Authentication to RochadeServices
+        - inbound: Authorization
+          outbound-url-patterns: ["/rest/*","/adminrest/*"]
+          outbound: Authorization
+    rochade:
+      login:
+        enforced: true
+        cookies-allowed: false
+      bearer-token:
+        public-key-file: bearer-token-public.key
+      raas-basic-auth:
+        enabled: true
+        force-prompting-on-expired-session: false
+        url-patterns:
+          - /rest/*
+        order: 6
+      raas-api-key-auth:
+        enabled: false
+        # if target file is empty, a secret key is generated at first time and saved to that file
+        user-agent-api-key-file: 
+        url-patterns:
+          - /rest/*
+        order: 2
+      raas-no-auth:
+        enabled: false
+        url-patterns:
+          - /rest/*
+        order: 18
+mock:
+  enabled: false
+  order: 12345
+  # the directory path where the stubbed jsons should be kept.
+  responseJsonPath: 
+  url-patterns:
+    - /rest/*
+  stubbedUrls: []
+  #
+  #  - urlPattern: /bdi/rest/items/{id}
+  #    method: GET
+  #    fileName: itemContent.json
+  #  - urlPattern: /bdi/rest/fts/searchfilters
+  #    method: GET
+  #    fileName: facets.json

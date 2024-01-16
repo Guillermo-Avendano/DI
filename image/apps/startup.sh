@@ -79,6 +79,8 @@ di_folder['rochade_classes']="/home/rocket/tomcat/webapps/rochade/WEB-INF/classe
 
 di_folder['RochadeServices_classes']="/home/rocket/tomcat/webapps/RochadeServices/WEB-INF/classes"
 
+di_folder['bdi_classes']="/home/rocket/tomcat/webapps/bdi/WEB-INF/classes"
+
 for local_pv in ${!di_folder[@]}; do
     # current directory
     curr_dir=${di_folder[${local_pv}]}
