@@ -1,0 +1,4 @@
+<Context path="/scanners" docBase="/home/rocket/.jenkins/workspace">
+    <Resources allowLinking="true" cachingAllowed="false"/>
+	<DirectoryListing enabled="true" />
+</Context>

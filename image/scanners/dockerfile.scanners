@@ -1,0 +1,79 @@
+# Author: Guilllermo Avendaño
+# Cretion Date: 01/18/2024
+# Rocky Linux 8 image
+FROM rockylinux:8
+
+# Parmeters
+
+ARG TOMCAT_VERSION=9.0.85
+
+# Install other tools
+RUN dnf -y install procps-ng net-tools numactl java-1.8.0-openjdk git nano
+
+# Clean up cache to reduce the image size
+RUN dnf clean all
+
+# Add "rocket" user with uid=3003
+RUN useradd -u 3003 -m rocket
+
+COPY ../apps/apache-tomcat-$TOMCAT_VERSION.tar.gz /tmp/apache-tomcat-$TOMCAT_VERSION.tar.gz
+
+RUN mkdir /home/rocket/tomcat
+
+# Installs Apache Tomcat $TOMCAT_VERSION
+RUN tar -xzvf /tmp/apache-tomcat-$TOMCAT_VERSION.tar.gz -C /home/rocket/tomcat --strip-components=1  \
+    && rm /tmp/apache-tomcat-$TOMCAT_VERSION.tar.gz
+
+# FROM MObius: Tomcat security configuration
+RUN sed -i "s/shutdown=\"SHUTDOWN\"/shutdown=\"KILLTHISSERVER\"/" /home/rocket/tomcat/conf/server.xml
+
+# FROM MObius: Hiding Tomcat details from Tomcat error page and application server error responses
+RUN sed -i '/<Host/ { /<\/Host>/! { N; }; s/\(<Host[^>]*>\)/\1\n    \n<Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false"\/>/; }' /home/rocket/tomcat/conf/server.xml
+
+# Copy "rochade" directory to rocket's home directory
+COPY ./webapps /home/rocket/tomcat/webapps/
+COPY ./.jenkins /home/rocket/.jenkins/
+
+RUN mkdir /home/rocket/tomcat/conf/Catalina/localhost
+COPY ./scanners.xml /home/rocket/tomcat/conf/Catalina/localhost/scanners.xml
+COPY ./web.xml /home/rocket/tomcat/conf/web.xml
+
+# Copy startup.sh script
+COPY ./startup.sh /home/rocket/startup.sh
+
+
+# Copy "rochade" directory to rocket's home directory
+COPY ./rochade /home/rocket/rochade/
+COPY ./appl_template /home/rocket/rochade/appl_template/
+
+# Copy startup.sh script
+COPY ./startup.sh /home/rocket/startup.sh
+
+# Change ownership, and execution rights of directories and files copied
+RUN chown 3003:0 -R /home/rocket/.jenkins 
+RUN chown 3003:0 -R /home/rocket/tomcat && chmod 775 /home/rocket/tomcat/bin/*.sh 
+RUN chown 3003:0 -R /home/rocket/rochade && chmod 775 /home/rocket/rochade/bin/*.so* 
+RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
+
+# Set "rocket" as default user 
+USER rocket
+
+ENV rocbase=/home/rocket/rochade
+
+ENV PATH=/home/rocket/rochade/bin:$PATH
+ENV LD_LIBRARY_PATH=/usr/lib64:/home/rocket/rochade/bin
+
+# set JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/jre
+
+#Adds java to PATH
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Set rocket's home as working directory
+WORKDIR /home/rocket
+
+# Expose the port 8888
+EXPOSE 8080
+
+# Default command to execute when the image is started
+CMD ["sh", "-c", "./startup.sh"]
