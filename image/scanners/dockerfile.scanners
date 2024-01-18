@@ -67,6 +67,8 @@ ENV LD_LIBRARY_PATH=/usr/lib64:/home/rocket/rochade/bin
 
 # set JAVA_HOME
 ENV JAVA_HOME=/usr/lib/jvm/jre
+ENV javahome=/usr/lib/jvm/jre
+
 
 #Adds java to PATH
 ENV PATH=$JAVA_HOME/bin:$PATH
