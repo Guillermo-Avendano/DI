@@ -9,6 +9,8 @@ volumes:
   di_workflow_dbdata:
   di_webapp_conf:
   di_webapp_logs:
+  di_jenkins_workspace:
+
   
 services:   
   db1_empty_init:
@@ -125,3 +127,13 @@ services:
     depends_on:
       - datainit  
       - di-server
+  di-scanners:
+    image: ${DI_SCANNERS}
+    container_name: di-scanners
+    hostname: di-scanners
+    #command: sh -c "sleep 9999999"
+    ports:
+      - '${DI_SCANNERS_EXTERNAL_PORT}:8080'
+    volumes:
+    - ./scanners:/home/rocket/.jenkins/workspace
+    - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
