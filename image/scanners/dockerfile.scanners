@@ -16,7 +16,7 @@ RUN dnf clean all
 # Add "rocket" user with uid=3003
 RUN useradd -u 3003 -m rocket
 
-COPY ../apps/apache-tomcat-$TOMCAT_VERSION.tar.gz /tmp/apache-tomcat-$TOMCAT_VERSION.tar.gz
+COPY ./apache-tomcat-$TOMCAT_VERSION.tar.gz /tmp/apache-tomcat-$TOMCAT_VERSION.tar.gz
 
 RUN mkdir /home/rocket/tomcat
 
@@ -34,7 +34,9 @@ RUN sed -i '/<Host/ { /<\/Host>/! { N; }; s/\(<Host[^>]*>\)/\1\n    \n<Valve cla
 COPY ./webapps /home/rocket/tomcat/webapps/
 COPY ./.jenkins /home/rocket/.jenkins/
 
+RUN mkdir /home/rocket/tomcat/conf/Catalina
 RUN mkdir /home/rocket/tomcat/conf/Catalina/localhost
+
 COPY ./scanners.xml /home/rocket/tomcat/conf/Catalina/localhost/scanners.xml
 COPY ./web.xml /home/rocket/tomcat/conf/web.xml
 
