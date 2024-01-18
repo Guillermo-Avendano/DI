@@ -8,7 +8,7 @@ FROM rockylinux:8
 ARG TOMCAT_VERSION=9.0.85
 
 # Install other tools
-RUN dnf -y install procps-ng net-tools numactl java-1.8.0-openjdk git nano
+RUN dnf -y install procps-ng net-tools numactl java-11-openjdk git nano
 
 # Clean up cache to reduce the image size
 RUN dnf clean all
@@ -30,7 +30,7 @@ RUN sed -i "s/shutdown=\"SHUTDOWN\"/shutdown=\"KILLTHISSERVER\"/" /home/rocket/t
 # FROM MObius: Hiding Tomcat details from Tomcat error page and application server error responses
 RUN sed -i '/<Host/ { /<\/Host>/! { N; }; s/\(<Host[^>]*>\)/\1\n    \n<Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false"\/>/; }' /home/rocket/tomcat/conf/server.xml
 
-# Copy "rochade" directory to rocket's home directory
+# Copy "webapps" directory to rocket's home directory
 COPY ./webapps /home/rocket/tomcat/webapps/
 COPY ./.jenkins /home/rocket/.jenkins/
 
@@ -52,10 +52,10 @@ COPY ./appl_template /home/rocket/rochade/appl_template/
 COPY ./startup.sh /home/rocket/startup.sh
 
 # Change ownership, and execution rights of directories and files copied
-RUN chown 3003:0 -R /home/rocket/.jenkins 
 RUN chown 3003:0 -R /home/rocket/tomcat && chmod 775 /home/rocket/tomcat/bin/*.sh 
 RUN chown 3003:0 -R /home/rocket/rochade && chmod 775 /home/rocket/rochade/bin/*.so* 
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
+RUN chown 3003:0 -R /home/rocket/.jenkins
 
 # Set "rocket" as default user 
 USER rocket
