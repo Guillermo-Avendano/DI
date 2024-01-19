@@ -1,0 +1,4 @@
+cd SQLDEMO
+export logdir=$WORKSPACE/$JOB_NAME/SQLDEMO
+export outprefix=SqlDB
+. ./ScanSqlSrvr-scan.sh
