@@ -1,0 +1,34 @@
+C:\Rochade_Linux\bin>java -jar roacccxj.jar -f rochade.acc -m Rocket2023 -c = =
+
+C:\Rochade_Linux\bin>dir *.acc
+ Volume in drive C has no label.
+ Volume Serial Number is 66B4-8A19
+
+ Directory of C:\Rochade_Linux\bin
+
+01/19/2024  08:43 AM               512 rochade.acc
+               1 File(s)            512 bytes
+               0 Dir(s)  41,414,672,384 bytes free
+
+C:\Rochade_Linux\bin>java -jar roacccxj.jar -f rochade.acc -m Rocket2023 -n rochade://di-server:8888 -a ADMIN rochade
+
+C:\Rochade_Linux\bin>java -jar roacccxj.jar -f rochade.acc -l
+Enter master password: ***********
+*#    Application                     User                            Password
+-----------------------------------------------------------------------------
+1    rochade://di-server:8888        ADMIN                           ********
+-----------------------------------------------------------------------------
+
+
+
+cd SQLDEMO2
+find . -name "*.properties" -exec dos2unix {} \;
+find . -name "*.sh" -exec dos2unix {} \;
+find . -name "*.txt" -exec dos2unix {} \;
+
+chmod +x *.sh
+
+./ScanSqlSrvr-all.sh
+
+
+
