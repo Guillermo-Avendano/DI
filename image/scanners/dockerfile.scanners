@@ -8,7 +8,7 @@ FROM rockylinux:8
 ARG TOMCAT_VERSION=9.0.85
 
 # Install other tools
-RUN dnf -y install procps-ng net-tools numactl java-11-openjdk git nano
+RUN dnf -y install procps-ng net-tools numactl java-11-openjdk git nano dos2unix
 
 # Clean up cache to reduce the image size
 RUN dnf clean all
