@@ -146,6 +146,7 @@ services:
       - '${DI_SCANNERS_EXTERNAL_PORT}:8080'
     extra_hosts:
       - "mssql2017:10.0.0.4"
+      - "di-server:10.0.0.4"
     volumes:
     - di_scanners_workspace:/home/rocket/.jenkins
     - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
