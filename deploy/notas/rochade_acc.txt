@@ -11,13 +11,13 @@ chmod +x *.sh
 ./ScanSqlSrvr-all.sh
 ----------------------------
 
-cd $WORKSPACE/scanners/SQLRRT
+cd $WORKSPACE/../scanners/SQLRRT
 find . -name "*.sh" -exec dos2unix {} \;
 find . -name "*.xml" -exec dos2unix {} \;
 
 chmod +x *.sh
 
-./DWR-SQL-SERVER.sh
+./DWR-SQL_SERVER.sh
 
 
 ------------------------
