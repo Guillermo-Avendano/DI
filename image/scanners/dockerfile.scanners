@@ -56,6 +56,7 @@ RUN chown 3003:0 -R /home/rocket/tomcat && chmod 775 /home/rocket/tomcat/bin/*.s
 RUN chown 3003:0 -R /home/rocket/rochade && chmod 775 /home/rocket/rochade/bin/*.so* 
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
 RUN chown 3003:0 -R /home/rocket/.jenkins
+RUN chmod +x /home/rocket/rochade/scansqlsrvr/V203/bin/LINUX/sql2xml
 
 # Set "rocket" as default user 
 USER rocket

@@ -1,3 +1,27 @@
+
+cd SQLDEMO2
+find . -name "*.properties" -exec dos2unix {} \;
+find . -name "*.sh" -exec dos2unix {} \;
+find . -name "*.txt" -exec dos2unix {} \;
+
+mkdir -p out
+
+chmod +x *.sh
+
+./ScanSqlSrvr-all.sh
+----------------------------
+
+cd $WORKSPACE/scanners/SQLRRT
+find . -name "*.sh" -exec dos2unix {} \;
+find . -name "*.xml" -exec dos2unix {} \;
+
+chmod +x *.sh
+
+./DWR-SQL-SERVER.sh
+
+
+------------------------
+
 C:\Rochade_Linux\bin>java -jar roacccxj.jar -f rochade.acc -m Rocket2023 -c = =
 
 C:\Rochade_Linux\bin>dir *.acc
@@ -21,14 +45,6 @@ Enter master password: ***********
 
 
 
-cd SQLDEMO2
-find . -name "*.properties" -exec dos2unix {} \;
-find . -name "*.sh" -exec dos2unix {} \;
-find . -name "*.txt" -exec dos2unix {} \;
-
-chmod +x *.sh
-
-./ScanSqlSrvr-all.sh
 
 
 
