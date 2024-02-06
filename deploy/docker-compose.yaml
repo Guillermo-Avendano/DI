@@ -4,7 +4,6 @@ volumes:
   di_solr_data:
   di_workflow_dbdata:
   di_scanners_tomcat_logs:
-  di_scanners_workspace:
   
 services:   
   db1_empty_init:
@@ -39,7 +38,7 @@ services:
       command: sh -c "chown -R 3003:0 /home/rocket/.jenkins/workspace && chown -R 3003:0 /home/rocket/tomcat/logs"
       volumes:
       - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
-      - di_scanners_workspace:/home/rocket/.jenkins/workspace
+      - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
 
   di-workflow:
     image:  ${DI_WORKFLOW_IMAGE}
@@ -142,7 +141,7 @@ services:
       - "mssql2017:10.0.0.4"
       - "di-server:10.0.0.4"
     volumes:
-    - di_scanners_workspace:/home/rocket/.jenkins
+    - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
     - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
     depends_on:
       - scanners_init
