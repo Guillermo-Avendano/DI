@@ -1,0 +1,10 @@
+#!/bin/bash
+docker exec -it mssql2017 bash 
+
+/opt/mssql-tools/bin/sqlcmd -U sa -P "Rocket2023" -i /samples/pubs_db.sql
+
+/opt/mssql-tools/bin/sqlcmd -U sa -P "Rocket2023" -i /samples/northwind_db.sql
+
+docker exec mssql2017 /opt/mssql-tools/bin/sqlcmd -U sa -P "Rocket2023" -q "sp_databases"
+
+docker exec mssql2017 /opt/mssql-tools/bin/sqlcmd -U sa -P "Rocket2023" -q "select * from Northwind.dbo.customers go"
