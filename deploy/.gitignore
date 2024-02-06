@@ -1,0 +1,11 @@
+testing/
+di_indexupd_logs/
+di_indexupd_conf/
+
+di_server_datbas/
+di_server_appl/
+
+di_webapp_logs/
+di_webapp_conf/
+
+di_scanners_workspace/
