@@ -1,4 +1,9 @@
 
+https://github.com/guillermo-avendano/scanners.git
+
+branch=/main
+
+---------------------------
 cd SQLDEMO2
 find . -name "*.properties" -exec dos2unix {} \;
 find . -name "*.sh" -exec dos2unix {} \;
