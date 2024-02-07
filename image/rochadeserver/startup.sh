@@ -37,40 +37,43 @@ SERVER_INI=/home/rocket/rochade/appl/server.ini
 RO_APPL="/home/rocket/rochade/appl"
 
 if [ -z "$(ls -A "$RO_APPL")" ]; then
-   cp /home/rocket/rochade/appl_template/* /home/rocket/rochade/appl/
+    cp /home/rocket/rochade/appl_template/* /home/rocket/rochade/appl/
+    # Verify if the copy from the image to the volume has finished with md5
+    d1=false
+    d2=false
+    DB_PATH=/home/rocket/rochade/datbas/
+    for i in {1..3}; do
+        md5=$(md5sum $DB_PATH/d1.rodb | awk '{print $1}')
+        expected=$(cat $DB_PATH/d1.md5 | awk '{print $1}')
+        if [ "$md5" == "$expected" ]; then
+            echo "$DB_PATH/d1.rodb md5sum verified, attempt $i"
+            d1=true
+            break
+        else
+            echo "$DB_PATH/d1.rodb md5sum not verified, attempt $i"
+        fi
+    done
+
+    # Verificar d2.rodb
+    for i in {1..3}; do
+        md5=$(md5sum $DB_PATH/d2.rodb | awk '{print $1}')
+        expected=$(cat $DB_PATH/d2.md5 | awk '{print $1}')
+        if [ "$md5" == "$expected" ]; then
+            echo "$DB_PATH/d2.rodb md5sum verified, attempt $i"
+            d2=true
+            break
+        else
+            echo "$DB_PATH/d2.rodb md5sum not verified, attempt $i"
+        fi
+    done
+else
+    d1=true
+    d2=true
 fi
 
 replace_key $SERVER_INI "LICENSE" $DI_SERVER_LICENSE_NUMBER
 replace_key $SERVER_INI "COMPANY" "$DI_SERVER_LICENSE_COMPANY"
 
-# Verify if the copy from the image to the volume has finished with md5
-d1=false
-d2=false
-DB_PATH=/home/rocket/rochade/datbas/
-for i in {1..3}; do
-    md5=$(md5sum $DB_PATH/d1.rodb | awk '{print $1}')
-    expected=$(cat $DB_PATH/d1.md5 | awk '{print $1}')
-    if [ "$md5" == "$expected" ]; then
-        echo "$DB_PATH/d1.rodb md5sum verified, attempt $i"
-        d1=true
-        break
-    else
-        echo "$DB_PATH/d1.rodb md5sum not verified, attempt $i"
-    fi
-done
-
-# Verificar d2.rodb
-for i in {1..3}; do
-    md5=$(md5sum $DB_PATH/d2.rodb | awk '{print $1}')
-    expected=$(cat $DB_PATH/d2.md5 | awk '{print $1}')
-    if [ "$md5" == "$expected" ]; then
-        echo "$DB_PATH/d2.rodb md5sum verified, attempt $i"
-        d2=true
-        break
-    else
-        echo "$DB_PATH/d2.rodb md5sum not verified, attempt $i"
-    fi
-done
 
 if [ "$d1" = true ] && [ "$d2" = true ]; then
     cd /home/rocket/rochade/sbin

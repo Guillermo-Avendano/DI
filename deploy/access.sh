@@ -9,4 +9,6 @@ sudo chmod -R 777 di_indexupd_logs/
 sudo chmod -R 777 di_webapp_conf/
 sudo chmod -R 777 di_webapp_logs/
 
-sudo chmod -R 777 di_scanners_workspace/
+if [ -d "./di_scanners_workspace" ]; then
+   sudo chmod -R 777 di_scanners_workspace/
+fi   
