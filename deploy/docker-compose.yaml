@@ -82,6 +82,9 @@ services:
     # - "8983:8983"
     volumes:
       - di_solr_data:/var/solr
+    depends_on:
+      - data_init
+
   di-indexupd:
     image: ${DI_INDEX_UPDATE_IMAGE}
     container_name: di-indexupd
@@ -103,8 +106,9 @@ services:
     - ./di_indexupd_logs:/home/rocket/Index_Update_Service/logs
     depends_on:
       - data_init
-      - di-solr  
-
+      - di-server
+      - di-solr 
+      
   di-webapp:
     image: ${DI_APPS_IMAGE}
     container_name: di-webapp
@@ -135,6 +139,7 @@ services:
     depends_on:
       - data_init  
       - di-server
+      - di-solr
 
   di-scanners:
     image: ${DI_SCANNERS}
@@ -151,4 +156,5 @@ services:
     - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
     - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
     depends_on:
+      - di-server
       - scanners_init
