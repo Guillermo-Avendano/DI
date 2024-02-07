@@ -2,8 +2,8 @@
 
 if [ ! -d "./di_server_datbas" ]; then
    
-   docker-compose -f docker-compose.db1.yaml up -d
-   docker-compose -f docker-compose.db2.yaml up -d
+   docker-compose -f docker-compose.db1.yaml up -d --remove-orphans
+   docker-compose -f docker-compose.db2.yaml up -d --remove-orphans
 
    sudo chmod -R 777 di_server_datbas/
    
@@ -17,7 +17,7 @@ if [ ! -d "./di_server_datbas" ]; then
             break
         else
             echo "$DB_PATH/d1.rodb md5sum not verified, attempt $i"
-            docker-compose -f docker-compose.db1.yaml up -d
+            docker-compose -f docker-compose.db1.yaml up -d --remove-orphans
         fi
    done
 
@@ -31,7 +31,7 @@ if [ ! -d "./di_server_datbas" ]; then
             break
         else
             echo "$DB_PATH/d2.rodb md5sum not verified, attempt $i"
-            docker-compose -f docker-compose.db2.yaml up -d
+            docker-compose -f docker-compose.db2.yaml up -d --remove-orphans
 
         fi
    done
