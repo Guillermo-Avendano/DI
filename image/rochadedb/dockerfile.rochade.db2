@@ -17,5 +17,5 @@ ENV DB=${DB}
 WORKDIR /root
 
 # Default command to execute when the image is started
-CMD ["sh", "-c", "./startup.sh"]
+CMD ["sh", "-c", ". ./startup.sh"]
 

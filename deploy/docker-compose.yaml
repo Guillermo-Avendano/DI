@@ -5,7 +5,16 @@ volumes:
   di_workflow_dbdata:
   di_scanners_tomcat_logs:
   
-services:     
+services:   
+  db1_empty_init:
+      image: ${DI_DB1_IMAGE}
+      volumes:
+      - ./di_server_datbas:/home/rocket/rochade/datbas
+
+  db2_empty_init:
+      image: ${DI_DB2_IMAGE}
+      volumes:
+      - ./di_server_datbas:/home/rocket/rochade/datbas
 
   data_init:
       image: busybox:latest
@@ -18,6 +27,9 @@ services:
       - ./di_webapp_conf:/home/rocket/conf
       - ./di_webapp_logs:/home/rocket/tomcat/logs
       - di_solr_data:/var/solr
+      depends_on:
+      - db1_empty_init
+      - db2_empty_init
 
   scanners_init:
       image: busybox:latest
@@ -25,8 +37,6 @@ services:
       volumes:
       - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
       - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
-      depends_on:
-      - data_init
 
   di-workflow:
     image:  ${DI_WORKFLOW_IMAGE}
@@ -45,8 +55,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    depends_on:
-      - data_init
+
   di-server:
     image: ${DI_ROCHADE_SERVER_IMAGE}
     container_name: di-server
@@ -61,7 +70,9 @@ services:
     - ./di_server_datbas:/home/rocket/rochade/datbas
     - ./di_server_appl:/home/rocket/rochade/appl
     depends_on:
-      - data_init
+      - data_init      
+      - db1_empty_init
+      - db2_empty_init
 
   di-solr:
     image: ${DI_SOLR_IMAGE}
@@ -92,8 +103,7 @@ services:
     - ./di_indexupd_logs:/home/rocket/Index_Update_Service/logs
     depends_on:
       - data_init
-      - di-solr
-
+      - di-solr  
 
   di-webapp:
     image: ${DI_APPS_IMAGE}
@@ -123,7 +133,7 @@ services:
     - ./di_webapp_conf:/home/rocket/conf
     - ./di_webapp_logs:/home/rocket/tomcat/logs
     depends_on:
-      - data_init
+      - data_init  
       - di-server
 
   di-scanners:
@@ -141,4 +151,4 @@ services:
     - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
     - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
     depends_on:
-      - data_init
+      - scanners_init
