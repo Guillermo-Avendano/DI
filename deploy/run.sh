@@ -1,5 +1,8 @@
 #!/bin/bash
 
+d1=true
+d2=true
+
 if [ ! -d "./di_server_datbas" ]; then
    
    docker-compose -f docker-compose.db1.yaml up -d --remove-orphans
@@ -16,6 +19,7 @@ if [ ! -d "./di_server_datbas" ]; then
             d1=true
             break
         else
+            d1=false
             echo "$DB_PATH/d1.rodb md5sum not verified, attempt $i"
             docker-compose -f docker-compose.db1.yaml up -d --remove-orphans
         fi
@@ -30,6 +34,7 @@ if [ ! -d "./di_server_datbas" ]; then
             d2=true
             break
         else
+            d2=false
             echo "$DB_PATH/d2.rodb md5sum not verified, attempt $i"
             docker-compose -f docker-compose.db2.yaml up -d --remove-orphans
 
@@ -37,4 +42,9 @@ if [ ! -d "./di_server_datbas" ]; then
    done
 fi
 
-docker-compose up -d --remove-orphans
+if [ "$d1" = true ] && [ "$d2" = true ]; then
+   docker-compose up -d --remove-orphans
+else
+   echo "Rochade DB init has failed"   
+   sudo rm -rf di_server_datbas/
+fi   
