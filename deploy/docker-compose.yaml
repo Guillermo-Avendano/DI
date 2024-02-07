@@ -107,6 +107,11 @@ services:
       - data_init
       - di-server
       - di-solr 
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -zv di-server 8888" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5   
 
   di-webapp:
     image: ${DI_APPS_IMAGE}
