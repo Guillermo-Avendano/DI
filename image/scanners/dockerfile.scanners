@@ -1,6 +1,7 @@
 # Author: Guilllermo Avendaño
-# Cretion Date: 01/18/2024
 # Rocky Linux 8 image
+# Cretion Date: 01/18/2024
+# Update jenkins runtime 02/07/2024
 FROM rockylinux:8
 
 # Parmeters

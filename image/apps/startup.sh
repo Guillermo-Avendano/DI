@@ -39,6 +39,12 @@ replace_config() {
 
     replace_tag_in_file $config_file "<DI_WEBAPP_HOST>" $DI_WEBAPP_HOST
 
+    replace_tag_in_file $config_file "<DI_MAIL_ENABLE>" $DI_MAIL_ENABLE
+    replace_tag_in_file $config_file "<DI_MAIL_SMTP_HOST>" $DI_MAIL_SMTP_HOST
+    replace_tag_in_file $config_file "<DI_MAIL_SMTP_PORT>" $DI_MAIL_SMTP_PORT
+    replace_tag_in_file $config_file "<DI_MAIL_SMTP_USER>" $DI_MAIL_SMTP_USER
+    replace_tag_in_file $config_file "<DI_MAIL_SMTP_PASS>" $DI_MAIL_SMTP_PASS
+
 }
 
 
