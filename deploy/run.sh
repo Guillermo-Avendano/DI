@@ -1,8 +1,12 @@
 #!/bin/bash
 
 if [ ! -d "./di_server_datbas" ]; then
-   docker-compose -f docker-compose.db.yaml up -d
+   
+   docker-compose -f docker-compose.db1.yaml up -d
+   docker-compose -f docker-compose.db2.yaml up -d
+
    sudo chmod -R 777 di_server_datbas/
+   
    DB_PATH=./di_server_datbas/
    for i in {1..3}; do
         md5=$(md5sum $DB_PATH/d1.rodb | awk '{print $1}')
@@ -13,6 +17,7 @@ if [ ! -d "./di_server_datbas" ]; then
             break
         else
             echo "$DB_PATH/d1.rodb md5sum not verified, attempt $i"
+            docker-compose -f docker-compose.db1.yaml up -d
         fi
    done
 
@@ -26,6 +31,8 @@ if [ ! -d "./di_server_datbas" ]; then
             break
         else
             echo "$DB_PATH/d2.rodb md5sum not verified, attempt $i"
+            docker-compose -f docker-compose.db2.yaml up -d
+
         fi
    done
 fi

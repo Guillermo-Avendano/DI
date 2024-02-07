@@ -1,0 +1,9 @@
+version: "3.0"
+       
+services:   
+  db1_empty_init:
+      image: ${DI_DB1_IMAGE}
+      command: sh -c "cp /root/d1.rodb /home/rocket/rochade/datbas/d1.rodb ; cp /root/d1.md5 /home/rocket/rochade/datbas/d1.md5"
+      volumes:
+      - ./di_server_datbas:/home/rocket/rochade/datbas
+

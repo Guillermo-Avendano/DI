@@ -79,14 +79,16 @@ if [ "$d1" = true ] && [ "$d2" = true ]; then
     
     cd /home/rocket/rochade/sbin
 
-    ./roserver.sh &
+    ./roserver.sh
+    sleep 2
 
     rochade_log="/home/rocket/rochade/appl/SERV.prot"
 
     # Verificar si el archivo existe
     while [ ! -e "$rochade_log" ]; do
         echo "Starting Rochade server..."
-        sleep 1  # Esperar 1 segundo antes de volver a verificar
+        ./roserver.sh
+        sleep 2  # Esperar 2 segundos antes de volver a verificar
     done
 
     tail -f $rochade_log

@@ -5,13 +5,28 @@ volumes:
   di_workflow_dbdata:
   di_scanners_tomcat_logs:
   
-services:   
+services:     
+
+  data_init:
+      image: busybox:latest
+      command: sh -c "chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs && chown -R 3003:0 /home/rocket/conf && chown -R 3003:0 /home/rocket/tomcat/logs && chown 8983:8983 -R /var/solr/data/configsets"
+      volumes:
+      - ./di_server_appl:/home/rocket/rochade/appl
+      - ./di_server_datbas:/home/rocket/rochade/datbas
+      - ./di_indexupd_conf:/home/rocket/Index_Update_Service/conf
+      - ./di_indexupd_logs:/home/rocket/Index_Update_Service/logs
+      - ./di_webapp_conf:/home/rocket/conf
+      - ./di_webapp_logs:/home/rocket/tomcat/logs
+      - di_solr_data:/var/solr
+
   scanners_init:
       image: busybox:latest
       command: sh -c "chown -R 3003:0 /home/rocket/.jenkins/workspace && chown -R 3003:0 /home/rocket/tomcat/logs"
       volumes:
       - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
       - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
+      depends_on:
+      - data_init
 
   di-workflow:
     image:  ${DI_WORKFLOW_IMAGE}
@@ -30,7 +45,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+    depends_on:
+      - data_init
   di-server:
     image: ${DI_ROCHADE_SERVER_IMAGE}
     container_name: di-server
@@ -44,6 +60,8 @@ services:
     volumes:
     - ./di_server_datbas:/home/rocket/rochade/datbas
     - ./di_server_appl:/home/rocket/rochade/appl
+    depends_on:
+      - data_init
 
   di-solr:
     image: ${DI_SOLR_IMAGE}
@@ -73,7 +91,9 @@ services:
     - ./di_indexupd_conf:/home/rocket/Index_Update_Service/conf
     - ./di_indexupd_logs:/home/rocket/Index_Update_Service/logs
     depends_on:
-      - di-solr  
+      - data_init
+      - di-solr
+
 
   di-webapp:
     image: ${DI_APPS_IMAGE}
@@ -103,6 +123,7 @@ services:
     - ./di_webapp_conf:/home/rocket/conf
     - ./di_webapp_logs:/home/rocket/tomcat/logs
     depends_on:
+      - data_init
       - di-server
 
   di-scanners:
@@ -119,4 +140,5 @@ services:
     volumes:
     - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
     - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
-
+    depends_on:
+      - data_init
