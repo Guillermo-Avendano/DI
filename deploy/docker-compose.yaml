@@ -98,9 +98,8 @@ services:
        DI_SERVER_PASS: ${DI_SERVER_PASS}
        DI_SOLR_TRUSTED: "false"
        #DI_SOLR_ERROR_LEVEL: "DEBUG"
-    #extra_hosts:
-    #  - "di-solr:${DI_LOCAL_IP}"
-    #  - "di-server:${DI_LOCAL_IP}"  
+    extra_hosts:
+      - "di-server:${DI_LOCAL_IP}"  
     volumes:
     - ./di_indexupd_conf:/home/rocket/Index_Update_Service/conf
     - ./di_indexupd_logs:/home/rocket/Index_Update_Service/logs
@@ -108,7 +107,7 @@ services:
       - data_init
       - di-server
       - di-solr 
-      
+
   di-webapp:
     image: ${DI_APPS_IMAGE}
     container_name: di-webapp
