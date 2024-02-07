@@ -6,7 +6,7 @@ services:
     restart: always
     #network_mode: "host"
     ports:
-      - "8080:8080"
+      - "6060:8080"
       - "4443:4443"
       - "25:25"
       - "110:110"
@@ -16,8 +16,8 @@ services:
       - "993:993"
       - "995:995"
     environment:
-      - h=rocketsoftware.com
-      - HTTP_PORT=8080
+      - h=mail.rocketsoftware.com
+      - HTTP_PORT=6060
       - HTTPS_PORT=4443
       - DISABLE_CLAMAV=TRUE
     volumes:

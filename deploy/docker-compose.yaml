@@ -8,13 +8,13 @@ volumes:
 services:   
   db1_empty_init:
       image: ${DI_DB1_IMAGE}
-      command: sh -c "if [ ! -e /home/rocket/rochade/datbas/d1.rodb ]; then cp /root/d1.rodb /home/rocket/rochade/datbas/d1.rodb; fi"
+      command: sh -c "if [ ! -e /home/rocket/rochade/datbas/d1.rodb ]; then cp /root/d1.* /home/rocket/rochade/datbas; fi"
       volumes:
       - ./di_server_datbas:/home/rocket/rochade/datbas
 
   db2_empty_init:
       image: ${DI_DB2_IMAGE}
-      command: sh -c "if [ ! -e /home/rocket/rochade/datbas/d2.rodb ]; then cp /root/d2.rodb /home/rocket/rochade/datbas/d2.rodb; fi"
+      command: sh -c "if [ ! -e /home/rocket/rochade/datbas/d2.rodb ]; then cp /root/d2.* /home/rocket/rochade/datbas; fi"
       volumes:
       - ./di_server_datbas:/home/rocket/rochade/datbas
 

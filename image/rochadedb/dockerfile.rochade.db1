@@ -1,6 +1,8 @@
 # Author: Guilllermo Avendaño
 # Cretion Date: 11/24/2023
+# md5 control added 02/07/2024
 FROM busybox
 
-COPY ./datbas_empty/d1.rodb /root/d1.rodb 
+COPY ./datbas_empty/d1.rodb /root/d1.rodb
+COPY ./datbas_empty/d1.md5  /root/d1.md5
 
