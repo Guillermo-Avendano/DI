@@ -78,7 +78,16 @@ replace_key $SERVER_INI "COMPANY" "$DI_SERVER_LICENSE_COMPANY"
 if [ "$d1" = true ] && [ "$d2" = true ]; then
     cd /home/rocket/rochade/sbin
     ./roserver.sh
-    tail -f /home/rocket/rochade/appl/SERV.prot
+
+    rochade_log="/home/rocket/rochade/appl/SERV.prot"
+
+    # Verificar si el archivo existe
+    while [ ! -e "$rochade_log" ]; do
+        echo "Starting Rochade server..."
+        sleep 1  # Esperar 1 segundo antes de volver a verificar
+    done
+
+    tail -f $rochade_log
 else
     echo "The database files are not valid."
 fi
