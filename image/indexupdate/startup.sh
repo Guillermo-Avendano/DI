@@ -16,6 +16,32 @@ replace_tag_in_file() {
     fi
 }
 
+# Wait for Rochade Server
+wait_for_service() {
+    local service=$1
+    local port=$2
+    local timeout=$3
+    local interval=$4
+
+    echo "Waiting for $service be available..."
+
+    timeout $timeout bash -c "\
+        while ! nc -zv $service $port; do \
+            echo \"Service $service not available yet. Waiting...\"; \
+            sleep $interval; \
+        done"
+
+    if [ $? -eq 0 ]; then
+        echo "Service $service available in $port."
+    else
+        echo "Timeout waiting for the service $service port $port."
+        exit 1
+    fi
+}
+
+# Wait for di-server 8888 be available
+wait_for_service "$DI_SERVER_HOST" "8888" "10" "5"
+
 RO_SOLR_CONF="/home/rocket/Index_Update_Service/conf"
 
 if [ -z "$(ls -A "$RO_SOLR_CONF")" ] ; then
