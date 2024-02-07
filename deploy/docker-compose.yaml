@@ -73,6 +73,11 @@ services:
       - data_init      
       - db1_empty_init
       - db2_empty_init
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -zv di-server 8888" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
 
   di-solr:
     image: ${DI_SOLR_IMAGE}
@@ -103,15 +108,15 @@ services:
     volumes:
     - ./di_indexupd_conf:/home/rocket/Index_Update_Service/conf
     - ./di_indexupd_logs:/home/rocket/Index_Update_Service/logs
-    depends_on:
-      - data_init
-      - di-server
-      - di-solr 
     healthcheck:
       test: [ "CMD-SHELL", "nc -zv di-server 8888" ]
       interval: 10s
       timeout: 5s
       retries: 5   
+    depends_on:
+      - data_init
+      - di-server
+      - di-solr 
 
   di-webapp:
     image: ${DI_APPS_IMAGE}
@@ -140,6 +145,11 @@ services:
     volumes:
     - ./di_webapp_conf:/home/rocket/conf
     - ./di_webapp_logs:/home/rocket/tomcat/logs
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -zv di-server 8888" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
     depends_on:
       - data_init  
       - di-server
