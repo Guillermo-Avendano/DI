@@ -1,7 +1,7 @@
 
 # Author: Guilllermo Avendaño
 # Cretion Date: 11/23/2023
-# Updated jenkins runtime 02/07/2024
+# Added mail parameters 02/07/2024
 # Rocky Linux 8 image
 FROM rockylinux:8
 
@@ -100,7 +100,6 @@ ENV DI_MAIL_SMTP_HOST=${DI_MAIL_SMTP_HOST}
 ENV DI_MAIL_SMTP_PORT=${DI_MAIL_SMTP_PORT}
 ENV DI_MAIL_SMTP_USER=${DI_MAIL_SMTP_USER}
 ENV DI_MAIL_SMTP_PASS=${DI_MAIL_SMTP_PASS}
-
 
 # set JAVA_HOME
 ENV JAVA_HOME=/usr/lib/jvm/jre

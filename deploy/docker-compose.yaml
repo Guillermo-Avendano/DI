@@ -126,6 +126,11 @@ services:
        DI_POSTGRES_USER: ${DI_POSTGRES_USER}
        DI_POSTGRES_PASS: ${DI_POSTGRES_PASS}
        DI_WEBAPP_HOST: ${DI_WEBAPP_HOST}
+       DI_MAIL_ENABLE: ${DI_MAIL_ENABLE}
+       DI_MAIL_SMTP_HOST: ${DI_MAIL_SMTP_HOST}
+       DI_MAIL_SMTP_PORT: ${DI_MAIL_SMTP_PORT}
+       DI_MAIL_SMTP_USER: ${DI_MAIL_SMTP_USER}
+       DI_MAIL_SMTP_PASS: ${DI_MAIL_SMTP_PASS}
     volumes:
     - ./di_webapp_conf:/home/rocket/conf
     - ./di_webapp_logs:/home/rocket/tomcat/logs
@@ -143,6 +148,7 @@ services:
     extra_hosts:
       - "mssql2017:${DI_LOCAL_IP}"
       - "di-server:${DI_LOCAL_IP}"
+      - "${DI_MAIL_SMTP_HOST}:${DI_LOCAL_IP}"
     volumes:
     - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
     - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
