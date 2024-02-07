@@ -1,0 +1,3 @@
+d1.rodb, and d2.rodb must be syncronized with server.ini
+
+rochadedb images, and rochadeserver images must be regenetarted together

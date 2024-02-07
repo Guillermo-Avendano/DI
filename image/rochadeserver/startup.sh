@@ -76,8 +76,10 @@ replace_key $SERVER_INI "COMPANY" "$DI_SERVER_LICENSE_COMPANY"
 
 
 if [ "$d1" = true ] && [ "$d2" = true ]; then
+    
     cd /home/rocket/rochade/sbin
-    ./roserver.sh
+
+    ./roserver.sh &
 
     rochade_log="/home/rocket/rochade/appl/SERV.prot"
 
