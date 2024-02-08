@@ -3,6 +3,7 @@ version: "3.0"
 volumes:
   di_solr_data:
   di_workflow_dbdata:
+  di_scanners_tomcat_logs:
   
 services:   
   db1_empty_init:
@@ -29,6 +30,13 @@ services:
       depends_on:
       - db1_empty_init
       - db2_empty_init
+
+  scanners_init:
+      image: busybox:latest
+      command: sh -c "chown -R 3003:0 /home/rocket/.jenkins/workspace && chown -R 3003:0 /home/rocket/tomcat/logs"
+      volumes:
+      - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
+      - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
 
   di-workflow:
     image:  ${DI_WORKFLOW_IMAGE}
@@ -138,3 +146,20 @@ services:
       - data_init  
       - di-server
       - di-solr
+
+  di-scanners:
+    image: ${DI_SCANNERS}
+    container_name: di-scanners
+    hostname: di-scanners
+    #command: sh -c "sleep 9999999"
+    ports:
+      - '${DI_SCANNERS_EXTERNAL_PORT}:8080'
+    extra_hosts:
+      - "mssql2017:${DI_LOCAL_IP}"
+      - "di-server:${DI_LOCAL_IP}"
+    volumes:
+    - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
+    - di_scanners_tomcat_logs:/home/rocket/tomcat/logs
+    depends_on:
+      - di-server
+      - scanners_init
