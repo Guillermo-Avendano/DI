@@ -30,7 +30,7 @@ ARG TOMCAT_VERSION=9.0.85
 
 # Intall java by according version
 #RUN dnf -y install java-1.8.0-openjdk; 
-RUN dnf -y install java-11-openjdk; 
+RUN dnf -y install java-11-openjdk nc nano; 
 
 # Add "rocket" user with uid=3003
 RUN useradd -u 3003 -m rocket

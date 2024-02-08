@@ -15,7 +15,8 @@ ARG DI_SERVER_USER=IS-IDX-Update
 ARG DI_SERVER_PASS=
 
 # Intall java by according version
-RUN dnf -y install java-1.8.0-openjdk; 
+RUN dnf -y install java-1.8.0-openjdk nc nano; 
+
     #dnf -y install java-11-openjdk; 
 
 # Clean up cache to reduce the image size
