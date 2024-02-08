@@ -1,8 +1,0 @@
-version: "3.0"
-       
-services:   
-  db1_empty_init:
-      image: ${DI_DB1_IMAGE}
-      volumes:
-      - ./di_server_datbas:/home/rocket/rochade/datbas
-
