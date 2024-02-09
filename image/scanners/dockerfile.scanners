@@ -33,7 +33,7 @@ RUN sed -i '/<Host/ { /<\/Host>/! { N; }; s/\(<Host[^>]*>\)/\1\n    \n<Valve cla
 
 # Copy "webapps" directory to rocket's home directory
 COPY ./webapps /home/rocket/tomcat/webapps/
-COPY ./.jenkins /home/rocket/.jenkins/
+COPY ./jenkins.tar.gz /home/rocket/jenkins.tar.gz
 
 RUN mkdir /home/rocket/tomcat/conf/Catalina
 RUN mkdir /home/rocket/tomcat/conf/Catalina/localhost
@@ -56,7 +56,6 @@ COPY ./startup.sh /home/rocket/startup.sh
 RUN chown 3003:0 -R /home/rocket/tomcat && chmod 775 /home/rocket/tomcat/bin/*.sh 
 RUN chown 3003:0 -R /home/rocket/rochade && chmod 775 /home/rocket/rochade/bin/*.so* 
 RUN chown 3003:0 /home/rocket/startup.sh && chmod +x /home/rocket/startup.sh
-RUN chown 3003:0 -R /home/rocket/.jenkins
 RUN chmod +x /home/rocket/rochade/scansqlsrvr/V203/bin/LINUX/sql2xml
 
 # Set "rocket" as default user 

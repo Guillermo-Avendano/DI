@@ -7,12 +7,10 @@ volumes:
 services:    
   scanners_init:
       image: busybox:latest
-      command: sh -c "chown -R 3003:0 /home/rocket/.jenkins/workspace && chown -R 3003:0 /home/rocket/.jenkins/jobs && chown -R 3003:0 /home/rocket/tomcat/logs"
+      command: sh -c "chown -R 3003:0 /home/rocket/.jenkins && chown -R 3003:0 /home/rocket/tomcat/logs"
       volumes:
+      - ./di_scanners_jenkins:/home/rocket/.jenkins
       - ./di_scanners_tomcat_logs:/home/rocket/tomcat/logs
-      - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
-      - ./di_scanners_jobs:/home/rocket/.jenkins/jobs
-
 
   di-scanners:
     image: ${DI_SCANNERS}
@@ -25,9 +23,8 @@ services:
       - "mssql2017:${DI_LOCAL_IP}"
       - "di-server:${DI_LOCAL_IP}"
     volumes:
-    - ./di_scanners_workspace:/home/rocket/.jenkins/workspace
+    - ./di_scanners_jenkins:/home/rocket/.jenkins
     - ./di_scanners_tomcat_logs:/home/rocket/tomcat/logs
-    - ./di_scanners_jobs:/home/rocket/.jenkins/jobs
 
     depends_on:
       - scanners_init

@@ -14,25 +14,27 @@ replace_tag_in_file() {
 }
 
 replace_key(){
-filename=$1
-key_search=$2
-new_value=$3
+    filename=$1
+    key_search=$2
+    new_value=$3
 
-while IFS='=' read -r key value || [ -n "$key" ]; do
-    if [ "$key" = "$key_search" ]; then
-        echo "$key=$new_value"
-    else
-        echo "$key=$value"
-    fi
-done < "$filename" > "$filename.new"
+    while IFS='=' read -r key value || [ -n "$key" ]; do
+        if [ "$key" = "$key_search" ]; then
+            echo "$key=$new_value"
+        else
+            echo "$key=$value"
+        fi
+    done < "$filename" > "$filename.new"
 
-mv "$filename.new" "$filename"
-
-
+    mv "$filename.new" "$filename"
 }
 
-RO_APPL="/home/rocket/rochade/appl"
+JENKINS_DIR="/home/rocket/.jenkins"
+if [ -z "$(ls -A "$JENKINS_DIR")" ]; then
+   tar -xzvf /home/rocket/jenkins.tar.gz -C $JENKINS_DIR --strip-components=1
+fi
 
+RO_APPL="/home/rocket/rochade/appl"
 if [ -z "$(ls -A "$RO_APPL")" ]; then
    cp /home/rocket/rochade/appl_template/* /home/rocket/rochade/appl/
 fi

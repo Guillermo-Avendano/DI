@@ -3,6 +3,7 @@ https://github.com/guillermo-avendano/scanners.git
 
 branch=/main
 
+API token=119c41e75697a5c51bb0f259718ce22db8
 ---------------------------
 cd SQLDEMO2
 find . -name "*.properties" -exec dos2unix {} \;
