@@ -71,7 +71,7 @@ wait_for_service() {
 }
 
 # Wait for di-server 8888 be available
-wait_for_service "$DI_SERVER_HOST" "8888" "10" "5"
+# wait_for_service "$DI_SERVER_HOST" "8888" "10" "5"
 
 # Copy tomcat configuration files in "/home/rocket/templates" to persistent volume
 DI_PERSISTENT_TOMCAT_CONF="/home/rocket/conf"
