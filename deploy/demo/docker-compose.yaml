@@ -1,0 +1,140 @@
+version: "3.0"
+      
+volumes:
+  di_solr_data:
+  di_workflow_dbdata:
+  
+services:   
+  db1_empty_init:
+      image: ${DI_DB1_IMAGE}
+      volumes:
+      - ./di_server_datbas:/home/rocket/rochade/datbas
+
+  db2_empty_init:
+      image: ${DI_DB2_IMAGE}
+      volumes:
+      - ./di_server_datbas:/home/rocket/rochade/datbas
+
+  data_init:
+      image: busybox:latest
+      command: sh -c "chown -R 3003:0 /home/rocket/rochade/appl && chown -R 3003:0 /home/rocket/rochade/datbas && chown -R 3003:0 /home/rocket/Index_Update_Service/conf && chown -R 3003:0 /home/rocket/Index_Update_Service/logs && chown -R 3003:0 /home/rocket/conf && chown -R 3003:0 /home/rocket/tomcat/logs && chown -R 8983:0 /var/solr/data/configsets"
+      volumes:
+      - ./di_server_appl:/home/rocket/rochade/appl
+      - ./di_server_datbas:/home/rocket/rochade/datbas
+      - ./di_indexupd_conf:/home/rocket/Index_Update_Service/conf
+      - ./di_indexupd_logs:/home/rocket/Index_Update_Service/logs
+      - ./di_webapp_conf:/home/rocket/conf
+      - ./di_webapp_logs:/home/rocket/tomcat/logs
+      - di_solr_data:/var/solr
+      depends_on:
+      - db1_empty_init
+      - db2_empty_init
+
+  di-workflow:
+    image:  ${DI_WORKFLOW_IMAGE}
+    container_name: di-workflow
+    hostname: di-workflow
+    #ports:
+    #- "5432:5432"
+    environment:
+      POSTGRES_USER: ${DI_POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${DI_POSTGRES_PASS:-postgres}
+    volumes:
+      - di_workflow_dbdata:/var/lib/postgresql/data"
+      - ./create_workflow_db.sh:/docker-entrypoint-initdb.d/create_workflow_db.sh
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  di-server:
+    image: ${DI_ROCHADE_SERVER_IMAGE}
+    container_name: di-server
+    hostname: di-server
+    #command: sh -c "sleep 9999999"
+    environment:
+      DI_SERVER_LICENSE_NUMBER: ${DI_SERVER_LICENSE_NUMBER}
+      DI_SERVER_LICENSE_COMPANY: ${DI_SERVER_LICENSE_COMPANY}
+    ports:
+      - '${DI_SERVER_EXTERNAL_PORT}:8888'
+    volumes:
+    - ./di_server_datbas:/home/rocket/rochade/datbas
+    - ./di_server_appl:/home/rocket/rochade/appl
+    depends_on:
+      - data_init      
+      - db1_empty_init
+      - db2_empty_init
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -zv di-server 8888" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
+
+  di-solr:
+    image: ${DI_SOLR_IMAGE}
+    container_name: di-solr
+    hostname: di-solr
+    #ports:
+    # - "8983:8983"
+    volumes:
+      - di_solr_data:/var/solr
+    depends_on:
+      - data_init
+
+  di-indexupd:
+    image: ${DI_INDEX_UPDATE_IMAGE}
+    container_name: di-indexupd
+    #command: sh -c "sleep 9999999"
+    environment:
+       DI_SOLR_HOST: ${DI_SOLR_HOST}
+       DI_SOLR_PORT: "8983"
+       DI_SERVER_HOST: ${DI_SERVER_HOST}
+       DI_SERVER_PORT: "8888"
+       DI_SERVER_USER: ${DI_SERVER_USER}
+       DI_SERVER_PASS: ${DI_SERVER_PASS}
+       DI_SOLR_TRUSTED: "false"
+       #DI_SOLR_ERROR_LEVEL: "DEBUG"
+    extra_hosts:
+      - "di-server:${DI_LOCAL_IP}"  
+    volumes:
+    - ./di_indexupd_conf:/home/rocket/Index_Update_Service/conf
+    - ./di_indexupd_logs:/home/rocket/Index_Update_Service/logs
+    depends_on:
+      - data_init
+      - di-server
+      - di-solr 
+
+  di-webapp:
+    image: ${DI_APPS_IMAGE}
+    container_name: di-webapp
+    hostname: di-webapp
+    #command: sh -c "sleep 9999999"
+    ports:
+      - '${DI_WEBAPP_EXTERNAL_PORT}:8080'
+    environment:
+       DI_SOLR_HOST: ${DI_SOLR_HOST}
+       DI_SOLR_PORT: "8983"
+       DI_SERVER_HOST: ${DI_SERVER_HOST}
+       DI_SERVER_PORT: "8888"
+       DI_SERVER_USER: ${DI_SERVER_USER}
+       DI_SERVER_PASS: ${DI_SERVER_PASS}
+       DI_POSTGRES_HOST: ${DI_POSTGRES_HOST}
+       DI_POSTGRES_PORT: "5432"
+       DI_POSTGRES_USER: ${DI_POSTGRES_USER}
+       DI_POSTGRES_PASS: ${DI_POSTGRES_PASS}
+       DI_WEBAPP_HOST: ${DI_WEBAPP_HOST}
+       DI_MAIL_ENABLE: ${DI_MAIL_ENABLE}
+       DI_MAIL_SMTP_HOST: ${DI_MAIL_SMTP_HOST}
+       DI_MAIL_SMTP_PORT: ${DI_MAIL_SMTP_PORT}
+       DI_MAIL_SMTP_USER: ${DI_MAIL_SMTP_USER}
+       DI_MAIL_SMTP_PASS: ${DI_MAIL_SMTP_PASS}
+    volumes:
+    - ./di_webapp_conf:/home/rocket/conf
+    - ./di_webapp_logs:/home/rocket/tomcat/logs    
+    extra_hosts:
+      - "${DI_MAIL_SMTP_HOST}:${DI_LOCAL_IP}"
+    depends_on:
+      - data_init  
+      - di-server
+      - di-solr

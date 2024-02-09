@@ -7,3 +7,5 @@ docker push rocketsoftware2024/di-server:10.01.003
 docker push rocketsoftware2024/di-db2empty:10.01.003
 docker push rocketsoftware2024/di-db1empty:10.01.003
 docker push rocketsoftware2024/di-scanners:10.01.003
+docker push rocketsoftware2024/di-db2demo:10.01.003
+docker push rocketsoftware2024/di-db1demo:10.01.003
