@@ -40,7 +40,7 @@ wait_for_service() {
 }
 
 # Wait for di-server 8888 be available
-wait_for_service "$DI_SERVER_HOST" "8888" "10" "5"
+#wait_for_service "$DI_SERVER_HOST" "8888" "10" "5"
 
 RO_SOLR_CONF="/home/rocket/Index_Update_Service/conf"
 
