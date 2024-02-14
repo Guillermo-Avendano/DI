@@ -14,6 +14,7 @@ done
 
 echo "$DI_DB1_IMAGE processed"
 
+DOTS="..."
 # Verificar si hay contenedores ejecutándose con la imagen especificada
 while docker ps --format '{{.Image}}' | grep -q $DI_DB2_IMAGE; do
     echo "Waiting finish containers running with $DI_DB2_IMAGE image $DOTS"
