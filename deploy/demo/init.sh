@@ -24,3 +24,5 @@ done
 
 echo "$DI_DB2_IMAGE processed"
 
+sudo chmod -R 777 di_server_datbas/
+
