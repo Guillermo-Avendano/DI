@@ -1,25 +1,25 @@
 #!/bin/bash
 
+source .env
 
 docker-compose -f ./docker-compose.db.yaml up -d --remove-orphans
 
-CONTAINER_NAME="db1_empty_init"
-
-# Verificar si el contenedor está en ejecución
-while [[ "$(docker inspect -f '{{.State.Running}}' $CONTAINER_NAME 2>/dev/null)" == "true" ]]; do
-    echo "Waiting $CONTAINER_NAME finish with inicialization..."
-    sleep 1
+DOTS="..."
+# Verificar si hay contenedores ejecutándose con la imagen especificada
+while docker ps --format '{{.Image}}' | grep -q $DI_DB1_IMAGE; do
+    echo "Waiting finish containers running with $DI_DB1_IMAGE image $DOTS"
+    sleep 2
+    DOTS="$DOTS..."
 done
 
-echo "$CONTAINER_NAME has finished."
+echo "$DI_DB1_IMAGE processed"
 
-CONTAINER_NAME="db2_empty_init"
-
-# Verificar si el contenedor está en ejecución
-while [[ "$(docker inspect -f '{{.State.Running}}' $CONTAINER_NAME 2>/dev/null)" == "true" ]]; do
-    echo "Waiting $CONTAINER_NAME finish with inicialization..."
-    sleep 1
+# Verificar si hay contenedores ejecutándose con la imagen especificada
+while docker ps --format '{{.Image}}' | grep -q $DI_DB2_IMAGE; do
+    echo "Waiting finish containers running with $DI_DB2_IMAGE image $DOTS"
+    sleep 2
+    DOTS="$DOTS..."
 done
 
-echo "$CONTAINER_NAME has finished."
+echo "$DI_DB2_IMAGE processed"
 
