@@ -4,9 +4,10 @@
 FROM busybox
 
 ARG DB=d2
+COPY  ./datbas_empty/${DB}.tar.gz ./root/${DB}.tar.gz
 
-COPY ./datbas_empty/${DB}.rodb /root/${DB}.rodb
-COPY ./datbas_empty/${DB}.md5  /root/${DB}.md5
+# COPY ./datbas_empty/${DB}.rodb /root/${DB}.rodb
+# COPY ./datbas_empty/${DB}.md5  /root/${DB}.md5
 
 # Copy startup.sh script
 COPY ./startup.sh /root/startup.sh
