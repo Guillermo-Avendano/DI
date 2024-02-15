@@ -213,15 +213,15 @@ index.applications=search_mg search_rdb search_rm search_ref search_rds search_r
 # Type of value: Solr core name
 # Key is mandatory: Yes (but only required for active applications to index)
 # ------------------------------------------------------------------------------------------------
+search_ref.core=ReferenceData
+search_rdq.core=DataQualityManagement
 search_mg.core=BusinessTermView
 search_rdb.core=DWRView
 search_rm.core=Models
-search_ref.core=ReferenceData
 search_rds.core=DataStructure
 search_rdi.core=DataIntegration
 search_rbi.core=BusinessIntelligence
 search_rbd.core=BigData
-search_rdq.core=DataQualityManagement
 search_sti.core=Stitching
 
 # ------------------------------------------------------------------------------------------------

@@ -66,7 +66,7 @@ replace_tag_in_file $LOG4J_CONFIG_FILE "<DI_SOLR_ERROR_LEVEL>" $DI_SOLR_ERROR_LE
 
 cd /home/rocket/Index_Update_Service/bin
 
-for i in {1..10}; do
+for i in {1..1000}; do
 
     ./IndexUpdateService.sh
 
