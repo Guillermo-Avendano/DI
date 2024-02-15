@@ -1,0 +1,2 @@
+# Change IP in k3d_enable_jenkins_ports.yaml
+kubectl -n orchestrator apply -f k3d_enable_jenkins_ports.yaml

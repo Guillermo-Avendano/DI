@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins  
+  namespace: orchestrator
+  annotations:
+    service.kubernetes.io/topology-mode: auto
+spec:
+  ports:
+    - port: 7070
+      name: http
+      protocol: TCP
+      targetPort: 7070
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: jenkins-es
+  namespace: orchestrator
+  labels:
+    kubernetes.io/service-name: jenkins
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 7070
+endpoints:
+  - addresses:
+      - "10.0.0.4"
+    conditions:
+      ready: true
