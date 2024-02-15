@@ -6,11 +6,13 @@ FROM solr:8.11.2
 
 ENV DI_SOLR_CONFIG_DIR=/var/solr/data/configsets
 
+ENV DI_SOLR_EXTRA_LIBS=//opt/solr-8.11.2/contrib
+
 USER 8983
 
 RUN mkdir $DI_SOLR_CONFIG_DIR
 
-COPY --chown=8983:8983 ./rochade          $DI_SOLR_CONFIG_DIR/rochade/   
+COPY ./rochade $DI_SOLR_EXTRA_LIBS/rochade/   
 
 COPY --chown=8983:8983 ./configsets/BigData_configs          $DI_SOLR_CONFIG_DIR/BigData_configs/        
 COPY --chown=8983:8983 ./configsets/DataIntegration_configs  $DI_SOLR_CONFIG_DIR/DataIntegration_configs/
@@ -23,3 +25,15 @@ COPY --chown=8983:8983 ./configsets/ReferenceData_configs    $DI_SOLR_CONFIG_DIR
 COPY --chown=8983:8983 ./configsets/BusinessTermView_configs $DI_SOLR_CONFIG_DIR/BusinessTermView_configs/  
 COPY --chown=8983:8983 ./configsets/DataStructure_configs    $DI_SOLR_CONFIG_DIR/DataStructure_configs/  
 COPY --chown=8983:8983 ./configsets/metaApp_configs          $DI_SOLR_CONFIG_DIR/metaApp_configs/
+
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/BigData_configs/conf/solrconfig.xml        
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/DataIntegration_configs/conf/solrconfig.xml
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/Models_configs/conf/solrconfig.xml       
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/Stitching_configs/conf/solrconfig.xml
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/BusinessIntelligence_configs/conf/solrconfig.xml
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/DataQualityManagement_configs/conf/solrconfig.xml 
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/DWRView_configs/conf/solrconfig.xml
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/ReferenceData_configs/conf/solrconfig.xml
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/BusinessTermView_configs/conf/solrconfig.xml 
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/DataStructure_configs/conf/solrconfig.xml
+COPY --chown=8983:8983 ./configsets/solrconfig.xml  $DI_SOLR_CONFIG_DIR/metaApp_configs/conf/solrconfig.xml

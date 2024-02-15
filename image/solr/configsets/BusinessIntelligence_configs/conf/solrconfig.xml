@@ -89,7 +89,7 @@
   (by defining it in solr.in.sh or solr.in.cmd) as sharedLib will make the targeted jars loaded
   in all cores on the Solr server (not only the ones for EDI's SearchApps.
   -->
-   <lib dir="/var/solr/data/configsets/rochade/lib" regex=".*\.jar" />
+  <lib dir="${solr.install.dir:../../../..}/contrib/rochade/lib" regex=".*\.jar" />
 
   <!-- Data Directory
 
