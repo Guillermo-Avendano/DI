@@ -1,6 +1,7 @@
 #!/bin/bash
+source .env
 
-docker-compose down -v
+docker-compose -p $DI_PROJECT down -v
 
 sudo rm -rf di_server_datbas/
 sudo rm -rf di_server_appl/

@@ -1,4 +1,5 @@
 #!/bin/bash
+source .env
 
-docker-compose down
+docker-compose -p $DI_PROJECT down
 

@@ -2,7 +2,7 @@
 
 source .env
 
-docker-compose -f ./docker-compose.db.yaml up -d --remove-orphans
+docker-compose -p $DI_PROJECT -f ./docker-compose.db.yaml up -d --remove-orphans
 
 DOTS="..."
 # Verificar si hay contenedores ejecutándose con la imagen especificada

@@ -2,7 +2,7 @@
 
 source .env
 
-docker-compose -f ./docker-compose.db.yaml up -d --remove-orphans
+docker-compose -p $DI_PROJECT -f ./docker-compose.db.yaml up -d --remove-orphans
 
 DOTS="..."
 # Verificar si hay contenedores ejecutándose con la imagen especificada
@@ -25,4 +25,3 @@ done
 echo "$DI_DB2_IMAGE processed"
 
 sudo chmod -R 777 di_server_datbas/
-
