@@ -2,6 +2,25 @@
 #!/bin/bash
 # Author: Guilllermo Avendaño
 # Cretion Date: 11/21/2023
+# Update : 02/16/2024 add control if the solr cores exists
+
+# Cores to verify
+cores=("DRWView" "BigData" "DataIntegration" "Models" "BusinessTermView" "ReferenceData" "DataStructure" "BusinessIntelligence" "DataQualityManagement" "Stitching")
+
+
+# Fnction to verify the solr core status
+check_core_status() {
+    core_name=$1
+    response=$(curl -s http://$DI_SOLR_HOST:8983/solr/admin/cores?action=STATUS | grep "$core_name")
+    if [[ -n $response ]]; then
+        echo "Core $core_name exist."
+        return 0
+    else
+        echo "Core $core_name doesn't exist yet."
+        return 1
+    fi
+}
+
 
 replace_tag_in_file() {
     local filename=$1
@@ -65,6 +84,20 @@ cp $LOG4J_CONFIG_FILE.template $LOG4J_CONFIG_FILE
 replace_tag_in_file $LOG4J_CONFIG_FILE "<DI_SOLR_ERROR_LEVEL>" $DI_SOLR_ERROR_LEVEL
 
 cd /home/rocket/Index_Update_Service/bin
+
+# Wait till al the core exists
+for core in "${cores[@]}"; do
+    while ! check_core_status "$core"; do
+        echo "Waiting core $core be available..."
+        sleep 5  # Wait 5 secs. before next check
+    done
+done
+
+echo "All the Solr Cores for Data Intelligence are available."
+
+if [ "$DI_REINDEX_SOLR" = true ]; then
+   ./IndexUpdateService.sh forceClear=true runMode=once
+fi
 
 for i in {1..1000}; do
 

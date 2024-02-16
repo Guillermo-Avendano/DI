@@ -6,7 +6,7 @@ FROM solr:8.11.2
 
 ENV DI_SOLR_CONFIG_DIR=/var/solr/data/configsets
 
-ENV DI_SOLR_EXTRA_LIBS=//opt/solr-8.11.2/contrib
+ENV DI_SOLR_EXTRA_LIBS=/opt/solr-8.11.2/contrib
 
 USER 8983
 

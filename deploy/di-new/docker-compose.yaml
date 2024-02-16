@@ -79,6 +79,7 @@ services:
        DI_SERVER_USER: ${DI_SERVER_USER}
        DI_SERVER_PASS: ${DI_SERVER_PASS}
        DI_SOLR_TRUSTED: "false"
+       DI_REINDEX_SOLR: ${DI_REINDEX_SOLR}
        #DI_SOLR_ERROR_LEVEL: "DEBUG"
     extra_hosts:
       - "di-server:${DI_LOCAL_IP}"  
