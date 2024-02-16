@@ -9,9 +9,10 @@ cores=("DRWView" "BigData" "DataIntegration" "Models" "BusinessTermView" "Refere
 
 # Fnction to verify the solr core status
 check_core_status() {
+
     core_name=$1
-    response=$(curl -s http://$DI_SOLR_HOST:8983/solr/admin/cores?action=STATUS | grep "$core_name")
-    if [[ -n $response ]]; then
+    response=$(curl -s http://$DI_SOLR_HOST:8983/solr/admin/cores?action=STATUS)
+    if echo "$response" | grep -q "\"$core_name\""; then
         echo "Core $core_name exist."
         return 0
     else
