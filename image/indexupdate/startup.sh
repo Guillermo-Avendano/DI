@@ -5,23 +5,24 @@
 # Update : 02/16/2024 add control if the solr cores exists
 
 # Cores to verify
-cores=("DRWView" "BigData" "DataIntegration" "Models" "BusinessTermView" "ReferenceData" "DataStructure" "BusinessIntelligence" "DataQualityManagement" "Stitching")
+cores=( "DRWView" "BigData" "DataIntegration" "Models" "BusinessTermView" "ReferenceData" "DataStructure" "BusinessIntelligence" "DataQualityManagement" "Stitching")
 
-# Fnction to verify the solr core status
+# Function to verify the solr core status
 check_core_status() {
 
     core_name=$1
-    response=$(curl -s http://$DI_SOLR_HOST:8983/solr/admin/cores?action=STATUS)
+    response=$(curl -s http://$DI_SOLR_HOST:8983/solr/admin/cores?action=STATUS | jq -r '.status[] | .name')
 
-    if echo "$response" | jq -e '.status."'$core_name'"' > /dev/null; then
-        echo "Core $core_name exist."
+    if echo "$response" | grep "'$core_name'"; then
+        echo "Core '$core_name' doesn't exist yet."
+        echo "Current cores:"
+        echo $response
         return 0
     else
-        echo "Core $core_name doesn't exist yet."
+        echo "Core $core_name exist."
         return 1
     fi
 }
-
 
 replace_tag_in_file() {
     local filename=$1
@@ -88,9 +89,10 @@ cd /home/rocket/Index_Update_Service/bin
 
 # Wait till all the Solr cores for Data Intelligence have been created.
 for core in "${cores[@]}"; do
-    while ! check_core_status "$core"; do
-        echo "Waiting core $core be available..."
-        sleep 5  # Wait 5 secs. before next check
+    core_available=0  # Bandera para indicar si el core está disponible
+    while check_core_status "$core"; do
+        echo "Waiting $core core be available in Solr..."
+        sleep 5  # Espera 5 segundos antes de volver a verificar
     done
 done
 
