@@ -7,7 +7,6 @@
 # Cores to verify
 cores=("DRWView" "BigData" "DataIntegration" "Models" "BusinessTermView" "ReferenceData" "DataStructure" "BusinessIntelligence" "DataQualityManagement" "Stitching")
 
-
 # Fnction to verify the solr core status
 check_core_status() {
     core_name=$1
@@ -85,7 +84,7 @@ replace_tag_in_file $LOG4J_CONFIG_FILE "<DI_SOLR_ERROR_LEVEL>" $DI_SOLR_ERROR_LE
 
 cd /home/rocket/Index_Update_Service/bin
 
-# Wait till al the core exists
+# Wait till all the Solr cores for Data Intelligence have been created.
 for core in "${cores[@]}"; do
     while ! check_core_status "$core"; do
         echo "Waiting core $core be available..."
