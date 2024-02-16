@@ -12,7 +12,8 @@ check_core_status() {
 
     core_name=$1
     response=$(curl -s http://$DI_SOLR_HOST:8983/solr/admin/cores?action=STATUS)
-    if echo "$response" | grep -q "\"$core_name\""; then
+
+    if echo "$response" | jq -e '.status."'$core_name'"' > /dev/null; then
         echo "Core $core_name exist."
         return 0
     else

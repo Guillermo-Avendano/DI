@@ -16,7 +16,7 @@ ARG DI_SERVER_PASS=
 ARG DI_REINDEX_SOLR=false
 
 # Intall java by according version
-RUN dnf -y install java-1.8.0-openjdk nc nano; 
+RUN dnf -y install java-1.8.0-openjdk nc nano jq; 
 
     #dnf -y install java-11-openjdk; 
 
