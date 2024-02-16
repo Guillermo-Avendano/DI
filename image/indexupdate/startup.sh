@@ -88,15 +88,15 @@ replace_tag_in_file $LOG4J_CONFIG_FILE "<DI_SOLR_ERROR_LEVEL>" $DI_SOLR_ERROR_LE
 cd /home/rocket/Index_Update_Service/bin
 
 # Wait till all the Solr cores for Data Intelligence have been created.
-for core in "${cores[@]}"; do
-    core_available=0  # Bandera para indicar si el core está disponible
-    while check_core_status "$core"; do
-        echo "Waiting $core core be available in Solr..."
-        sleep 5  # Espera 5 segundos antes de volver a verificar
-    done
-done
+#for core in "${cores[@]}"; do
+#    core_available=0  # Bandera para indicar si el core está disponible
+#    while check_core_status "$core"; do
+#        echo "Waiting $core core be available in Solr..."
+#        sleep 5  # Espera 5 segundos antes de volver a verificar
+#    done
+#done
 
-echo "All the Solr Cores for Data Intelligence are available."
+#echo "All the Solr Cores for Data Intelligence are available."
 
 INDEX_OPTS=""
 if [ "$DI_REINDEX_SOLR" = true ]; then
