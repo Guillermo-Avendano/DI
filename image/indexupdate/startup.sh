@@ -100,7 +100,7 @@ cd /home/rocket/Index_Update_Service/bin
 
 INDEX_OPTS=""
 if [ "$DI_REINDEX_SOLR" = true ]; then
-    INDEX_OPTS="forceClear=true runMode=once"
+    INDEX_OPTS="forceClearOnce"
     echo ">>> Executing full Solr reindexing ! <<<"
 
 fi
