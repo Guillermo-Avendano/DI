@@ -98,13 +98,18 @@ done
 
 echo "All the Solr Cores for Data Intelligence are available."
 
+INDEX_OPTS=""
 if [ "$DI_REINDEX_SOLR" = true ]; then
-   ./IndexUpdateService.sh forceClear=true runMode=once
+    INDEX_OPTS="forceClear=true runMode=once"
+    echo ">>> Executing full Solr reindexing ! <<<"
+
 fi
 
 for i in {1..1000}; do
 
-    ./IndexUpdateService.sh
+    ./IndexUpdateService.sh $INDEX_OPTS
+
+    INDEX_OPTS=""
 
     return_code=$?
     if [ $return_code -ne 0 ]; then
