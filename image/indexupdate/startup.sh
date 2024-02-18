@@ -102,10 +102,9 @@ INDEX_OPTS=""
 if [ "$DI_REINDEX_SOLR" = true ]; then
     INDEX_OPTS="forceClearOnce"
     echo ">>> Executing full Solr reindexing ! <<<"
-
 fi
 
-for i in {1..1000}; do
+while true do
 
     ./IndexUpdateService.sh $INDEX_OPTS
 
@@ -113,10 +112,9 @@ for i in {1..1000}; do
 
     return_code=$?
     if [ $return_code -ne 0 ]; then
+        ./IndexUpdateService.sh forceStop
         sleep 10
         echo "Restarting IndexUpdateService..."
-    else
-        break
     fi
 
 done
