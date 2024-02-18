@@ -104,17 +104,16 @@ if [ "$DI_REINDEX_SOLR" = true ]; then
     echo ">>> Executing full Solr reindexing ! <<<"
 fi
 
-while true do
+while true 
+    do
+        ./IndexUpdateService.sh $INDEX_OPTS
 
-    ./IndexUpdateService.sh $INDEX_OPTS
+        INDEX_OPTS=""
 
-    INDEX_OPTS=""
-
-    return_code=$?
-    if [ $return_code -ne 0 ]; then
-        ./IndexUpdateService.sh forceStop
-        sleep 10
-        echo "Restarting IndexUpdateService..."
-    fi
-
-done
+        return_code=$?
+        if [ $return_code -ne 0 ]; then
+            ./IndexUpdateService.sh forceStop
+            sleep 10
+            echo "Restarting IndexUpdateService..."
+        fi
+    done
