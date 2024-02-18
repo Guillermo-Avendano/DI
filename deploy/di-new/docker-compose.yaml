@@ -50,11 +50,6 @@ services:
     - ./di_server_appl:/home/rocket/rochade/appl
     depends_on:
       - data_init      
-    healthcheck:
-      test: [ "CMD-SHELL", "nc -zv di-server 8888" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5  
 
   di-solr:
     image: ${DI_SOLR_IMAGE}
